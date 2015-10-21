@@ -24,10 +24,6 @@ Dev Setup
 ```bash
 npm install
 ```
-If you don't have `jpm` for the Firefox addon-sdk you can install with:
-```bash
-npm install -g jpm
-```
 ### 2. Build
 ```bash
 gulp
@@ -39,16 +35,11 @@ To run tests use:
 gulp test
 ```
 If you want to manually test Chrome, drag the `Chrome/dist` folder into your extensions page (`chrome://extensions/`) on chrome.
-To manually test of Firefox, run the following inside `Firefox/dist`
-```bash
-jpm run
-```
-For more details about jpm please visit https://developer.mozilla.org/en-US/Add-ons/SDK/Tools/jpm.
 ### 4. Package
 ```bash
 gulp package
 ```
-This will output a zipped `.zip` file for chrome which can be uploaded to the chrome web store. It will also output a zipped `.xpi` for Firefox which can be opened with Firefox and installed.
+This will output a zipped `.zip` file for chrome which can be uploaded to the chrome web store.
 Cryptography Notice
 ======================
 
