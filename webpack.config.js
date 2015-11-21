@@ -9,6 +9,7 @@ module.exports = {
     browser_action: path.join(src_dir,'browser_action','index.js'),
     content_scripts: path.join(src_dir,'content_scripts','index.js'),
     options_page: path.join(src_dir,'options_page','index.js'),
+  },
   output: {
     path: dist_dir,
     filename: "[name].js"
