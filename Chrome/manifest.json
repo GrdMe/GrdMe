@@ -21,7 +21,7 @@
   "browser_action": {
     "default_icon": "static/icons/icon19.png",
     "default_title": "Grd Me Key Manager",
-    "default_popup": "static/browser_action/popup.html"
+    "default_popup": "static/browser_action/index.html"
   },
   "permissions": [
     "clipboardWrite",
@@ -44,9 +44,9 @@
       ]
     }
   ],
-  "options_page": "static/options/options.html",
+  "options_page": "static/options_page/index.html",
   "options_ui": {
-    "page": "static/options/options.html",
+    "page": "static/options_page/index.html",
     "chrome_style": true
   }
 }

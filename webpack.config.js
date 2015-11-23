@@ -22,6 +22,11 @@ module.exports = {
     }
   },
   module: {
+    loaders: [
+      { test: /\.css$/, loader: "style-loader!css-loader" },
+      { test: /\.gif$/, loader: "url-loader?limit=100000&minetype=image/gif" },
+      { test: /\.png$/, loader: "url-loader?limit=100000&minetype=image/png" },
+    ],
     noParse: [
       /node_modules\/traceur\/bin/,
     ],
