@@ -7,9 +7,9 @@
   "homepage_url": "https://grd.me",
   "author": "Winston Howes",
   "icons": {
-    "16": "static/icons/icon16.png",
-    "48": "static/icons/icon48.png",
-    "128": "static/icons/icon128.png"
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "default_locale": "en",
   "background": {
@@ -19,9 +19,9 @@
     "persistent": true
   },
   "browser_action": {
-    "default_icon": "static/icons/icon19.png",
+    "default_icon": "icons/icon19.png",
     "default_title": "Grd Me Key Manager",
-    "default_popup": "static/browser_action/index.html"
+    "default_popup": "dist/browser_action.html"
   },
   "permissions": [
     "clipboardWrite",
@@ -44,9 +44,9 @@
       ]
     }
   ],
-  "options_page": "static/options_page/index.html",
+  "options_page": "dist/options_page.html",
   "options_ui": {
-    "page": "static/options_page/index.html",
+    "page": "dist/options_page.html",
     "chrome_style": true
   }
 }

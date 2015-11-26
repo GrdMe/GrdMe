@@ -1,5 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 var src_dir = path.join(__dirname, 'Chrome', 'src');
 var dist_dir = path.join(__dirname, 'Chrome', 'dist');
 
@@ -31,4 +32,16 @@ module.exports = {
       /node_modules\/traceur\/bin/,
     ],
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      filename: 'browser_action.html',
+      template: path.join(src_dir,'browser_action','index.html'),
+      inject: false,
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'options_page.html',
+      template: path.join(src_dir,'options_page','index.html'),
+      inject: false,
+    }),
+  ],
 };
