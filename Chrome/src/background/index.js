@@ -67,6 +67,8 @@ install_keygen.then(() => {
     var message = base64_helper.str2ab("Hello bob");
     var preKeyBundle = {
       identityKey: store.getLocalIdentityKeyPair().public,
+      preKeyId: 0,
+      preKey: store.getLocalSignedPreKeyPair(0).public,
       signedPreKeyId: 0,
       signedPreKey: store.getLocalSignedPreKeyPair(0).public,
       signedPreKeySignature: store.data.preKeys[0].signature,
@@ -74,7 +76,9 @@ install_keygen.then(() => {
     console.log({pkb:preKeyBundle});
     axol.createSessionFromPreKeyBundle(preKeyBundle).then((session) => {
       axol.encryptMessage(session,message).then((response) => {
-        console.log(response);
+        console.log('WINNING', response);
+      }).catch((resp) => {
+        console.log('ERROR', resp);
       });
     });
   });
