@@ -17,10 +17,10 @@ module.exports = {
   },
   resolve: {
     alias: {
-      Long: __dirname + "/node_modules/long/dist/Long.js",
+      Long: __dirname + "/node_modules/axolotl/node_modules/long/dist/Long.js",
       ByteBuffer: __dirname + "/node_modules/axolotl/node_modules/bytebuffer/dist/ByteBufferAB.js",
       "traceur-runtime": __dirname + "/node_modules/axolotl/node_modules/traceur/bin/traceur-runtime.js",
-      //crypto: __dirname + "/node_modules/crypto-browserify/index.js"
+      crypto: __dirname + "/node_modules/crypto-browserify/index.js"
     }
   },
   module: {
