@@ -20,13 +20,15 @@ module.exports = {
       Long: __dirname + "/node_modules/long/dist/Long.js",
       ByteBuffer: __dirname + "/node_modules/bytebuffer/dist/ByteBufferAB.js",
       "traceur-runtime": __dirname + "/node_modules/traceur/bin/traceur-runtime.js",
+      //crypto: __dirname + "/node_modules/crypto-browserify/index.js"
     }
   },
   module: {
     loaders: [
-      { test: /\.css$/, loader: "style-loader!css-loader" },
-      { test: /\.gif$/, loader: "url-loader?limit=100000&minetype=image/gif" },
-      { test: /\.png$/, loader: "url-loader?limit=100000&minetype=image/png" },
+      { test: /\.css$/,  loader: "style-loader!css-loader" },
+      { test: /\.gif$/,  loader: "url-loader?limit=100000&minetype=image/gif" },
+      { test: /\.png$/,  loader: "url-loader?limit=100000&minetype=image/png" },
+      { test: /\.json$/, loader: "json-loader" },
     ],
     noParse: [
       /node_modules\/traceur\/bin/,
