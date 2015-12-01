@@ -76,9 +76,11 @@ install_keygen.then(() => {
     console.log({pkb:preKeyBundle});
     axol.createSessionFromPreKeyBundle(preKeyBundle).then((session) => {
       axol.encryptMessage(session,message).then((response) => {
-        console.log('WINNING', response);
-      }).catch((resp) => {
-        console.log('ERROR', resp);
+        console.log(response);
+        axol.decryptPreKeyWhisperMessage(null,response.body).then((response) =>{
+          console.log(response);
+          console.log(base64_helper.ab2str(response.message));
+        });
       });
     });
   });
