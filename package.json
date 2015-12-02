@@ -13,6 +13,7 @@
     "html-webpack-plugin": "^1.7.0",
     "image-loader": "0.0.1",
     "image-webpack-loader": "^1.6.2",
+    "jquery": "^2.1.4",
     "json-loader": "^0.5.4",
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.6",
