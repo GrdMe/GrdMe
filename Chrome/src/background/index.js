@@ -24,6 +24,8 @@ var store = {
   getLocalSignedPreKeyPair: (signedPreKeyId) => {
     return base64_helper.keypair_decode(store.data.preKeys[signedPreKeyId].keyPair);
   },
+  getLocalSignedPreKeySignatue: (signedPreKeyId) => {
+    return base64.decode(store.data.preKeys[signedPreKeyId].signature);
 };
 var axol = axolotl(store);
 
@@ -43,6 +45,7 @@ var install_keygen = new Promise(function(resolve) {
             for (var index = 0; index < 10; index++) {
               axol.generateSignedPreKey(store.getLocalIdentityKeyPair(),index).then((value) => {
                 value.keyPair = base64_helper.keypair_encode(value.keyPair);
+                value.signature = base64.encode(value.signature);
                 store.data.preKeys[value.id] = value;
               });
             }
