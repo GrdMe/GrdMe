@@ -1,7 +1,7 @@
 'use strict';
 
 var storageManager;
-var $ = require('jQuery');
+var $ = require('jquery');
 var base64 = require('base64-arraybuffer');
 
 var server = 'http://11.12.13.14:8080';
