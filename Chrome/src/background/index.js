@@ -26,6 +26,7 @@ var store = {
   },
   getLocalSignedPreKeySignatue: (signedPreKeyId) => {
     return base64.decode(store.data.preKeys[signedPreKeyId].signature);
+  }
 };
 var axol = axolotl(store);
 
@@ -87,4 +88,78 @@ install_keygen.then(() => {
       });
     });
   });
+});
+
+// sockets =====================================================================
+var ioClient = require('socket.io-client');
+var crypto = require("axolotl-crypto");
+
+/*********************************************************
+************** EDIT THESE THINGS!!! **********************
+*********************************************************/
+var URL_OF_SERVER = "http://11.12.13.14:8080/";
+var clientIdentityKeyPair = /* GET KEY PAIR FROM STORAGE */;
+var clientDeviceId = /* GET DEVICE ID FROM STORAGE */;
+/********************************************************/
+
+/* make connection to server */
+var socket = ioClient.connect(URL_OF_SERVER);
+
+/* executed on successful connection to server */
+socket.on('connect', function (data) {
+    /* create auth credentials */
+    var time = String((new Date())getTime());
+    var signature = base64.encode(crypto.sign(clientIdentityKeyPair.private, base64.decode(time)));
+    var authPassword = time + "|" + signature;
+    var authUsername = base64.encode(clientIdentityKeyPair.public);
+    authUsername = authUsername + "|" + String(clientDeviceId);
+
+    /* push auth credentials to server */
+    socket.emit('authentication', { username:authUsername, password:authPassword });
+});
+
+/* executed on 'not authorized' message from server */
+socket.on('not authorized', function(data) {
+    console.log("not authorized message recieved");
+    switch(data.message){
+        case 'badly formed credentials': //indicates that authCredentials were
+            //deal with it
+            break;
+        case 'revoked': //indicates that submitted identityKey has been revoked
+            //deal with it
+            break;
+        case 'signature': //indicates that signature in password could not be verified
+            //deal with it
+            break;
+        case 'not registered': //indicates that idKey/did combo has not been registered with srerver
+            //deal with it
+            break;
+        case 'time': //indicates submitted time was out of sync w/ server
+            var serverTime = String(data.serverTime); //int. unix time
+            /* sign serverTime and resend auth message */
+            var signature = base64.encode(crypto.sign(clientIdentityKeyPair.private, base64.decode(serverTime)));
+            var authPassword = serverTime + "|" + signature;
+            var authUsername = base64.encode(clientIdentityKeyPair.public);
+            authUsername = authUsername + "|" + String(clientDeviceId);
+
+            /* emit auth credentials */
+            socket.emit('authentication', { username:authUsername, password:authPassword });
+            break;
+    }
+});
+
+/* executed on 'authorized' message from server */
+socket.on('authorized', function(data) {
+    //lets you know that socket.emit('authentication'... was successful
+});
+
+/* executed on 'message' message from server */
+socket.on('message', function(messageData) {
+    //confirm reception of message to server
+    socket.emit('recieved', {messageId: messageData.id});
+
+    var messageHeader = messageData.header; //same header that was sent to server
+    var messageBody = messageData.body;     //same body that was sent to server
+
+    // do something with messageData here
 });
