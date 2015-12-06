@@ -6,6 +6,10 @@ var base64 = require('base64-arraybuffer');
 
 var server = 'http://11.12.13.14:8080';
 var serverInit = server + '/api/v1/key/initial';
+var port;
+var version = '0';
+var typeKey = '0';
+var typeMessage = '1';
 
 document.addEventListener('DOMContentLoaded', function () {
     //STORAGE
@@ -50,15 +54,21 @@ function groupsTab() {
 
 function settingsTab() {
     document.getElementById('page').innerHTML = '<div><button class="blue btn" id="debug_web">Debug web</button><div id="debug"></div></div>';
+    var script = 'var test; document.body.innerHTML = "RUNS"';
+    var url = chrome.extension.getURL('src/browser_action/parseTags.js');
+    //script = 'document.body.innerHTML = "' + url + '";';
+    var tagScript = "var startIndex; var endIndex; var html = document.body.innerHTML; var msgs = []; do{ startIndex = html.search('~~GrdMe!'); html = html.slice(startIndex); endIndex = html.search(/.~~/); var tag = html.slice(0, endIndex + 3); if(tag.length > 0) { msgs.push(tag); } html = html.slice(endIndex); } while(startIndex > 0); for(var i = 0; i < msgs.length; i++){ document.body.innerHTML = document.body.innerHTML.replace(msgs[i], 'REPLACED'); }";
     document.getElementById('debug_web').onclick = function () {
-        chrome.tabs.executeScript(null, {
-            code: 'document.body.innerHTML = ""'
+        chrome.tabs.executeScript({
+            code: tagScript,
+            //file: url,
+            allFrames: true
         }, function () {
-            document.getElementById('debug').innerHTML += 'TEST';
+            document.getElementById('debug').innerHTML += 'function';
         });
         document.getElementById('debug').innerHTML += 'test';
     }
-
+    copyKeyTagToClipboard();
 }
 
 function debugTab() {
@@ -134,8 +144,56 @@ function clickInstall() {
         $('#debug').html(xhr.responseText);
     }
     xhr.send();
+    //testBackgroundPage();
 }
 
+function copyKeyTagToClipboard() {
+    //store user?
+    chrome.storage.local.get({ user: {} }, function(result) {
+        var longTermKey = result.key ? result.key : 'key fail'; //
+        var tag = '((GrdMe!';
+        //first char is the version, next type
+        tag += version;
+        tag += typeKey;
+        //rest is key
+        tag += longTermKey;
+        tag += '))';
+        //create element, append to page, select text, copy
+        var textArea = document.createElement('textarea');
+        textArea.setAttribute('id', 'deleteme');
+        textArea.value = tag;
+       $('#page').append(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        //couldnt get jquery to work for this
+        document.getElementById('page').removeChild(textArea);
+    });
+}
+
+function testBackgroundPage() {
+    $('#debug1').html('background page function clicked');
+    /*
+    var bg = chrome.extension.getBackgroundPage();
+    $('#debug1').html('background page retrieved');
+    var doc = bg.document;
+    $('#debug1').html('document page retrieved');
+    var test = doc.pen;
+    $('#debug1').html('not a joke');
+    */
+    chrome.runtime.sendMessage({test: 'ok!'}, function(response) {
+        for(var prop in response){
+            $('#debug1').html(prop);
+        }
+        //$('#debug2').html('callback1');
+    });
+    $('#debug1').html('background page function ran');
+    chrome.runtime.sendMessage({test: 'ko!'}, function(response) {
+        //for(var prop in response){
+            $('#debug2').html(response);
+        //}
+        //$('#debug1').html('callback2');
+    });
+}
 //GROUP STUFF
 
 /**

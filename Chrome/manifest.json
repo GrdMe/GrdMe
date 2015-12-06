@@ -32,7 +32,10 @@
     "unlimitedStorage",
     "webRequest",
     "webRequestBlocking",
-    "https://decrypt.grd.me/*"
+    "https://decrypt.grd.me/*",
+    "nativeMessaging",
+    "tabs",
+    "activeTab"
   ],
   "content_scripts": [
     {
@@ -48,5 +51,14 @@
   "options_ui": {
     "page": "dist/options_page.html",
     "chrome_style": true
+  },
+  "commands": {
+    "textSecurePopup": {
+      "suggested_key": {
+        "default": "Ctrl+E",
+        "mac": "Command+E"
+      },
+      "description": "text secure popup"
+    }
   }
 }

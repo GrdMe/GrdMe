@@ -88,3 +88,25 @@ install_keygen.then(() => {
     });
   });
 });
+
+/*~~~~~~~EDWARD CODE START~~~~~~~~~*/
+
+chrome.commands.onCommand.addListener(function(command) {
+  if(command == 'textSecurePopup') {
+    var w = 300;
+    var h = 235;
+    var left = Math.floor((screen.width / 2) - (w / 2));
+    var top = Math.floor((screen.height / 2) - (h / 2));
+    chrome.windows.create({
+      url: chrome.extension.getURL('src/browser_action/secureTextPopup.html'),
+      focused: true,
+      type: 'popup',
+      width: w,
+      height: h,
+      top: top,
+      left: left,
+    });
+  }
+});
+
+/*~~~~~~~EDWARD CODE END~~~~~~~~~*/
