@@ -166,7 +166,7 @@ const initialize_storage = () => new Promise((resolve) => {
 });
 
 const identityPubKey_search = (identityPubKey) => new Promise((resolve) => {
-  wrapped_api_call('GET','key/'+encodeURIComponent(identityPubKey), null).then((response) => {
+  wrapped_api_call('GET','key/' + encodeURIComponent(identityPubKey), null).then((response) => {
     for (element in Object.keys(response)) {
       const device = response[Object.keys(response)[element]];
       const preKeyBundle = {
