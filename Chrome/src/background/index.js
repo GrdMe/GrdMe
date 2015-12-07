@@ -1,5 +1,5 @@
 // libaxolotl set dressing for webpack
-process.platform = "Grd Me";
+process.platform = 'Grd Me';
 process.stderr = {
   write: (t) => {
     console.log(t);
@@ -33,10 +33,10 @@ chrome.commands.onCommand.addListener((command) => {
 chrome.runtime.onMessage.addListener(
   (request, sender, sendResponse) => {
     console.log(sender.tab ?
-                "from a content script:" + sender.tab.url :
-                "from the extension");
-    if (request.greeting === "hello") {
-      sendResponse({farewell: "goodbye"});
+                'from a content script:' + sender.tab.url :
+                'from the extension');
+    if (request.greeting === 'hello') {
+      sendResponse({farewell: 'goodbye'});
     }
     if(request.greeting === 'encryptMe'){
       const encrypt = base64.encode(crypto.randomBytes(32));
@@ -46,11 +46,11 @@ chrome.runtime.onMessage.addListener(
 
 //main shit
 base64 = require('base64-arraybuffer');
-base64_helper = require("./base64-helper.js");
+base64_helper = require('./base64-helper.js');
 storage_manager = require('./storage_manager.js');
 //var ioClient = require('socket.io-client');
-axolotl = require("axolotl");
-axolotl_crypto = require("axolotl-crypto");
+axolotl = require('axolotl');
+axolotl_crypto = require('axolotl-crypto');
 
 store = {
   base64_data: {},
@@ -74,7 +74,7 @@ store = {
   },
 };
 const basic_auth = () => {
-  const username = store.base64_data.identityKeyPair.public+'|'+store.getLocalRegistrationId();
+  const username = store.base64_data.identityKeyPair.public + '|' + store.getLocalRegistrationId();
   const time =  Date.now();
   const password = time + '|' + base64.encode(axolotl_crypto.sign(store.getLocalIdentityKeyPair().private,base64_helper.str2ab(String(time))));
   return username + ':' + password;
@@ -90,7 +90,7 @@ const wrapped_api_call = (type,reasource,json_body) => new Promise((resolve) => 
       }
   }
   if (type !== 'GET') {
-    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader('Content-type', 'application/json');
     xhr.send(JSON.stringify(json_body));
   } else {
     xhr.send();
@@ -124,7 +124,7 @@ const install_keygen = () => new Promise((resolve) => {
               };
           }),
         };
-        wrapped_api_call('POST','key/initial',body).then((response) => {
+        wrapped_api_call('POST', 'key/initial', body).then((response) => {
           resolve();
         });
       };
@@ -234,7 +234,7 @@ const submitMessage = (session, identityPubKeys, deviceIDs, messageHeaders, mess
 initialize_storage().then(() => {
   identityPubKey_search(store.base64_data.identityKeyPair.public).then((response) => {
 
-  /*var message = base64_helper.str2ab("Hello bob");
+  /*var message = base64_helper.str2ab('Hello bob');
   axol.encryptMessage(session, message).then((response) => {
     axol.decryptPreKeyWhisperMessage(null, response.body).then((response) =>{
       resolve(base64_helper.ab2str(response.message));
@@ -253,9 +253,9 @@ socket.on('connect', function (data) {
     // create auth credentials
     var time = String(Date.now());
     var signature = base64.encode(axolotl_crypto.sign(clientIdentityKeyPair.private, base64.decode(time)));
-    var authPassword = time + "|" + signature;
+    var authPassword = time + '|' + signature;
     var authUsername = base64.encode(clientIdentityKeyPair.public);
-    authUsername = authUsername + "|" + String(clientDeviceId);
+    authUsername = authUsername + '|' + String(clientDeviceId);
 
 
     // push auth credentials to server
@@ -264,7 +264,7 @@ socket.on('connect', function (data) {
 
 // executed on 'not authorized' message from server
 socket.on('not authorized', function(data) {
-    console.log("not authorized message recieved");
+    console.log('not authorized message recieved');
     switch(data.message){
         case 'badly formed credentials': //indicates that authCredentials were
             //deal with it
@@ -282,9 +282,9 @@ socket.on('not authorized', function(data) {
             var serverTime = String(data.serverTime); //int. unix time
             // sign serverTime and resend auth message
             var signature = base64.encode(axolotl_crypto.sign(clientIdentityKeyPair.private, base64.decode(serverTime)));
-            var authPassword = serverTime + "|" + signature;
+            var authPassword = serverTime + '|' + signature;
             var authUsername = base64.encode(clientIdentityKeyPair.public);
-            authUsername = authUsername + "|" + String(clientDeviceId);
+            authUsername = authUsername + '|' + String(clientDeviceId);
 
             // emit auth credentials
             socket.emit('authentication', { username:authUsername, password:authPassword });
