@@ -11,12 +11,34 @@ var numPreKeys = 100;
 //var keyServerAPIUrl = 'https://twofish.cs.unc.edu/api/v1/';
 var keyServerAPIUrl = 'http://localhost:8080/api/v1/';
 
+//edward's popup magic
+chrome.commands.onCommand.addListener(function(command) {
+  if(command == 'textSecurePopup') {
+    var w = 300;
+    var h = 235;
+    var left = Math.floor((screen.width / 2) - (w / 2));
+    var top = Math.floor((screen.height / 2) - (h / 2));
+    chrome.windows.create({
+      url: chrome.extension.getURL('src/browser_action/secureTextPopup.html'),
+      focused: true,
+      type: 'popup',
+      width: w,
+      height: h,
+      top: top,
+      left: left,
+    });
+  }
+});
+
 //main shit
-var base64 = require('base64-arraybuffer');
-var base64_helper = require("./base64-helper.js");
-var axolotl = require("axolotl");
-var crypto = require("axolotl-crypto");
-var store = {
+base64 = require('base64-arraybuffer');
+base64_helper = require("./base64-helper.js");
+storage_manager = require('./storage_manager.js');
+//var ioClient = require('socket.io-client');
+axolotl = require("axolotl");
+axolotl_crypto = require("axolotl-crypto");
+
+store = {
   base64_data: {},
   getLocalIdentityKeyPair: () => {
     return store.identityKeyPair;
@@ -37,14 +59,17 @@ var store = {
     return store.base64_data.lastResortPreKeyId;
   },
 };
-var wrapped_api_call = (type,reasource,json_body) => new Promise((resolve) => {
+var basic_auth = () => {
   var username = store.base64_data.identityKeyPair.public+'|'+store.getLocalRegistrationId();
   var time =  Date.now();
   var password = time + '|' + base64.encode(crypto.sign(store.getLocalIdentityKeyPair().private,base64_helper.str2ab(String(time))));
-  var basic_auth = username + ':' + password;
+  return username + ':' + password;
+};
+
+var wrapped_api_call = (type,reasource,json_body) => new Promise((resolve) => {
   var xhr = new XMLHttpRequest();
   xhr.open(type, keyServerAPIUrl+reasource, true);
-  xhr.setRequestHeader('Authorization', 'Basic ' + btoa(basic_auth));
+  xhr.setRequestHeader('Authorization', 'Basic ' + btoa(basic_auth()));
   xhr.onreadystatechange = () => {
       if (xhr.readyState === XMLHttpRequest.DONE) {
         resolve(JSON.parse(xhr.responseText));
@@ -128,17 +153,20 @@ var initialize_storage = () => new Promise((resolve) => {
 
 var identityPubKey_search = (identityPubKey) => new Promise((resolve) => {
   wrapped_api_call('GET','key/'+encodeURIComponent(identityPubKey),null).then((response) => {
-    response.device = {
-      identityKey: base64.decode(identityPubKey),
-      preKeyId: response.device.id,
-      preKey: base64.decode(response.device.preKey),
-      signedPreKeyId: response.device.id,
-      signedPreKey: base64.decode(response.device.preKey),
-      signedPreKeySignature: base64.decode(response.device.signature),
-    };
-    axol.createSessionFromPreKeyBundle(preKeyBundle).then((session) => {
-      
-    });
+    for (element in Object.keys(response)) {
+      var device = response[Object.keys(response)[element]];
+      var preKeyBundle = {
+        identityKey: base64.decode(identityPubKey),
+        preKeyId: device.id,
+        preKey: base64.decode(device.preKey),
+        signedPreKeyId: device.id,
+        signedPreKey: base64.decode(device.preKey),
+        signedPreKeySignature: base64.decode(device.signature),
+      };
+      axol.createSessionFromPreKeyBundle(preKeyBundle).then((session) => {
+        console.log(session);
+      });
+    }
     resolve(response);
   });
 });
@@ -152,33 +180,23 @@ initialize_storage().then(() => {
       resolve(base64_helper.ab2str(response.message));
     });*/
   });
-
-/*  wrapped_api_call('GET','key/'+encodeURIComponent("BW8VJ4jxSpVGicMaGmc90zpBkiTj1v8n9su1oeL66GkH"),null).then((response) => {
-    console.log({search:response});
-  });*/
-
 });
 
 /*
 // sockets =====================================================================
-var ioClient = require('socket.io-client');
-var crypto = require("axolotl-crypto");
-
-var URL_OF_SERVER = "http://11.12.13.14:8080/";
-var clientIdentityKeyPair = // GET KEY PAIR FROM STORAGE ;
-var clientDeviceId = // GET DEVICE ID FROM STORAGE ;
 
 // make connection to server
-var socket = ioClient.connect(URL_OF_SERVER);
+var socket = ioClient.connect(keyServerAPIUrl);
 
 // executed on successful connection to server
 socket.on('connect', function (data) {
     // create auth credentials 
-    var time = String((new Date())getTime());
+    var time = String(Date.now());
     var signature = base64.encode(crypto.sign(clientIdentityKeyPair.private, base64.decode(time)));
     var authPassword = time + "|" + signature;
     var authUsername = base64.encode(clientIdentityKeyPair.public);
     authUsername = authUsername + "|" + String(clientDeviceId);
+    
 
     // push auth credentials to server 
     socket.emit('authentication', { username:authUsername, password:authPassword });
@@ -228,6 +246,4 @@ socket.on('message', function(messageData) {
     var messageBody = messageData.body;     //same body that was sent to server
 
     // do something with messageData here
-});
-
-*/
+});*/

@@ -1,6 +1,96 @@
-var $ = require('jquery');
+/**
+* JavaScript file for secureTextPopup.html. Used for populating group select
+* with groups in the database, encrypting and sending messages
+*/
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~STORAGE MANAGER CODE~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+//Global variables
+var groups;
+var contacts;
+var storageManager;
+
+//onload, load all groups & contacts to make it easier because callback
+//functions make code harder to write/read. Create select group option
+document.addEventListener("DOMContentLoaded", function() {
+    storageManager = new StorageManager();
+    groups = storageManager.getGroups(populateSelect, []);
+    contacts = storageManager.getContacts(function(result) {
+        contacts = result;
+     }, []);
+});
+/**
+* Callback function for storageManager.getContacts() so that contacts can be
+* stored in a global variable
+* @param {object} result: object of contacts storage
+*/
+function makeContactsLocal(result){
+    contacts = result;
+}
+
+/**
+* Callback function for storageManager.getGroups() that stores groups in global
+* variable and generates a select element with group names and button for
+* encrypting and submitting the message
+* @param {object} result: object of groups storage
+*/
+function populateSelect(result){
+    groups = result;
+    var dropDown = document.createElement('select');
+    dropDown.id = 'groupSelect';
+    for(var prop in groups){
+        var option = document.createElement('option');
+        option.text = prop;
+        option.value = prop;
+        dropDown.appendChild(option);
+    }
+    document.getElementById('options').appendChild(dropDown);
+    var encryptButton = document.createElement('button');
+    var txt = document.createTextNode('Encrypt and Submit');
+    encryptButton.onclick = function() {
+        submitMessage();
+        document.getElementById('message').value = '';
+        document.getElementById('message').placeholder = 'Message encrypted' +
+        ' and submitted!';
+    }
+    encryptButton.appendChild(txt);
+    document.getElementById('options').appendChild(encryptButton);
+}
+
+/**
+* Function called when encrypt and submit button clicked. Gets group name from
+* group selector, gets message from text area, and then encrypts the message
+* for each group member and saves it to local storage and sends to message to
+* server.
+* TODO: 1. send message to server
+*       2. encrypt ciphertext
+*       3. get correct timestamp
+*       4. clarify id
+*       5. copy encrypted message to clipboard
+*/
+function submitMessage() {
+    var groupName = document.getElementById('groupSelect').value;
+    var plaintext = document.getElementById('message').value;
+    var date = new Date();
+    var timestamp = date.getTime();
+    //document.getElementById('debug').innerHTML = 'FIRST TEST';
+    for(var contact in groups[groupName].members){
+        var ciphertext = 'WIP';
+        var id = Math.floor(Math.random()*10000000).toString(); //change later
+        storageManager.addMessage(id, ciphertext, plaintext, contact,
+            groupName, timestamp);
+        //document.getElementById('debug').innerHTML = contact;
+    }
+    //copy message tag to clipboard
+    var textArea = document.createElement('textarea');
+    textArea.value = 'ENCRYPTED GRDME MESSAGE';
+    document.getElementById('debug').appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.getElementById('debug').removeChild(textArea);
+}
+
+function sendMessage() {
+    return true;
+}
 
 /**
  * Class for using chrome local storage for storing contacts, groups, and
@@ -200,113 +290,3 @@ var StorageManager = function StorageManager() {
         });
     };
 };
-
-/*~~~~~~~~~~~~~~~~GLOBALS~~~~~~~~~~~~~~~~~~*/
-
-var storageManager = new StorageManager();
-
-/*~~~~~~~~~~~~~~~~TAGS~~~~~~~~~~~~~~~~~~~*/
-
-$('body').on('click', '.grd-me-key-tag', function() {
-    alert(this.id);
-});
-
-var tags = [];
-var elements = document.querySelectorAll('body *');
-for(var i = 0; i < elements.length; i++){
-    if(elements[i].innerHTML){
-        var html = elements[i].innerHTML;
-        var startIndex = 1;
-        var endIndex;
-        do{
-            startIndex = html.search('~~GrdMe!');
-            if(startIndex == -1){
-                break;
-            }
-            html = html.slice(startIndex);
-            endIndex = html.search(/.~~/);
-            var tag = html.slice(0, endIndex + 3);
-            html = html.slice(endIndex); //moves forward
-            if(tag.length > 0) {
-                tags.push(tag);
-            }
-        } while(startIndex > 0);
-    }
-    if(elements[i].value){
-        var html = elements[i].value;
-        var startIndex = 1;
-        var endIndex;
-        do{
-            startIndex = html.search('~~GrdMe!');
-            if(startIndex == -1){
-                break;
-            }
-            html = html.slice(startIndex);
-            endIndex = html.search(/.~~/);
-            var tag = html.slice(0, endIndex + 3);
-            html = html.slice(endIndex);
-            if(tag.length > 0) {
-                tags.push(tag);
-            }
-        } while(startIndex > 0);
-    }
-}
-//document.body.innerHTML = 'MATCHES FOUND: <br>'
-for(var i = 0; i < tags.length; i++){
-    //each message needs to be checked here
-    var msg = tags[i].slice(8, -2); //check shit
-    //make sure first char is 0 for version 0
-    if(msg.charAt(0) != '0'){
-        document.body.innerHTML = document.body.innerHTML.replace(tags[i], '~~INVALID KEY FORMAT~~');
-    } else if(msg.charAt(1) == '0') { //key
-        var key = msg.slice(2);
-        var original = tags[i];
-        var callbackArgs = [key, original];
-        storageManager.getContacts(replaceKeyInDOM, callbackArgs);
-    } else if(msg.charAt(1) == '1') { //message
-        //var split = msg.split('#'); //delimeter between nonce, key (not used)
-        var nonce = msg.slice(2); //split[0];
-        //var key = split[1];
-        var original = tags[i];
-        var callbackArgs = [nonce, original];
-        storageManager.getMessages(replaceMessageInDOM, callbackArgs);
-    } else {
-        //invalid
-        document.body.innerHTML = document.body.innerHTML.replace(tags[i], '~~INVALID KEY FORMAT~~');
-    }
-    //document.body.innerHTML = document.body.innerHTML.replace(msgs[i], 'REPLACED' + i);
-    //document.body.innerHTML += msgs[i] + '<br>';
-}
-
-var s = document.createElement('script');
-s.type = 'text/javascript';
-var code = 'function debugButton() { alert(":)") }';
-s.appendChild(document.createTextNode(code));
-document.body.appendChild(s);
-
-function replaceKeyInDOM(storage, key, original) {
-    for(var contact in storage){
-        if(storage[contact].name == key) {
-            //key exists already say its contact's key
-            var text = '~~' + contact + "'s key~~";
-            document.body.innerHTML = document.body.innerHTML.replace(original, text);
-            return;
-        }
-    }
-    var button = document.createElement('button');
-    var text = document.createTextNode('Lookup Key Using Server');
-    button.appendChild(text);
-    button.setAttribute('class', 'grd-me-key-tag');
-    button.setAttribute('id', key);
-    var html = button.outerHTML;
-    document.body.innerHTML = document.body.innerHTML.replace(original, html);
-    //doesnt exist, try to grab from server, give prompt
-}
-
-function replaceMessageInDOM(storage, nonce, original) {
-    var msg = '~~unable to decrypt message~~';
-    if(storage[nonce]){
-        msg = storage[nonce].plaintext ? storage[nonce].plaintext : msg;
-    }
-    document.body.innerHTML = document.body.innerHTML.replace(original, msg);
-}
