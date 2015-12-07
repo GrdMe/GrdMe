@@ -62,7 +62,7 @@ store = {
 var basic_auth = () => {
   var username = store.base64_data.identityKeyPair.public+'|'+store.getLocalRegistrationId();
   var time =  Date.now();
-  var password = time + '|' + base64.encode(crypto.sign(store.getLocalIdentityKeyPair().private,base64_helper.str2ab(String(time))));
+  var password = time + '|' + base64.encode(axolotl_crypto.sign(store.getLocalIdentityKeyPair().private,base64_helper.str2ab(String(time))));
   return username + ':' + password;
 };
 
@@ -192,7 +192,7 @@ var socket = ioClient.connect(keyServerAPIUrl);
 socket.on('connect', function (data) {
     // create auth credentials 
     var time = String(Date.now());
-    var signature = base64.encode(crypto.sign(clientIdentityKeyPair.private, base64.decode(time)));
+    var signature = base64.encode(axolotl_crypto.sign(clientIdentityKeyPair.private, base64.decode(time)));
     var authPassword = time + "|" + signature;
     var authUsername = base64.encode(clientIdentityKeyPair.public);
     authUsername = authUsername + "|" + String(clientDeviceId);
@@ -221,7 +221,7 @@ socket.on('not authorized', function(data) {
         case 'time': //indicates submitted time was out of sync w/ server
             var serverTime = String(data.serverTime); //int. unix time
             // sign serverTime and resend auth message 
-            var signature = base64.encode(crypto.sign(clientIdentityKeyPair.private, base64.decode(serverTime)));
+            var signature = base64.encode(axolotl_crypto.sign(clientIdentityKeyPair.private, base64.decode(serverTime)));
             var authPassword = serverTime + "|" + signature;
             var authUsername = base64.encode(clientIdentityKeyPair.public);
             authUsername = authUsername + "|" + String(clientDeviceId);
