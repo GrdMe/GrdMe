@@ -26,20 +26,11 @@ npm install
 ```
 ### 2. Build
 ```bash
-gulp
+webpack -w
 ```
-This will watch for file changes, lint, and babelify files.
-### 3. Test
-To run tests use:
-```bash
-gulp test
-```
-If you want to manually test Chrome, drag the `Chrome/dist` folder into your extensions page (`chrome://extensions/`) on chrome.
+This will watch for file changes and compile.
 ### 4. Package
-```bash
-gulp package
-```
-This will output a zipped `.zip` file for chrome which can be uploaded to the chrome web store.
+Enable Developer mode and point the Chrome browser to the Chrome folder.
 Cryptography Notice
 ======================
 
