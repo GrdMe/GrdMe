@@ -218,6 +218,7 @@ const submitMessage = (session, identityPubKeys, deviceIDs, messageHeaders, mess
     };
     // Should there be a trailing slash?
     wrapped_api_call('POST','message/', body).then((response) => {
+      // Not sure what to do with the response - let's just resolve it
       resolve(response);
     }, (reason) => {
       // Error handling on failed post
