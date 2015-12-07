@@ -79,7 +79,13 @@ function submitMessage() {
             groupName, timestamp);
         //document.getElementById('debug').innerHTML = contact;
     }
-    //document.getElementById('debug').innerHTML += 'FINAL TEST';
+    //copy message tag to clipboard
+    var textArea = document.createElement('textarea');
+    textArea.value = 'ENCRYPTED GRDME MESSAGE';
+    document.getElementById('debug').appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.getElementById('debug').removeChild(textArea);
 }
 
 function sendMessage() {

@@ -28,6 +28,7 @@ var store = {
     return base64.decode(store.data.preKeys[signedPreKeyId].signature);
 };
 var axol = axolotl(store);
+};
 
 //initial install registration stuff
 var install_keygen = new Promise(function(resolve) {
