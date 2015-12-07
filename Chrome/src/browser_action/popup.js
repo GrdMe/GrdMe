@@ -38,7 +38,7 @@ function loadPage() {
 }
 
 function groupsTab() {
-    document.getElementById('page').innerHTML = '<div id="newgroup"><button class="blue btn" id="creategroup">Create new group</button><div id="groupadd"></div></div><div><h5>Groups:</h5><ul id="groups"></ul></div><div id ="nogroup"><h5>Delete Contact</h5></div><div><button class="blue btn" id="deletecontact">Delete</button><div id="contacts"></div></div><div><p id="debug"></p></div>';
+    document.getElementById('page').innerHTML = '<div id="newgroup"><button class="blue btn" id="creategroup">Create new group</button><div id="groupadd"></div></div><div><h4 style="text-align:center;">Groups:</h4><ul id="groups"></ul></div><div id ="nogroup"><h4 style="text-align:center;">Delete Contact</h4></div><div><button class="blue btn" id="deletecontact">Delete</button><div id="contacts"></div></div><div><p id="debug"></p></div>';
     document.getElementById('creategroup').onclick = function () {
         createNewGroup();
     };
@@ -128,6 +128,7 @@ function clickInstall() {
     var time = t.getTime() //+ t.getTimezoneOffset()*60000;
     var password = time.toString() + '|' + time.toString();
     var basic_auth = username + ':' + password;
+    /* NOT CURRENTLY USED SINCE NO SERVER INTERACTION
     var xhr = new XMLHttpRequest();
     xhr.open('POST', serverInit, true);
     xhr.setRequestHeader('Authorization', 'Basic ' + btoa(basic_auth));
@@ -136,6 +137,7 @@ function clickInstall() {
         $('#debug').html(xhr.responseText);
     }
     xhr.send();
+    */
     //add longterm key to storage
     var key = bg.base64.encode(bg.axolotl_crypto.randomBytes(32));
     //store longterm key in storage, also make a contact which is user for
