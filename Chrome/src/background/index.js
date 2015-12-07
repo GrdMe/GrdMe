@@ -7,9 +7,9 @@ process.stderr = {
 }
 
 //variables
-const numPreKeys = 100;
-//var keyServerAPIUrl = 'https://twofish.cs.unc.edu/api/v1/';
-const keyServerAPIUrl = 'http://localhost:8080/api/v1/';
+const numPreKeys = 10;
+const keyServerAPIUrl = 'https://twofish.cs.unc.edu/api/v1/';
+//const keyServerAPIUrl = 'http://localhost:8080/api/v1/';
 
 //edward's popup magic
 chrome.commands.onCommand.addListener((command) => {
@@ -129,7 +129,7 @@ const install_keygen = () => new Promise((resolve) => {
         });
       };
       const complete = numPreKeys + 1;
-      let progress = 0;
+      var progress = 0;
       for (const index = 0; index < numPreKeys; index++) {
         axol.generateSignedPreKey(store.getLocalIdentityKeyPair(),index).then((value) => {
           value.keyPair = base64_helper.keypair_encode(value.keyPair);
@@ -155,7 +155,7 @@ const install_keygen = () => new Promise((resolve) => {
 // restore store.base64_data from chrome.storage
 const initialize_storage = () => new Promise((resolve) => {
   chrome.storage.local.get('store', (results) => {
-    if (Object.keys(results).length !== 0) {
+    if (false && Object.keys(results).length !== 0) {
       store.base64_data = results.store;
       store.identityKeyPair = base64_helper.keypair_decode(store.base64_data.identityKeyPair);
       resolve();
@@ -178,10 +178,9 @@ const identityPubKey_search = (identityPubKey) => new Promise((resolve) => {
         signedPreKeySignature: base64.decode(device.signature),
       };
       axol.createSessionFromPreKeyBundle(preKeyBundle).then((session) => {
-        console.log(session);
+        resolve(session);
       });
     }
-    resolve(response);
   });
 });
 
@@ -233,13 +232,15 @@ const submitMessage = (session, identityPubKeys, deviceIDs, messageHeaders, mess
 });
 
 initialize_storage().then(() => {
-  identityPubKey_search(store.base64_data.identityKeyPair.public).then((response) => {
-
-  /*var message = base64_helper.str2ab('Hello bob');
-  axol.encryptMessage(session, message).then((response) => {
-    axol.decryptPreKeyWhisperMessage(null, response.body).then((response) =>{
-      resolve(base64_helper.ab2str(response.message));
-    });*/
+  identityPubKey_search(store.base64_data.identityKeyPair.public).then((session) => {
+    const message = base64_helper.str2ab("Hello Diane, Happy Tuesday!");
+    console.log("pre-encrypt: Hello Diane, Happy Tuesday!");
+    axol.encryptMessage(session, message).then((response) => {
+      console.log("post-encrypt: "+base64_helper.ab2str(response.body));
+      axol.decryptPreKeyWhisperMessage(null, response.body).then((response) =>{
+        console.log("post-decrypt: "+base64_helper.ab2str(response.message));
+      });
+    });
   });
 });
 
@@ -293,7 +294,6 @@ socket.on('not authorized', function(data) {
     }
 });
 
-<<<<<<< Updated upstream
 // executed on 'authorized' message from server
 socket.on('authorized', function(data) {
     //lets you know that socket.emit('authentication'... was successful
