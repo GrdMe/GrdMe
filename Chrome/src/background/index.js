@@ -166,7 +166,7 @@ const initialize_storage = () => new Promise((resolve) => {
 });
 
 const identityPubKey_search = (identityPubKey) => new Promise((resolve) => {
-  wrapped_api_call('GET','key/'+encodeURIComponent(identityPubKey),null).then((response) => {
+  wrapped_api_call('GET','key/'+encodeURIComponent(identityPubKey), null).then((response) => {
     for (element in Object.keys(response)) {
       const device = response[Object.keys(response)[element]];
       const preKeyBundle = {
@@ -182,6 +182,51 @@ const identityPubKey_search = (identityPubKey) => new Promise((resolve) => {
       });
     }
     resolve(response);
+  });
+});
+
+// Match this spec: https://github.com/grdme/grd.me-server/wiki/API-Protocol#submitting-a-message
+const submitMessage = (session, identityPubKeys, deviceIDs, messageHeaders, messages) => new Promise((resolve, reject) => {
+  // Create body for api call
+  // Use map to iterate over all the messages
+  const promises = messages.map((message, i) => {
+    return new Promise((resolveEncrypt, rejectEncrypt) => {
+      axol.encryptMessage(session, message).then((response) => {
+        resolveEncrypt(response.body);
+      }, (reason) => {
+        // Error handling if encryption fails
+        console.log(reason);
+        rejectEncrypt(reason);
+      });
+    });
+  });
+  // Wait til all the promises resolve
+  Promise.all(promises).then((ciphertexts) => {
+    const body = {
+      messages: ciphertexts.map((ciphertext) => {
+        return {
+          headers: identityPubKeys.map((identityPubKey, j) => {
+            return {
+              // I assume I don't need to wrap these strings in brackets as per the docs?
+              recipient: `${identityPubKey}|${deviceIDs[j]}`, // Making use of template strings,
+              messageHeader: `${messageHeaders[j]}`, // I assume the messageHeaders are defined somewhere
+            };
+          }),
+          body: base64.encode(ciphertext),
+        };
+      }),
+    };
+    wrapped_api_call('POST','message/', body).then((response) => {
+      resolve(response);
+    }, (reason) => {
+      // Error handling on failed post
+      console.log(reason);
+      reject(reason);
+    });
+  }, (reason) => {
+    // Error handling in case a promise rejects
+    console.log(reason);
+    reject(reason);
   });
 });
 
