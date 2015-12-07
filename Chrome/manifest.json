@@ -32,7 +32,9 @@
     "unlimitedStorage",
     "webRequest",
     "webRequestBlocking",
-    "https://decrypt.grd.me/*"
+    "https://decrypt.grd.me/*",
+    "https://twofish.cs.unc.edu/",
+    "http://localhost:8080/"
   ],
   "content_scripts": [
     {

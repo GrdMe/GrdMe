@@ -25,10 +25,11 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.css$/,  loader: "style-loader!css-loader" },
-      { test: /\.gif$/,  loader: "url-loader?limit=100000&minetype=image/gif" },
-      { test: /\.png$/,  loader: "url-loader?limit=100000&minetype=image/png" },
-      { test: /\.json$/, loader: "json-loader" },
+      { test: /\.css$/,      loader: "style-loader!css-loader" },
+      { test: /\.gif$/,      loader: "url-loader?limit=100000&minetype=image/gif" },
+      { test: /\.png$/,      loader: "url-loader?limit=100000&minetype=image/png" },
+      { test: /\.json$/,     loader: "json-loader" },
+      { test: /\.babel.js$/, loader: "babel-loader" },
     ],
     noParse: [
       /node_modules\/traceur\/bin/,
