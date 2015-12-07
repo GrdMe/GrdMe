@@ -214,73 +214,77 @@ var storageManager = new StorageManager();
 $('body').on('click', '.grd-me-key-tag', function() {
     alert(this.id);
 });
-
-var tags = [];
-var elements = document.querySelectorAll('body *');
-for(var i = 0; i < elements.length; i++){
-    if(elements[i].innerHTML){
-        var html = elements[i].innerHTML;
-        var startIndex = 1;
-        var endIndex;
-        do{
-            startIndex = html.search('~~GrdMe!');
-            if(startIndex == -1){
-                break;
-            }
-            html = html.slice(startIndex);
-            endIndex = html.search(/.~~/);
-            var tag = html.slice(0, endIndex + 3);
-            html = html.slice(endIndex); //moves forward
-            if(tag.length > 0) {
-                tags.push(tag);
-            }
-        } while(startIndex > 0);
+chrome.storage.local.get('longtermkey', function(result){
+    var longtermkey = result.longtermkey;
+    var tags = [];
+    var elements = document.querySelectorAll('body *');
+    for(var i = 0; i < elements.length; i++){
+        if(elements[i].innerHTML){
+            var html = elements[i].innerHTML;
+            var startIndex = 1;
+            var endIndex;
+            do{
+                startIndex = html.search('~~GrdMe!');
+                if(startIndex == -1){
+                    break;
+                }
+                html = html.slice(startIndex);
+                endIndex = html.search(/.~~/);
+                var tag = html.slice(0, endIndex + 3);
+                html = html.slice(endIndex); //moves forward
+                if(tag.length > 0) {
+                    tags.push(tag);
+                }
+            } while(startIndex > 0);
+        }
+        if(elements[i].value){
+            var html = elements[i].value;
+            var startIndex = 1;
+            var endIndex;
+            do{
+                startIndex = html.search('~~GrdMe!');
+                if(startIndex == -1){
+                    break;
+                }
+                html = html.slice(startIndex);
+                endIndex = html.search(/.~~/);
+                var tag = html.slice(0, endIndex + 3);
+                html = html.slice(endIndex);
+                if(tag.length > 0) {
+                    tags.push(tag);
+                }
+            } while(startIndex > 0);
+        }
     }
-    if(elements[i].value){
-        var html = elements[i].value;
-        var startIndex = 1;
-        var endIndex;
-        do{
-            startIndex = html.search('~~GrdMe!');
-            if(startIndex == -1){
-                break;
+    for(var i = 0; i < tags.length; i++){
+        //each message needs to be checked here
+        var msg = tags[i].slice(8, -2); //check shit
+        //make sure first char is 0 for version 0
+        if(msg.charAt(0) != '0'){
+            document.body.innerHTML = document.body.innerHTML.replace(tags[i], '~~INVALID KEY FORMAT~~');
+        } else if(msg.charAt(1) == '0') { //key
+            var key = msg.slice(2);
+            var original = tags[i];
+            var callbackArgs = [key, original];
+            if(key == longtermkey) {
+                var text = '~~This is your key!~~';
+                document.body.innerHTML = document.body.innerHTML.replace(original, text);
+            } else {
+                storageManager.getContacts(replaceKeyInDOM, callbackArgs);
             }
-            html = html.slice(startIndex);
-            endIndex = html.search(/.~~/);
-            var tag = html.slice(0, endIndex + 3);
-            html = html.slice(endIndex);
-            if(tag.length > 0) {
-                tags.push(tag);
-            }
-        } while(startIndex > 0);
+        } else if(msg.charAt(1) == '1') { //message
+            //var split = msg.split('#'); //delimeter between nonce, key (not used)
+            var nonce = msg.slice(2); //split[0];
+            //var key = split[1];
+            var original = tags[i];
+            var callbackArgs = [nonce, original];
+            storageManager.getMessages(replaceMessageInDOM, callbackArgs);
+        } else {
+            //invalid
+            document.body.innerHTML = document.body.innerHTML.replace(tags[i], '~~INVALID KEY FORMAT~~');
+        }
     }
-}
-//document.body.innerHTML = 'MATCHES FOUND: <br>'
-for(var i = 0; i < tags.length; i++){
-    //each message needs to be checked here
-    var msg = tags[i].slice(8, -2); //check shit
-    //make sure first char is 0 for version 0
-    if(msg.charAt(0) != '0'){
-        document.body.innerHTML = document.body.innerHTML.replace(tags[i], '~~INVALID KEY FORMAT~~');
-    } else if(msg.charAt(1) == '0') { //key
-        var key = msg.slice(2);
-        var original = tags[i];
-        var callbackArgs = [key, original];
-        storageManager.getContacts(replaceKeyInDOM, callbackArgs);
-    } else if(msg.charAt(1) == '1') { //message
-        //var split = msg.split('#'); //delimeter between nonce, key (not used)
-        var nonce = msg.slice(2); //split[0];
-        //var key = split[1];
-        var original = tags[i];
-        var callbackArgs = [nonce, original];
-        storageManager.getMessages(replaceMessageInDOM, callbackArgs);
-    } else {
-        //invalid
-        document.body.innerHTML = document.body.innerHTML.replace(tags[i], '~~INVALID KEY FORMAT~~');
-    }
-    //document.body.innerHTML = document.body.innerHTML.replace(msgs[i], 'REPLACED' + i);
-    //document.body.innerHTML += msgs[i] + '<br>';
-}
+});
 
 var s = document.createElement('script');
 s.type = 'text/javascript';
@@ -291,6 +295,11 @@ document.body.appendChild(s);
 function replaceKeyInDOM(storage, key, original) {
     for(var contact in storage){
         if(storage[contact].name == key) {
+            if(contact == 'MY_LONG_TERM_KEY') {
+                var text = '~~This is your key!~~';
+                document.body.innerHTML = document.body.innerHTML.replace(original, text);
+                return;
+            }
             //key exists already say its contact's key
             var text = '~~' + contact + "'s key~~";
             document.body.innerHTML = document.body.innerHTML.replace(original, text);

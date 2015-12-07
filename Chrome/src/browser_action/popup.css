@@ -691,6 +691,11 @@ ul#menu li a:hover {
     text-align: center;
 }
 
+#manual {
+    position: absolute;
+    bottom: 0;
+}
+
 /* LOADING ANIMATION */
 
 .sk-fading-circle {
