@@ -1,23 +1,23 @@
 // libaxolotl set dressing for webpack
-process.platform = "Grd Me";
+process.platform = 'Grd Me';
 process.stderr = {
-  write: function(t){
+  write: (t) => {
     console.log(t);
   }
 }
 
 //variables
-var numPreKeys = 100;
+const numPreKeys = 100;
 //var keyServerAPIUrl = 'https://twofish.cs.unc.edu/api/v1/';
-var keyServerAPIUrl = 'http://localhost:8080/api/v1/';
+const keyServerAPIUrl = 'http://localhost:8080/api/v1/';
 
 //edward's popup magic
-chrome.commands.onCommand.addListener(function(command) {
-  if(command == 'textSecurePopup') {
-    var w = 300;
-    var h = 235;
-    var left = Math.floor((screen.width / 2) - (w / 2));
-    var top = Math.floor((screen.height / 2) - (h / 2));
+chrome.commands.onCommand.addListener((command) => {
+  if(command === 'textSecurePopup') {
+    const w = 300;
+    const h = 235;
+    const left = Math.floor((screen.width / 2) - (w / 2));
+    const top = Math.floor((screen.height / 2) - (h / 2));
     chrome.windows.create({
       url: chrome.extension.getURL('src/browser_action/secureTextPopup.html'),
       focused: true,
@@ -31,26 +31,31 @@ chrome.commands.onCommand.addListener(function(command) {
 });
 
 chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
+  (request, sender, sendResponse) => {
     console.log(sender.tab ?
-                "from a content script:" + sender.tab.url :
-                "from the extension");
-    if (request.greeting == "hello") {
-      sendResponse({farewell: "goodbye"});
+                'from a content script:' + sender.tab.url :
+                'from the extension');
+    if (request.greeting === 'hello') {
+      sendResponse({farewell: 'goodbye'});
     }
+<<<<<<< HEAD
     if(request.greeting == 'encryptMe'){
       var encrypt = base64.encode(axolotl_crypto.randomBytes(32));
+=======
+    if(request.greeting === 'encryptMe'){
+      const encrypt = base64.encode(crypto.randomBytes(32));
+>>>>>>> 9213d67d24b73dadbb76ae99e5c0c8614524664b
       sendResponse({farewell: encrypt});
     }
 });
 
 //main shit
 base64 = require('base64-arraybuffer');
-base64_helper = require("./base64-helper.js");
+base64_helper = require('./base64-helper.js');
 storage_manager = require('./storage_manager.js');
 //var ioClient = require('socket.io-client');
-axolotl = require("axolotl");
-axolotl_crypto = require("axolotl-crypto");
+axolotl = require('axolotl');
+axolotl_crypto = require('axolotl-crypto');
 
 store = {
   base64_data: {},
@@ -73,15 +78,15 @@ store = {
     return store.base64_data.lastResortPreKeyId;
   },
 };
-var basic_auth = () => {
-  var username = store.base64_data.identityKeyPair.public+'|'+store.getLocalRegistrationId();
-  var time =  Date.now();
-  var password = time + '|' + base64.encode(axolotl_crypto.sign(store.getLocalIdentityKeyPair().private,base64_helper.str2ab(String(time))));
+const basic_auth = () => {
+  const username = store.base64_data.identityKeyPair.public + '|' + store.getLocalRegistrationId();
+  const time =  Date.now();
+  const password = time + '|' + base64.encode(axolotl_crypto.sign(store.getLocalIdentityKeyPair().private,base64_helper.str2ab(String(time))));
   return username + ':' + password;
 };
 
-var wrapped_api_call = (type,reasource,json_body) => new Promise((resolve) => {
-  var xhr = new XMLHttpRequest();
+const wrapped_api_call = (type,reasource,json_body) => new Promise((resolve) => {
+  const xhr = new XMLHttpRequest();
   xhr.open(type, keyServerAPIUrl+reasource, true);
   xhr.setRequestHeader('Authorization', 'Basic ' + btoa(basic_auth()));
   xhr.onreadystatechange = () => {
@@ -90,25 +95,25 @@ var wrapped_api_call = (type,reasource,json_body) => new Promise((resolve) => {
       }
   }
   if (type !== 'GET') {
-    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.setRequestHeader('Content-type', 'application/json');
     xhr.send(JSON.stringify(json_body));
   } else {
     xhr.send();
   }
 });
-var axol = axolotl(store);
+const axol = axolotl(store);
 
 //initial install registration stuff
-var install_keygen = () => new Promise((resolve) => {
+const install_keygen = () => new Promise((resolve) => {
   axol.generateRegistrationId().then((value) => {
     store.base64_data.registrationId = value;
     axol.generateIdentityKeyPair().then((value) => {
       store.identityKeyPair = value;
       store.base64_data.identityKeyPair = base64_helper.keypair_encode(value);
       store.base64_data.preKeys = {};
-      var storeToChromeLocal = (storeBase64) => {
+      const storeToChromeLocal = (storeBase64) => {
         chrome.storage.local.set({store:storeBase64});
-        var body = {
+        const body = {
           lastResortKey: {
             id: store.base64_data.preKeys[store.getLocalLastResortPreKeyId()].id,
             preKey: store.base64_data.preKeys[store.getLocalLastResortPreKeyId()].public,
@@ -116,7 +121,7 @@ var install_keygen = () => new Promise((resolve) => {
           prekeys : Object.keys(store.base64_data.preKeys).filter((key) => {
             return (store.base64_data.preKeys[key].id !== store.getLocalLastResortPreKeyId());
           }).map((key) => {
-              var current = store.base64_data.preKeys[key];
+              const current = store.base64_data.preKeys[key];
               return {
                 id: current.id,
                 signature: current.signature,
@@ -124,13 +129,13 @@ var install_keygen = () => new Promise((resolve) => {
               };
           }),
         };
-        wrapped_api_call('POST','key/initial',body).then((response) => {
+        wrapped_api_call('POST', 'key/initial', body).then((response) => {
           resolve();
         });
       };
-      var complete = numPreKeys + 1;
-      var progress = 0;
-      for (var index = 0; index < numPreKeys; index++) {
+      const complete = numPreKeys + 1;
+      let progress = 0;
+      for (const index = 0; index < numPreKeys; index++) {
         axol.generateSignedPreKey(store.getLocalIdentityKeyPair(),index).then((value) => {
           value.keyPair = base64_helper.keypair_encode(value.keyPair);
           value.signature = base64.encode(value.signature);
@@ -153,8 +158,8 @@ var install_keygen = () => new Promise((resolve) => {
 });
 
 // restore store.base64_data from chrome.storage
-var initialize_storage = () => new Promise((resolve) => {
-  chrome.storage.local.get("store",(results) => {
+const initialize_storage = () => new Promise((resolve) => {
+  chrome.storage.local.get('store', (results) => {
     if (Object.keys(results).length !== 0) {
       store.base64_data = results.store;
       store.identityKeyPair = base64_helper.keypair_decode(store.base64_data.identityKeyPair);
@@ -165,11 +170,11 @@ var initialize_storage = () => new Promise((resolve) => {
   });
 });
 
-var identityPubKey_search = (identityPubKey) => new Promise((resolve) => {
-  wrapped_api_call('GET','key/'+encodeURIComponent(identityPubKey),null).then((response) => {
+const identityPubKey_search = (identityPubKey) => new Promise((resolve) => {
+  wrapped_api_call('GET','key/' + encodeURIComponent(identityPubKey), null).then((response) => {
     for (element in Object.keys(response)) {
-      var device = response[Object.keys(response)[element]];
-      var preKeyBundle = {
+      const device = response[Object.keys(response)[element]];
+      const preKeyBundle = {
         identityKey: base64.decode(identityPubKey),
         preKeyId: device.id,
         preKey: base64.decode(device.preKey),
@@ -185,12 +190,59 @@ var identityPubKey_search = (identityPubKey) => new Promise((resolve) => {
   });
 });
 
+// Match this spec: https://github.com/grdme/grd.me-server/wiki/API-Protocol#submitting-a-message
+const submitMessage = (session, identityPubKeys, deviceIDs, messageHeaders, messages) => new Promise((resolve, reject) => {
+  // Create body for api call
+  // Use map to iterate over all the messages
+  const promises = messages.map((message, i) => {
+    return new Promise((resolveEncrypt, rejectEncrypt) => {
+      axol.encryptMessage(session, message).then((response) => {
+        resolveEncrypt(response.body);
+      }, (reason) => {
+        // Error handling if encryption fails
+        console.log(reason);
+        rejectEncrypt(reason);
+      });
+    });
+  });
+  // Wait til all the promises resolve
+  Promise.all(promises).then((ciphertexts) => {
+    const body = {
+      messages: ciphertexts.map((ciphertext) => {
+        return {
+          headers: identityPubKeys.map((identityPubKey, j) => {
+            return {
+              // I assume I don't need to wrap these strings in brackets as per the docs?
+              recipient: `${identityPubKey}|${deviceIDs[j]}`, // Making use of template strings,
+              messageHeader: `${messageHeaders[j]}`, // I assume the messageHeaders are defined somewhere
+            };
+          }),
+          body: base64.encode(ciphertext),
+        };
+      }),
+    };
+    // Should there be a trailing slash?
+    wrapped_api_call('POST','message/', body).then((response) => {
+      // Not sure what to do with the response - let's just resolve it
+      resolve(response);
+    }, (reason) => {
+      // Error handling on failed post
+      console.log(reason);
+      reject(reason);
+    });
+  }, (reason) => {
+    // Error handling in case a promise rejects
+    console.log(reason);
+    reject(reason);
+  });
+});
+
 initialize_storage().then(() => {
   identityPubKey_search(store.base64_data.identityKeyPair.public).then((response) => {
 
-  /*var message = base64_helper.str2ab("Hello bob");
-  axol.encryptMessage(session,message).then((response) => {
-    axol.decryptPreKeyWhisperMessage(null,response.body).then((response) =>{
+  /*var message = base64_helper.str2ab('Hello bob');
+  axol.encryptMessage(session, message).then((response) => {
+    axol.decryptPreKeyWhisperMessage(null, response.body).then((response) =>{
       resolve(base64_helper.ab2str(response.message));
     });*/
   });
@@ -207,9 +259,9 @@ socket.on('connect', function (data) {
     // create auth credentials
     var time = String(Date.now());
     var signature = base64.encode(axolotl_crypto.sign(clientIdentityKeyPair.private, base64.decode(time)));
-    var authPassword = time + "|" + signature;
+    var authPassword = time + '|' + signature;
     var authUsername = base64.encode(clientIdentityKeyPair.public);
-    authUsername = authUsername + "|" + String(clientDeviceId);
+    authUsername = authUsername + '|' + String(clientDeviceId);
 
 
     // push auth credentials to server
@@ -218,7 +270,7 @@ socket.on('connect', function (data) {
 
 // executed on 'not authorized' message from server
 socket.on('not authorized', function(data) {
-    console.log("not authorized message recieved");
+    console.log('not authorized message recieved');
     switch(data.message){
         case 'badly formed credentials': //indicates that authCredentials were
             //deal with it
@@ -236,9 +288,9 @@ socket.on('not authorized', function(data) {
             var serverTime = String(data.serverTime); //int. unix time
             // sign serverTime and resend auth message
             var signature = base64.encode(axolotl_crypto.sign(clientIdentityKeyPair.private, base64.decode(serverTime)));
-            var authPassword = serverTime + "|" + signature;
+            var authPassword = serverTime + '|' + signature;
             var authUsername = base64.encode(clientIdentityKeyPair.public);
-            authUsername = authUsername + "|" + String(clientDeviceId);
+            authUsername = authUsername + '|' + String(clientDeviceId);
 
             // emit auth credentials
             socket.emit('authentication', { username:authUsername, password:authPassword });
