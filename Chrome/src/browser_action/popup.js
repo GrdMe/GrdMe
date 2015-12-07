@@ -10,20 +10,17 @@ var port;
 var version = '0';
 var typeKey = '0';
 var typeMessage = '1';
+var bg = chrome.extension.getBackgroundPage();
 
 document.addEventListener('DOMContentLoaded', function () {
-    //STORAGE
+    loadPage();
+});
+
+function loadPage() {
     chrome.storage.local.get('installed', function(result) {
         if(result.installed) {
-            document.getElementById('page').innerHTML = 'installed';
-            chrome.storage.local.set({ 'installed': false }, function () {
-                document.getElementById('page').innerHTML += ' just uninstalled';
-            });
+            settingsTab();
         } else {
-            document.getElementById('page').innerHTML = 'not installed';
-            chrome.storage.local.set({ 'installed': true }, function() {
-                document.getElementById('page').innerHTML += ' just installed';
-            });
             installExtension();
         }
     });
@@ -38,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
         debugTab();
     };
     storageManager = new StorageManager();
-});
+}
 
 function groupsTab() {
     document.getElementById('page').innerHTML = '<div id="newgroup"><button class="blue btn" id="creategroup">Create new group</button><div id="groupadd"></div></div><div><h5>Groups:</h5><ul id="groups"></ul></div><div id ="nogroup"><h5>Delete Contact</h5></div><div><button class="blue btn" id="deletecontact">Delete</button><div id="contacts"></div></div><div><p id="debug"></p></div>';
@@ -53,17 +50,17 @@ function groupsTab() {
 }
 
 function settingsTab() {
-    document.getElementById('page').innerHTML = '<div><button class="blue btn" id="debug_web">Copy My KeyTag to Clipboard to Share</button><div id="debug"></div></div>';
+    document.getElementById('page').innerHTML = '<div><button class="blue btn" id="debug_web">Copy My KeyTag to Clipboard to Share</button><div id="manual"><a>User Manual</a></div><div id="debug"></div></div>';
     document.getElementById('debug_web').onclick = function () {
         copyKeyTagToClipboard();
-        document.getElementById('debug').innerHTML = 'Key copied to clipboard!';
-        testBackgroundPage();
-        document.getElementById('debug').innerHTML += 'HELLO';
+    }
+    document.getElementById('manual').onclick = function() {
+        chrome.tabs.create({ url: 'https://github.com/grdme/grd.me/wiki/User-Manual'});
     }
 }
 
 function debugTab() {
-    document.getElementById('page').innerHTML = '<div id="message_add">message id<input type="text" id="mid">cyphertext<input type="text" id="mcypher">plaintext<input type="text" id="mplain">contact<input type="text" id="mcontact">group<input type="text" id="mgroup">timestamp<input type="text" id="mtimestamp"><button class="blue btn" id="message_button">Add message</button></div><div id="message"></div><div id="contact_add">local name<input type="text" id="clocal">server name<input type="text" id="cserver">registered device ids<input type="text" id="cdevice"><button class="blue btn" id="contact_button">Add contact</button></div><div id="contact"></div><div id="group_add">group name<input type="text" id="gname">group id<input type="text" id="gid">group members<input type="text" id="gmembers"><button class="blue btn" id="group_button">Add group</button></div><div id="group"></div><div id="show_messages"><button class="blue btn" id="show_message_button">Show messages</button></div><div id="messages_here"></div><div id="show_contacts"><button class="blue btn" id="show_contacts_button">Show contacts</button></div><div id="contacts_here"></div><div id="show_groups"><button class="blue btn" id="show_groups_button">Show groups</button></div><div id="groups_here"></div><div id="delete_message">delete message by id<input type="text" id="mid_delete"><button class="blue btn" id="message_delete_button">Delete message</button></div><div id="delete_contact">delete contact by local name<input type="text" id="user_delete"><button class="blue btn" id="contact_delete_button">Delete contact</button></div><div id="delete_group">delete group by name<input type="text" id="group_delete"><button class="blue btn" id="group_delete_button">Delete group</button></div><div>member name<input type="text" id="add_member_name">member group<input type="text" id="add_member_group"><button class="blue btn" id="group_add_member_button">Add group member</button></div><div>member name<input type="text" id="delete_member_name">member group<input type="text" id="delete_member_group"><button class="blue btn" id="group_delete_member_button">Delete group member</button></div><div id="debug">Debug here</div><div><button class="blue btn" id="server_button">Test server</button>Response here<p id="result">result</p><p id="status">status</p><p id="xhr">xhr</p></div>';
+    document.getElementById('page').innerHTML = '<div id="message_add">message id<input type="text" id="mid">cyphertext<input type="text" id="mcypher">plaintext<input type="text" id="mplain">contact<input type="text" id="mcontact">group<input type="text" id="mgroup">timestamp<input type="text" id="mtimestamp"><button class="blue btn" id="message_button">Add message</button></div><div id="message"></div><div id="contact_add">local name<input type="text" id="clocal">server name<input type="text" id="cserver">registered device ids<input type="text" id="cdevice"><button class="blue btn" id="contact_button">Add contact</button></div><div id="contact"></div><div id="group_add">group name<input type="text" id="gname">group id<input type="text" id="gid">group members<input type="text" id="gmembers"><button class="blue btn" id="group_button">Add group</button></div><div id="group"></div><div id="show_messages"><button class="blue btn" id="show_message_button">Show messages</button></div><div id="messages_here"></div><div id="show_contacts"><button class="blue btn" id="show_contacts_button">Show contacts</button></div><div id="contacts_here"></div><div id="show_groups"><button class="blue btn" id="show_groups_button">Show groups</button></div><div id="groups_here"></div><div id="delete_message">delete message by id<input type="text" id="mid_delete"><button class="blue btn" id="message_delete_button">Delete message</button></div><div id="delete_contact">delete contact by local name<input type="text" id="user_delete"><button class="blue btn" id="contact_delete_button">Delete contact</button></div><div id="delete_group">delete group by name<input type="text" id="group_delete"><button class="blue btn" id="group_delete_button">Delete group</button></div><div>member name<input type="text" id="add_member_name">member group<input type="text" id="add_member_group"><button class="blue btn" id="group_add_member_button">Add group member</button></div><div>member name<input type="text" id="delete_member_name">member group<input type="text" id="delete_member_group"><button class="blue btn" id="group_delete_member_button">Delete group member</button></div><div id="debug">Debug here</div><div><button class="blue btn" id="server_button">Test server</button>Response here<p id="result">result</p><p id="status">status</p><p id="xhr">xhr</p><button id="uninstall" class="blue btn">Uninstall</button></div>';
     document.getElementById('message_button').onclick = function () {
         newMessage();
     };
@@ -100,14 +97,18 @@ function debugTab() {
     document.getElementById('server_button').onclick = function () {
         callServer();
     };
+    document.getElementById('uninstall').onclick = function() {
+        chrome.storage.local.set({ 'installed': false });
+    }
 }
 
 //INSTALLATION STUFF
 
 function installExtension() {
     document.body.innerHTML = '<div id="installer"><p>The GrdMe extension needs a long term identity key to work. Click install to generate a key and register it to the server.</p><button id="btn" class="blue btn">Install Extension</button><div id="install_wait_animation" class="sk-fading-circle"><div class="sk-circle1 sk-circle"></div><div class="sk-circle2 sk-circle"></div><div class="sk-circle3 sk-circle"></div><div class="sk-circle4 sk-circle"></div><div class="sk-circle5 sk-circle"></div><div class="sk-circle6 sk-circle"></div><div class="sk-circle7 sk-circle"></div><div class="sk-circle8 sk-circle"></div><div class="sk-circle9 sk-circle"></div><div class="sk-circle10 sk-circle"></div><div class="sk-circle11 sk-circle"></div><div class="sk-circle12 sk-circle"></div></div><div id="debug"></div><div id="debug1"></div><div id="debug2"></div></div>';
+        document.getElementById('install_wait_animation').style.visibility = 'hidden';
     $('#btn').click(function(){
-        //$('#install_wait_animation').toggle();
+        document.getElementById('install_wait_animation').style.visibility = 'visible';
         clickInstall();
     });
 }
@@ -135,13 +136,27 @@ function clickInstall() {
         $('#debug').html(xhr.responseText);
     }
     xhr.send();
-    //testBackgroundPage();
+    //add longterm key to storage
+    var key = bg.base64.encode(bg.axolotl_crypto.randomBytes(32));
+    //store longterm key in storage, also make a contact which is user for
+    //ability to see own's key
+    chrome.storage.local.set({ 'longtermkey': key });
+    storageManager.addContact('MY_LONG_TERM_KEY', key, [], doNothing, []);
+    //on success
+    chrome.storage.local.set({ 'installed': true }, function() {
+        document.body.innerHTML = '<nav id="nav"></nav><div id="page"></div>';
+        loadPage();
+    })
+}
+
+function doNothing() {
+    return;
 }
 
 function copyKeyTagToClipboard() {
     //store user?
-    chrome.storage.local.get({ user: {} }, function(result) {
-        var longTermKey = result.key ? result.key : 'key fail'; //
+    chrome.storage.local.get('longtermkey', function(result) {
+        var longTermKey = result.longtermkey ? result.longtermkey : 'key fail';
         var tag = '~~GrdMe!';
         //first char is the version, next type
         tag += version;

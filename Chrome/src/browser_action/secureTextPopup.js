@@ -8,6 +8,7 @@
 var groups;
 var contacts;
 var storageManager;
+var bg = chrome.extension.getBackgroundPage();
 
 //onload, load all groups & contacts to make it easier because callback
 //functions make code harder to write/read. Create select group option
@@ -72,26 +73,18 @@ function submitMessage() {
     var plaintext = document.getElementById('message').value;
     var date = new Date();
     var timestamp = date.getTime();
-    //document.getElementById('debug').innerHTML = 'FIRST TEST';
     for(var contact in groups[groupName].members){
-        var ciphertext = 'WIP';
-        var id = Math.floor(Math.random()*10000000).toString(); //change later
+        var ciphertext = bg.base64.encode(bg.axolotl_crypto.randomBytes(32));
+        var id = bg.base64.encode(bg.axolotl_crypto.randomBytes(32));
         storageManager.addMessage(id, ciphertext, plaintext, contact,
             groupName, timestamp);
-        //document.getElementById('debug').innerHTML = contact;
     }
     var textArea = document.createElement('textarea');
-    var bg = chrome.extension.getBackgroundPage();
-    var encryption = bg.base64.encode(bg.cryptol.randomBytes(32));
-    textArea.value = '~~GrdMe!01' + encryption + '~~';
+    textArea.value = '~~GrdMe!01' + id + '~~';
     document.getElementById('debug').appendChild(textArea);
     textArea.select();
     document.execCommand('copy');
     document.getElementById('debug').removeChild(textArea);
-}
-
-function sendMessage() {
-    return true;
 }
 
 /**

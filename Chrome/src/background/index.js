@@ -39,7 +39,7 @@ chrome.runtime.onMessage.addListener(
       sendResponse({farewell: "goodbye"});
     }
     if(request.greeting == 'encryptMe'){
-      var encrypt = base64.encode(crypto.randomBytes(32));
+      var encrypt = base64.encode(axolotl_crypto.randomBytes(32));
       sendResponse({farewell: encrypt});
     }
 });
