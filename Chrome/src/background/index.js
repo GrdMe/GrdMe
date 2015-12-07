@@ -1,23 +1,23 @@
 // libaxolotl set dressing for webpack
 process.platform = "Grd Me";
 process.stderr = {
-  write: function(t){
+  write: (t) => {
     console.log(t);
   }
 }
 
 //variables
-var numPreKeys = 100;
+const numPreKeys = 100;
 //var keyServerAPIUrl = 'https://twofish.cs.unc.edu/api/v1/';
-var keyServerAPIUrl = 'http://localhost:8080/api/v1/';
+const keyServerAPIUrl = 'http://localhost:8080/api/v1/';
 
 //edward's popup magic
-chrome.commands.onCommand.addListener(function(command) {
-  if(command == 'textSecurePopup') {
-    var w = 300;
-    var h = 235;
-    var left = Math.floor((screen.width / 2) - (w / 2));
-    var top = Math.floor((screen.height / 2) - (h / 2));
+chrome.commands.onCommand.addListener((command) => {
+  if(command === 'textSecurePopup') {
+    const w = 300;
+    const h = 235;
+    const left = Math.floor((screen.width / 2) - (w / 2));
+    const top = Math.floor((screen.height / 2) - (h / 2));
     chrome.windows.create({
       url: chrome.extension.getURL('src/browser_action/secureTextPopup.html'),
       focused: true,
@@ -31,15 +31,15 @@ chrome.commands.onCommand.addListener(function(command) {
 });
 
 chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
+  (request, sender, sendResponse) => {
     console.log(sender.tab ?
                 "from a content script:" + sender.tab.url :
                 "from the extension");
-    if (request.greeting == "hello") {
+    if (request.greeting === "hello") {
       sendResponse({farewell: "goodbye"});
     }
-    if(request.greeting == 'encryptMe'){
-      var encrypt = base64.encode(crypto.randomBytes(32));
+    if(request.greeting === 'encryptMe'){
+      const encrypt = base64.encode(crypto.randomBytes(32));
       sendResponse({farewell: encrypt});
     }
 });
@@ -73,15 +73,15 @@ store = {
     return store.base64_data.lastResortPreKeyId;
   },
 };
-var basic_auth = () => {
-  var username = store.base64_data.identityKeyPair.public+'|'+store.getLocalRegistrationId();
-  var time =  Date.now();
-  var password = time + '|' + base64.encode(axolotl_crypto.sign(store.getLocalIdentityKeyPair().private,base64_helper.str2ab(String(time))));
+const basic_auth = () => {
+  const username = store.base64_data.identityKeyPair.public+'|'+store.getLocalRegistrationId();
+  const time =  Date.now();
+  const password = time + '|' + base64.encode(axolotl_crypto.sign(store.getLocalIdentityKeyPair().private,base64_helper.str2ab(String(time))));
   return username + ':' + password;
 };
 
-var wrapped_api_call = (type,reasource,json_body) => new Promise((resolve) => {
-  var xhr = new XMLHttpRequest();
+const wrapped_api_call = (type,reasource,json_body) => new Promise((resolve) => {
+  const xhr = new XMLHttpRequest();
   xhr.open(type, keyServerAPIUrl+reasource, true);
   xhr.setRequestHeader('Authorization', 'Basic ' + btoa(basic_auth()));
   xhr.onreadystatechange = () => {
@@ -96,19 +96,19 @@ var wrapped_api_call = (type,reasource,json_body) => new Promise((resolve) => {
     xhr.send();
   }
 });
-var axol = axolotl(store);
+const axol = axolotl(store);
 
 //initial install registration stuff
-var install_keygen = () => new Promise((resolve) => {
+const install_keygen = () => new Promise((resolve) => {
   axol.generateRegistrationId().then((value) => {
     store.base64_data.registrationId = value;
     axol.generateIdentityKeyPair().then((value) => {
       store.identityKeyPair = value;
       store.base64_data.identityKeyPair = base64_helper.keypair_encode(value);
       store.base64_data.preKeys = {};
-      var storeToChromeLocal = (storeBase64) => {
+      const storeToChromeLocal = (storeBase64) => {
         chrome.storage.local.set({store:storeBase64});
-        var body = {
+        const body = {
           lastResortKey: {
             id: store.base64_data.preKeys[store.getLocalLastResortPreKeyId()].id,
             preKey: store.base64_data.preKeys[store.getLocalLastResortPreKeyId()].public,
@@ -116,7 +116,7 @@ var install_keygen = () => new Promise((resolve) => {
           prekeys : Object.keys(store.base64_data.preKeys).filter((key) => {
             return (store.base64_data.preKeys[key].id !== store.getLocalLastResortPreKeyId());
           }).map((key) => {
-              var current = store.base64_data.preKeys[key];
+              const current = store.base64_data.preKeys[key];
               return {
                 id: current.id,
                 signature: current.signature,
@@ -128,9 +128,9 @@ var install_keygen = () => new Promise((resolve) => {
           resolve();
         });
       };
-      var complete = numPreKeys + 1;
-      var progress = 0;
-      for (var index = 0; index < numPreKeys; index++) {
+      const complete = numPreKeys + 1;
+      let progress = 0;
+      for (const index = 0; index < numPreKeys; index++) {
         axol.generateSignedPreKey(store.getLocalIdentityKeyPair(),index).then((value) => {
           value.keyPair = base64_helper.keypair_encode(value.keyPair);
           value.signature = base64.encode(value.signature);
@@ -153,7 +153,7 @@ var install_keygen = () => new Promise((resolve) => {
 });
 
 // restore store.base64_data from chrome.storage
-var initialize_storage = () => new Promise((resolve) => {
+const initialize_storage = () => new Promise((resolve) => {
   chrome.storage.local.get("store",(results) => {
     if (Object.keys(results).length !== 0) {
       store.base64_data = results.store;
@@ -165,11 +165,11 @@ var initialize_storage = () => new Promise((resolve) => {
   });
 });
 
-var identityPubKey_search = (identityPubKey) => new Promise((resolve) => {
+const identityPubKey_search = (identityPubKey) => new Promise((resolve) => {
   wrapped_api_call('GET','key/'+encodeURIComponent(identityPubKey),null).then((response) => {
     for (element in Object.keys(response)) {
-      var device = response[Object.keys(response)[element]];
-      var preKeyBundle = {
+      const device = response[Object.keys(response)[element]];
+      const preKeyBundle = {
         identityKey: base64.decode(identityPubKey),
         preKeyId: device.id,
         preKey: base64.decode(device.preKey),
