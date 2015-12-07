@@ -234,8 +234,8 @@ initialize_storage().then(() => {
   identityPubKey_search(store.base64_data.identityKeyPair.public).then((response) => {
 
   /*var message = base64_helper.str2ab("Hello bob");
-  axol.encryptMessage(session,message).then((response) => {
-    axol.decryptPreKeyWhisperMessage(null,response.body).then((response) =>{
+  axol.encryptMessage(session, message).then((response) => {
+    axol.decryptPreKeyWhisperMessage(null, response.body).then((response) =>{
       resolve(base64_helper.ab2str(response.message));
     });*/
   });
