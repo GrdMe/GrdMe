@@ -6,6 +6,10 @@ var $ = require('jquery');
  * Class for using chrome local storage for storing contacts, groups, and
  * messages.
  */
+/*
+ chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
+  alert(response.farewell);
+});*/
 
 var StorageManager = function StorageManager() {
     /**

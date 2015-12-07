@@ -4,6 +4,7 @@
 */
 
 //Global variables
+
 var groups;
 var contacts;
 var storageManager;
@@ -22,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
 * stored in a global variable
 * @param {object} result: object of contacts storage
 */
-function makeContactsLocal(result){
+function makeContactsLocal(result) {
     contacts = result;
 }
 
@@ -79,9 +80,10 @@ function submitMessage() {
             groupName, timestamp);
         //document.getElementById('debug').innerHTML = contact;
     }
-    //copy message tag to clipboard
     var textArea = document.createElement('textarea');
-    textArea.value = 'ENCRYPTED GRDME MESSAGE';
+    var bg = chrome.extension.getBackgroundPage();
+    var encryption = bg.base64.encode(bg.cryptol.randomBytes(32));
+    textArea.value = '~~GrdMe!01' + encryption + '~~';
     document.getElementById('debug').appendChild(textArea);
     textArea.select();
     document.execCommand('copy');

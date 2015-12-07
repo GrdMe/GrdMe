@@ -57,8 +57,9 @@ function settingsTab() {
     document.getElementById('debug_web').onclick = function () {
         copyKeyTagToClipboard();
         document.getElementById('debug').innerHTML = 'Key copied to clipboard!';
+        testBackgroundPage();
+        document.getElementById('debug').innerHTML += 'HELLO';
     }
-    copyKeyTagToClipboard();
 }
 
 function debugTab() {
@@ -161,29 +162,24 @@ function copyKeyTagToClipboard() {
 }
 
 function testBackgroundPage() {
-    $('#debug1').html('background page function clicked');
-    /*
-    var bg = chrome.extension.getBackgroundPage();
-    $('#debug1').html('background page retrieved');
-    var doc = bg.document;
-    $('#debug1').html('document page retrieved');
-    var test = doc.pen;
-    $('#debug1').html('not a joke');
-    */
-    chrome.runtime.sendMessage({test: 'ok!'}, function(response) {
-        for(var prop in response){
-            $('#debug1').html(prop);
-        }
-        //$('#debug2').html('callback1');
-    });
-    $('#debug1').html('background page function ran');
-    chrome.runtime.sendMessage({test: 'ko!'}, function(response) {
-        //for(var prop in response){
-            $('#debug2').html(response);
-        //}
-        //$('#debug1').html('callback2');
+    document.getElementById('debug').innerHTML += 'Background page running!';
+    /*chrome.runtime.sendMessage({greeting: 'hello'},
+        function(response) {
+            document.getElementById('debug').innerHTML += 'ALMOST';
+            if(response.greeting) {
+                document.getElementById('debug').innerHTML += 'FAILS';
+            } else {
+                document.getElementById('debug').innerHTML += 'WORKS';
+            }
+            $('#nav').html(response.greeting);
+            document.getElementById('debug').innerHTML += 'Background page ran!';
+        });
+*/
+    chrome.runtime.sendMessage({greeting: "encryptMe"}, function(response) {
+        $('#nav').html(response.farewell);
     });
 }
+
 //GROUP STUFF
 
 /**

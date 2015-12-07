@@ -30,6 +30,20 @@ chrome.commands.onCommand.addListener(function(command) {
   }
 });
 
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    console.log(sender.tab ?
+                "from a content script:" + sender.tab.url :
+                "from the extension");
+    if (request.greeting == "hello") {
+      sendResponse({farewell: "goodbye"});
+    }
+    if(request.greeting == 'encryptMe'){
+      var encrypt = base64.encode(crypto.randomBytes(32));
+      sendResponse({farewell: encrypt});
+    }
+});
+
 //main shit
 base64 = require('base64-arraybuffer');
 base64_helper = require("./base64-helper.js");
@@ -190,19 +204,19 @@ var socket = ioClient.connect(keyServerAPIUrl);
 
 // executed on successful connection to server
 socket.on('connect', function (data) {
-    // create auth credentials 
+    // create auth credentials
     var time = String(Date.now());
     var signature = base64.encode(axolotl_crypto.sign(clientIdentityKeyPair.private, base64.decode(time)));
     var authPassword = time + "|" + signature;
     var authUsername = base64.encode(clientIdentityKeyPair.public);
     authUsername = authUsername + "|" + String(clientDeviceId);
-    
 
-    // push auth credentials to server 
+
+    // push auth credentials to server
     socket.emit('authentication', { username:authUsername, password:authPassword });
 });
 
-// executed on 'not authorized' message from server 
+// executed on 'not authorized' message from server
 socket.on('not authorized', function(data) {
     console.log("not authorized message recieved");
     switch(data.message){
@@ -220,24 +234,25 @@ socket.on('not authorized', function(data) {
             break;
         case 'time': //indicates submitted time was out of sync w/ server
             var serverTime = String(data.serverTime); //int. unix time
-            // sign serverTime and resend auth message 
+            // sign serverTime and resend auth message
             var signature = base64.encode(axolotl_crypto.sign(clientIdentityKeyPair.private, base64.decode(serverTime)));
             var authPassword = serverTime + "|" + signature;
             var authUsername = base64.encode(clientIdentityKeyPair.public);
             authUsername = authUsername + "|" + String(clientDeviceId);
 
-            // emit auth credentials 
+            // emit auth credentials
             socket.emit('authentication', { username:authUsername, password:authPassword });
             break;
     }
 });
 
-// executed on 'authorized' message from server 
+<<<<<<< Updated upstream
+// executed on 'authorized' message from server
 socket.on('authorized', function(data) {
     //lets you know that socket.emit('authentication'... was successful
 });
 
-// executed on 'message' message from server 
+// executed on 'message' message from server
 socket.on('message', function(messageData) {
     //confirm reception of message to server
     socket.emit('recieved', {messageId: messageData.id});
