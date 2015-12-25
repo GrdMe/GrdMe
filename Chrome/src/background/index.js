@@ -8,7 +8,8 @@ process.stderr = {
 
 //variables
 const numPreKeys = 10;
-const keyServerAPIUrl = 'https://twofish.cs.unc.edu/api/v1/';
+const keyServerUrl = 'https://twofish.cs.unc.edu';
+const keyServerAPIUrl = keyServerUrl + '/api/v1/';
 //const keyServerAPIUrl = 'http://localhost:8080/api/v1/';
 
 //edward's popup magic
@@ -49,7 +50,7 @@ chrome.runtime.onMessage.addListener(
 base64 = require('base64-arraybuffer');
 base64_helper = require('./base64-helper.js');
 storage_manager = require('./storage_manager.js');
-//var ioClient = require('socket.io-client');
+ioClient = require('socket.io-client');
 axolotl = require('axolotl');
 axolotl_crypto = require('axolotl-crypto');
 
@@ -74,17 +75,18 @@ store = {
     return store.base64_data.lastResortPreKeyId;
   },
 };
-const basic_auth = () => {
+const basic_auth = (server_time) => {
   const username = store.base64_data.identityKeyPair.public + '|' + store.getLocalRegistrationId();
-  const time =  Date.now();
+  const time = (typeof server_time !== "undefined") ? server_time : Date.now();
   const password = time + '|' + base64.encode(axolotl_crypto.sign(store.getLocalIdentityKeyPair().private,base64_helper.str2ab(String(time))));
-  return username + ':' + password;
+  return { username: username, password:password };
 };
 
 const wrapped_api_call = (type,reasource,json_body) => new Promise((resolve) => {
   const xhr = new XMLHttpRequest();
+  const auth = basic_auth();
   xhr.open(type, keyServerAPIUrl+reasource, true);
-  xhr.setRequestHeader('Authorization', 'Basic ' + btoa(basic_auth()));
+  xhr.setRequestHeader('Authorization', 'Basic ' + btoa(auth.username + ':' + auth.password));
   xhr.onreadystatechange = () => {
       if (xhr.readyState === XMLHttpRequest.DONE) {
         if (reasource === 'key/initial') {
@@ -160,10 +162,10 @@ const install_keygen = () => new Promise((resolve) => {
   });
 });
 
-// restore store.base64_data from chrome.storage
+// restore store.base64_data from chrome.storage [remove 'false && ' for normal behaviour]
 const initialize_storage = () => new Promise((resolve) => {
   chrome.storage.local.get('store', (results) => {
-    if (false && Object.keys(results).length !== 0) {
+    if (Object.keys(results).length !== 0) {
       store.base64_data = results.store;
       store.identityKeyPair = base64_helper.keypair_decode(store.base64_data.identityKeyPair);
       resolve();
@@ -205,28 +207,23 @@ initialize_storage().then(() => {
   });
 });
 
-/*
+
 // sockets =====================================================================
 
 // make connection to server
-var socket = ioClient.connect(keyServerAPIUrl);
+const socket = ioClient.connect(keyServerUrl);
+console.log(socket);
 
 // executed on successful connection to server
 socket.on('connect', function (data) {
-    // create auth credentials
-    var time = String(Date.now());
-    var signature = base64.encode(axolotl_crypto.sign(clientIdentityKeyPair.private, base64.decode(time)));
-    var authPassword = time + '|' + signature;
-    var authUsername = base64.encode(clientIdentityKeyPair.public);
-    authUsername = authUsername + '|' + String(clientDeviceId);
-
 
     // push auth credentials to server
-    socket.emit('authentication', { username:authUsername, password:authPassword });
+    console.log({auth: basic_auth()});
+    socket.emit('authentication', basic_auth());
 });
 
 // executed on 'not authorized' message from server
-socket.on('not authorized', function(data) {
+socket.on('not authorized', (data) => {
     console.log('not authorized message recieved');
     switch(data.message){
         case 'badly formed credentials': //indicates that authCredentials were
@@ -242,22 +239,17 @@ socket.on('not authorized', function(data) {
             //deal with it
             break;
         case 'time': //indicates submitted time was out of sync w/ server
-            var serverTime = String(data.serverTime); //int. unix time
-            // sign serverTime and resend auth message
-            var signature = base64.encode(axolotl_crypto.sign(clientIdentityKeyPair.private, base64.decode(serverTime)));
-            var authPassword = serverTime + '|' + signature;
-            var authUsername = base64.encode(clientIdentityKeyPair.public);
-            authUsername = authUsername + '|' + String(clientDeviceId);
-
+            // this has NOT been tested
             // emit auth credentials
-            socket.emit('authentication', { username:authUsername, password:authPassword });
+            socket.emit('authentication', basic_auth(data.serverTime));
             break;
     }
 });
 
 // executed on 'authorized' message from server
-socket.on('authorized', function(data) {
+socket.on('authorized', (data) => {
     //lets you know that socket.emit('authentication'... was successful
+    console.log('authorized');
 });
 
 // executed on 'message' message from server
@@ -265,8 +257,10 @@ socket.on('message', function(messageData) {
     //confirm reception of message to server
     socket.emit('recieved', {messageId: messageData.id});
 
+    console.log(messageData);
+
     var messageHeader = messageData.header; //same header that was sent to server
     var messageBody = messageData.body;     //same body that was sent to server
 
     // do something with messageData here
-});*/
+});
