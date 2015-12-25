@@ -165,7 +165,7 @@ const install_keygen = () => new Promise((resolve) => {
 // restore store.base64_data from chrome.storage [remove 'false && ' for normal behaviour]
 const initialize_storage = () => new Promise((resolve) => {
   chrome.storage.local.get('store', (results) => {
-    if (false && Object.keys(results).length !== 0) {
+    if (Object.keys(results).length !== 0) {
       store.base64_data = results.store;
       store.identityKeyPair = base64_helper.keypair_decode(store.base64_data.identityKeyPair);
       resolve();
