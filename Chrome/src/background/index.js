@@ -7,7 +7,7 @@ process.stderr = {
 }
 
 //variables
-const numPreKeys = 10;
+const numPreKeys = 100;
 const keyServerUrl = 'https://twofish.cs.unc.edu';
 const keyServerAPIUrl = keyServerUrl + '/api/v1/';
 //const keyServerAPIUrl = 'http://localhost:8080/api/v1/';
@@ -165,7 +165,7 @@ const install_keygen = () => new Promise((resolve) => {
 // restore store.base64_data from chrome.storage [remove 'false && ' for normal behaviour]
 const initialize_storage = () => new Promise((resolve) => {
   chrome.storage.local.get('store', (results) => {
-    if (Object.keys(results).length !== 0) {
+    if (false && Object.keys(results).length !== 0) {
       store.base64_data = results.store;
       store.identityKeyPair = base64_helper.keypair_decode(store.base64_data.identityKeyPair);
       resolve();
@@ -195,6 +195,11 @@ const identityPubKey_search = (identityPubKey) => new Promise((resolve) => {
 });
 
 initialize_storage().then(() => {
+  console.log(store);
+});
+
+/*
+initialize_storage().then(() => {
   identityPubKey_search(store.base64_data.identityKeyPair.public).then((session) => {
     const message = base64_helper.str2ab('Hello Diane, Happy Tuesday!');
     console.log('pre-encrypt: Hello Diane, Happy Tuesday!');
@@ -206,7 +211,7 @@ initialize_storage().then(() => {
     });
   });
 });
-
+*/
 
 // sockets =====================================================================
 
