@@ -88,15 +88,16 @@ const wrapped_api_call = (type,reasource,json_body) => new Promise((resolve) => 
   xhr.open(type, keyServerAPIUrl+reasource, true);
   xhr.setRequestHeader('Authorization', 'Basic ' + btoa(auth.username + ':' + auth.password));
   xhr.onreadystatechange = () => {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (reasource === 'key/initial') {
-          console.log({url:xhr.responseURL,body:xhr.response});
-          resolve();
-        } else {
-          console.log({url:xhr.responseURL,body:JSON.parse(xhr.response)});
-          resolve(JSON.parse(xhr.responseText));
-        }
+    console.log({reasource:reasource,state:xhr.readyState});
+    if (xhr.readyState === XMLHttpRequest.DONE) {
+      if (reasource === 'key/initial') {
+        console.log({url:xhr.responseURL,body:xhr.response});
+        resolve();
+      } else {
+        console.log({url:xhr.responseURL,body:JSON.parse(xhr.response)});
+        resolve(JSON.parse(xhr.responseText));
       }
+    }
   }
   if (type !== 'GET') {
     xhr.setRequestHeader('Content-type', 'application/json');
@@ -104,6 +105,7 @@ const wrapped_api_call = (type,reasource,json_body) => new Promise((resolve) => 
   } else {
     xhr.send();
   }
+  console.log({state:'sent',reasource:reasource,xhr:xhr});
 });
 const axol = axolotl(store);
 
@@ -179,6 +181,7 @@ const identityPubKey_search = (identityPubKey) => new Promise((resolve) => {
   wrapped_api_call('GET', 'key/' + encodeURIComponent(identityPubKey), null).then((response) => {
     for (element in Object.keys(response)) {
       const device = response[Object.keys(response)[element]];
+      console.log({debug:device.preKey});
       const preKeyBundle = {
         identityKey: base64.decode(identityPubKey),
         preKeyId: device.id,
@@ -195,19 +198,23 @@ const identityPubKey_search = (identityPubKey) => new Promise((resolve) => {
 });
 
 initialize_storage().then(() => {
-  identityPubKey_search(store.base64_data.identityKeyPair.public).then((session) => {
-    const message = base64_helper.str2ab('Hello Diane, Happy Tuesday!');
-    console.log('pre-encrypt: Hello Diane, Happy Tuesday!');
-    axol.encryptMessage(session, message).then((response) => {
-      console.log('post-encrypt: '+base64_helper.ab2str(response.body));
-      axol.decryptPreKeyWhisperMessage(null, response.body).then((response) =>{
-        console.log('post-decrypt: '+base64_helper.ab2str(response.message));
-      });
-    });
+  console.log(1);
+  wrapped_api_call('POST', 'message', {
+    messages: [
+      {
+        headers: {
+          recipient: 'BdLOUMTYsUqqisQmqpbTcl6NjZ/Hg49MBl2Dj73WiA5c|2287',
+          messageHeader: 'currently nothing',
+        },
+        body: 'body',
+      }
+    ]
+  }).then((response) => {
+    console.log(response);
   });
 });
 
-
+/*
 // sockets =====================================================================
 
 // make connection to server
@@ -264,3 +271,4 @@ socket.on('message', function(messageData) {
 
     // do something with messageData here
 });
+*/
