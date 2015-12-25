@@ -198,7 +198,6 @@ const identityPubKey_search = (identityPubKey) => new Promise((resolve) => {
 });
 
 initialize_storage().then(() => {
-  console.log(1);
   wrapped_api_call('POST', 'message', {
     messages: [
       {
