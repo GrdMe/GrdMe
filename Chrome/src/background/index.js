@@ -31,6 +31,7 @@ chrome.commands.onCommand.addListener((command) => {
 });
 
 chrome.runtime.onMessage.addListener(
+  //this should probably change
   (request, sender, sendResponse) => {
     console.log(sender.tab ?
                 'from a content script:' + sender.tab.url :
@@ -38,8 +39,8 @@ chrome.runtime.onMessage.addListener(
     if (request.greeting === 'hello') {
       sendResponse({farewell: 'goodbye'});
     }
-    if(request.greeting == 'encryptMe'){
-      var encrypt = base64.encode(axolotl_crypto.randomBytes(32));
+    if(request.greeting === 'encryptMe'){
+      const encrypt = base64.encode(crypto.randomBytes(32));
       sendResponse({farewell: encrypt});
     }
 });
@@ -86,7 +87,13 @@ const wrapped_api_call = (type,reasource,json_body) => new Promise((resolve) => 
   xhr.setRequestHeader('Authorization', 'Basic ' + btoa(basic_auth()));
   xhr.onreadystatechange = () => {
       if (xhr.readyState === XMLHttpRequest.DONE) {
-        resolve(JSON.parse(xhr.responseText));
+        if (reasource === 'key/initial') {
+          console.log({url:xhr.responseURL,body:xhr.response});
+          resolve();
+        } else {
+          console.log({url:xhr.responseURL,body:JSON.parse(xhr.response)});
+          resolve(JSON.parse(xhr.responseText));
+        }
       }
   }
   if (type !== 'GET') {
@@ -108,6 +115,7 @@ const install_keygen = () => new Promise((resolve) => {
       store.base64_data.preKeys = {};
       const storeToChromeLocal = (storeBase64) => {
         chrome.storage.local.set({store:storeBase64});
+        console.log({store:storeBase64});
         const body = {
           lastResortKey: {
             id: store.base64_data.preKeys[store.getLocalLastResortPreKeyId()].id,
@@ -130,7 +138,7 @@ const install_keygen = () => new Promise((resolve) => {
       };
       const complete = numPreKeys + 1;
       var progress = 0;
-      for (const index = 0; index < numPreKeys; index++) {
+      for (var index = 0; index < numPreKeys; index++) {
         axol.generateSignedPreKey(store.getLocalIdentityKeyPair(),index).then((value) => {
           value.keyPair = base64_helper.keypair_encode(value.keyPair);
           value.signature = base64.encode(value.signature);
@@ -166,7 +174,7 @@ const initialize_storage = () => new Promise((resolve) => {
 });
 
 const identityPubKey_search = (identityPubKey) => new Promise((resolve) => {
-  wrapped_api_call('GET','key/' + encodeURIComponent(identityPubKey), null).then((response) => {
+  wrapped_api_call('GET', 'key/' + encodeURIComponent(identityPubKey), null).then((response) => {
     for (element in Object.keys(response)) {
       const device = response[Object.keys(response)[element]];
       const preKeyBundle = {
@@ -184,61 +192,14 @@ const identityPubKey_search = (identityPubKey) => new Promise((resolve) => {
   });
 });
 
-// Match this spec: https://github.com/grdme/grd.me-server/wiki/API-Protocol#submitting-a-message
-const submitMessage = (session, identityPubKeys, deviceIDs, messageHeaders, messages) => new Promise((resolve, reject) => {
-  // Create body for api call
-  // Use map to iterate over all the messages
-  const promises = messages.map((message, i) => {
-    return new Promise((resolveEncrypt, rejectEncrypt) => {
-      axol.encryptMessage(session, message).then((response) => {
-        resolveEncrypt(response.body);
-      }, (reason) => {
-        // Error handling if encryption fails
-        console.log(reason);
-        rejectEncrypt(reason);
-      });
-    });
-  });
-  // Wait til all the promises resolve
-  Promise.all(promises).then((ciphertexts) => {
-    const body = {
-      messages: ciphertexts.map((ciphertext) => {
-        return {
-          headers: identityPubKeys.map((identityPubKey, j) => {
-            return {
-              // I assume I don't need to wrap these strings in brackets as per the docs?
-              recipient: `${identityPubKey}|${deviceIDs[j]}`, // Making use of template strings,
-              messageHeader: `${messageHeaders[j]}`, // I assume the messageHeaders are defined somewhere
-            };
-          }),
-          body: base64.encode(ciphertext),
-        };
-      }),
-    };
-    // Should there be a trailing slash?
-    wrapped_api_call('POST','message/', body).then((response) => {
-      // Not sure what to do with the response - let's just resolve it
-      resolve(response);
-    }, (reason) => {
-      // Error handling on failed post
-      console.log(reason);
-      reject(reason);
-    });
-  }, (reason) => {
-    // Error handling in case a promise rejects
-    console.log(reason);
-    reject(reason);
-  });
-});
-
 initialize_storage().then(() => {
   identityPubKey_search(store.base64_data.identityKeyPair.public).then((session) => {
-    const message = base64_helper.str2ab("Hello Diane, Happy Tuesday!");
-    console.log("pre-encrypt: Hello Diane, Happy Tuesday!");
+    const message = base64_helper.str2ab('Hello Diane, Happy Tuesday!');
+    console.log('pre-encrypt: Hello Diane, Happy Tuesday!');
     axol.encryptMessage(session, message).then((response) => {
-      console.log("post-encrypt: "+base64_helper.ab2str(response.body));
+      console.log('post-encrypt: '+base64_helper.ab2str(response.body));
       axol.decryptPreKeyWhisperMessage(null, response.body).then((response) =>{
-        console.log("post-decrypt: "+base64_helper.ab2str(response.message));
+        console.log('post-decrypt: '+base64_helper.ab2str(response.message));
       });
     });
   });
