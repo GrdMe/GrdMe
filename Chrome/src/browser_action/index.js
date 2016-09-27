@@ -1,2 +1,2 @@
-require("./popup.css");
-require("./popup.js");
+require("./popup2.css");
+require("./popup.jsx");
