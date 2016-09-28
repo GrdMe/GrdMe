@@ -30,6 +30,9 @@ module.exports = {
       { test: /\.png$/,      loader: "url-loader?limit=100000&minetype=image/png" },
       { test: /\.json$/,     loader: "json-loader" },
       { test: /\.babel.js$/, loader: "babel-loader" },
+      { test: /\.jsx$/, loader: "babel-loader",
+        query:{presets:['react']}
+      }
     ],
     noParse: [
       /node_modules\/traceur\/bin/,
