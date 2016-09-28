@@ -7,10 +7,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
 var GroupEntry = React.createClass({
   propTypes: {
-    name: React.PropTypes.string.isRequired
+    name: React.PropTypes.string.isRequired,
+    //Need a specific proptype check
+    members: React.PropTypes.object.isRequired
   },
 
+
+
   render: function(){
+    console.log(this.props.members);
     return(
       <div className="groupEntry">
       <p >{this.props.name}</p>
@@ -24,8 +29,14 @@ var GroupList = React.createClass({
   //Logic for getting groups for current user goes here
   getGroups: function(){
     //But for now I am hardwiring the  group names
-    var groups = ["MYFRIENDS", "COMP523", "FBIFREEZE"];
-    var groupEntries = groups.map(x => <GroupEntry name={x}/>);
+    var groups = {
+      "Test Group 1": {
+        "members": {
+          "MY_LONG_TERM_KEY": true
+        }
+      }
+    };
+    var groupEntries = Object.keys(groups).map(x => <GroupEntry name={x} members={groups[x].members}/>);
 
     return(groupEntries);
   },
@@ -42,7 +53,7 @@ var GroupList = React.createClass({
 
 var GroupPage = React.createClass({
   propTypes: {
-    selectedGroup: React.PropTypes.number.isRequired
+    selectedGroup: React.PropTypes.string.isRequired
   },
 
   getInitialState: function(){
@@ -53,7 +64,7 @@ var GroupPage = React.createClass({
 
   renderSelected: function(){
     console.log(this.state.selectedGroup);
-    if(this.state.selectedGroup > 0){
+    if(this.state.selectedGroup != null){
       return(
         <GroupEntry name={this.state.selectedGroup}/>
       );
@@ -76,7 +87,7 @@ var GroupPage = React.createClass({
 
 function loadPage() {
   ReactDOM.render(
-    <GroupPage selectedGroup={2}/>,
+    <GroupPage selectedGroup="SelectedGroup"/>,
     document.getElementById('page')
   );
 }
