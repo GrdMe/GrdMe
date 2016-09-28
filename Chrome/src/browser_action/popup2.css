@@ -1,6 +1,8 @@
 body {
-	width: 400px;
+	width: 410px;
 	height: 500px;
+	padding: 0px;
+	margin: 0px;
 }
 
 .groupEntry {
@@ -33,21 +35,21 @@ body {
     background-color: #1F8DD6;
     border-bottom: 5px;
     color: white;
-    padding: 10px 20px;
+    padding: 10px;
+		margin-left: 1px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 20px;
-}
-
-#key-div {
-	padding-bottom: 10px;
+		width: 38%;
+		border: 0;
+		outline: none;
 }
 
 #key-text {
   width: auto;
   padding: 12px;
-  margin: 8px 0;
+  margin: 8px;
   box-sizing: border-box;
 	font-size: 20px;
 	color: #7D8890;
@@ -57,10 +59,20 @@ body {
 	background-color: #7D8890;
 	border-bottom: 5px;
 	color: white;
-	padding: 10px 20px;
+	padding: 10px;
 	text-align: center;
 	text-decoration: none;
 	display: inline-block;
 	font-size: 20px;
-	margin-top: 10px;
+	margin: 5px;
+	border: 0;
+	outline: none;
+}
+
+#top-buttons #new-group{
+	width: 38%;
+}
+
+#top-buttons #manage-contacts{
+	width: 57%;
 }

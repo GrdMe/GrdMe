@@ -93,8 +93,8 @@ var Buttons = React.createClass({
   render: function(){
     return(
       <div id="top-buttons">
-        <button type="button" className="gray-button">+ NEW GROUP</button>
-        <button type="button" className="gray-button">MANAGE CONTACTS</button>
+        <button type="button" className="gray-button" id="new-group">+ NEW GROUP</button>
+        <button type="button" className="gray-button" id="manage-contacts">MANAGE CONTACTS</button>
       </div>
     )
   }
