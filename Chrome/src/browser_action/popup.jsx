@@ -35,17 +35,19 @@ var GroupList = React.createClass({
   //Logic for getting groups for current user goes here
   getGroups: function(){
     //But for now I am hardwiring the  group names
-<<<<<<< HEAD
-    var groups = [<GroupEntry name="MYFRIENDS" members="Arjun, Avi"/>,<GroupEntry name="COMP523" members="Bob, Al, Rosie, Magenta"/>,
-    <GroupEntry name="FBI" members = "Harvey, Batman, Joker"/>, <GroupEntry name="GOOGLE" members="Youtube, Chrome"/>,
-    <GroupEntry name="FOOD" members="Biscuit, Bagel, Lox, Egg"/>, <GroupEntry name="COMPLEX" members="NP, NP-Hard, NoSoln"/>];
-    return(groups);
-=======
-    var groups = ["MYFRIENDS", "COMP523", "FBIFREEZE"];
-    var groupEntries = groups.map(x => <GroupEntry name={x}/>);
+
+    // var groups = [<GroupEntry name="MYFRIENDS" members="Arjun, Avi"/>,<GroupEntry name="COMP523" members="Bob, Al, Rosie, Magenta"/>,
+    // <GroupEntry name="FBI" members = "Harvey, Batman, Joker"/>, <GroupEntry name="GOOGLE" members="Youtube, Chrome"/>,
+    // <GroupEntry name="FOOD" members="Biscuit, Bagel, Lox, Egg"/>, <GroupEntry name="COMPLEX" members="NP, NP-Hard, NoSoln"/>];
+    // return(groups);
+
+    var groups = [{name: "MYFRIENDS", members: "Arjun, Avi"}, {name: "COMP523", members: "Bob, Al, Rosie, Magenta"},
+     {name: "FBI", members: "Havery, Batman, Joker"}, {name: "GOOGLE", members: "Youtube, Chrome"},
+     {name: "FOOD", members: "Biscuit, Bagel, Lox, Egg"}, {name: "COMPLEX", members: "NP, NP-Hard, NoSoln"}];
+
+    var groupEntries = groups.map(x => <GroupEntry name={x.name} members={x.members}/>);
 
     return(groupEntries);
->>>>>>> react
   },
 
   render: function(){
@@ -86,7 +88,6 @@ var GroupPage = React.createClass({
       <div className="no-padding">
         <Panel/>
         <Buttons/>
-        {this.renderSelected()}
         <GroupList/>
         <Key/>
       </div>
