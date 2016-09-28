@@ -12,7 +12,10 @@ var GroupEntry = React.createClass({
 
   render: function(){
     return(
-      <div><p className="groupEntry">{this.props.name}</p></div>
+      <div className="groupEntry">
+      <p >{this.props.name}</p>
+      <input type="radio"/>
+      </div>
     )
   }
 });
@@ -21,8 +24,10 @@ var GroupList = React.createClass({
   //Logic for getting groups for current user goes here
   getGroups: function(){
     //But for now I am hardwiring the  group names
-    var groups = [<GroupEntry name="MYFRIENDS"/>,<GroupEntry name="COMP523"/>, <GroupEntry name="FBI"/>];
-    return(groups);
+    var groups = ["MYFRIENDS", "COMP523", "FBIFREEZE"];
+    var groupEntries = groups.map(x => <GroupEntry name={x}/>);
+
+    return(groupEntries);
   },
 
   render: function(){
