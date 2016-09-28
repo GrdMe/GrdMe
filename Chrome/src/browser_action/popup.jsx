@@ -77,9 +77,52 @@ var GroupPage = React.createClass({
 
   render: function(){
     return(
-      <div>
+      <div className="no-padding">
+        <Panel/>
+        <Buttons/>
         {this.renderSelected()}
         <GroupList/>
+        <Key/>
+      </div>
+    );
+  }
+});
+
+var Panel = React.createClass({
+
+  render: function(){
+    return(
+      <div id="blue-panel">
+        <p>GROUPS</p>
+      </div>
+    )
+  }
+});
+
+var Buttons = React.createClass({
+
+  render: function(){
+    return(
+      <div id="top-buttons">
+        <button type="button" className="gray-button">+ NEW GROUP</button>
+        <button type="button" className="gray-button">MANAGE CONTACTS</button>
+      </div>
+    )
+  }
+});
+
+var Key = React.createClass({
+
+  render: function(){
+    return(
+      <div id="key-button">
+        <button type="button" id="blue-button">COPY MY KEY</button>
+        <input
+          type="text"
+          id="key-text"
+          value="MYKEY1234567890A"  //hard coded right now, will add in front-end functionality to support backend later
+          readOnly
+        />
       </div>
     );
   }
