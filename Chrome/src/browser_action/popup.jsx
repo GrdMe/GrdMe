@@ -7,14 +7,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
 var GroupEntry = React.createClass({
   propTypes: {
-    name: React.PropTypes.string.isRequired
+    name: React.PropTypes.string.isRequired,
+    members: React.PropTypes.string.isRequired
   },
 
   render: function(){
     return(
-      <div className="groupEntry">
-      <p >{this.props.name}</p>
-      <input type="radio"/>
+      <div>
+        <div className="groupEntry">
+          <div id="select">
+            <input type="radio"/>
+            <label for="radio"></label>
+          </div>
+
+          <div id = "group_info">
+              <h2>{this.props.name}</h2>
+              <h5>{this.props.members}</h5>
+          </div>
+
+        </div>
       </div>
     )
   }
@@ -32,8 +43,7 @@ var GroupList = React.createClass({
 
   render: function(){
     return(
-      <div>
-        <p>GROUP LIST</p>
+      <div id = "group_list">
         {this.getGroups()}
       </div>
     );
