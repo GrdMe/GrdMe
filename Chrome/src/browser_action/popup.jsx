@@ -7,12 +7,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
 var GroupEntry = React.createClass({
   propTypes: {
-    name: React.PropTypes.string.isRequired
+    name: React.PropTypes.string.isRequired,
+    members: React.PropTypes.string.isRequired
   },
 
   render: function(){
     return(
-      <div><p className="groupEntry">{this.props.name}</p></div>
+      <div>
+        <div className="groupEntry">
+          <div id="select">
+            <input type="radio"/>
+            <label for="radio"></label>
+          </div>
+
+          <div id = "group_info">
+              <h2>{this.props.name}</h2>
+              <h5>{this.props.members}</h5>
+          </div>
+
+        </div>
+      </div>
     )
   }
 });
@@ -21,14 +35,15 @@ var GroupList = React.createClass({
   //Logic for getting groups for current user goes here
   getGroups: function(){
     //But for now I am hardwiring the  group names
-    var groups = [<GroupEntry name="MYFRIENDS"/>,<GroupEntry name="COMP523"/>, <GroupEntry name="FBI"/>];
+    var groups = [<GroupEntry name="MYFRIENDS" members="Arjun, Avi"/>,<GroupEntry name="COMP523" members="Bob, Al, Rosie, Magenta"/>,
+    <GroupEntry name="FBI" members = "Harvey, Batman, Joker"/>, <GroupEntry name="GOOGLE" members="Youtube, Chrome"/>,
+    <GroupEntry name="FOOD" members="Biscuit, Bagel, Lox, Egg"/>, <GroupEntry name="COMPLEX" members="NP, NP-Hard, NoSoln"/>];
     return(groups);
   },
 
   render: function(){
     return(
-      <div>
-        <p>GROUP LIST</p>
+      <div id = "group_list">
         {this.getGroups()}
       </div>
     );
