@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function loadPage() {
   ReactDOM.render(
-    <ContactsPage/>,
+    <GroupPage/>,
     document.getElementById('page')
   );
 }
