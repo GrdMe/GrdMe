@@ -12,14 +12,22 @@ var GroupEntry = React.createClass({
     members: React.PropTypes.object.isRequired
   },
 
-
-
   render: function(){
     console.log(this.props.members);
     return(
-      <div className="groupEntry">
-      <p >{this.props.name}</p>
-      <input type="radio"/>
+      <div>
+        <div className="groupEntry">
+          <div id="select">
+            <input type="radio"/>
+            <label for="radio"></label>
+          </div>
+
+          <div id = "group_info">
+              <h2>{this.props.name}</h2>
+              <h5>{this.props.members}</h5>
+          </div>
+
+        </div>
       </div>
     )
   }
@@ -28,7 +36,7 @@ var GroupEntry = React.createClass({
 var GroupList = React.createClass({
   //Logic for getting groups for current user goes here
   getGroups: function(){
-    //But for now I am hardwiring the  group names
+    //But for now I am hardwiring the  group
     var groups = {
       "Test Group 1": {
         "members": {
@@ -36,15 +44,13 @@ var GroupList = React.createClass({
         }
       }
     };
-    var groupEntries = Object.keys(groups).map(x => <GroupEntry name={x} members={groups[x].members}/>);
-
+    var groupEntries = Object.keys(groups).map(x => <GroupEntry name={x} members={Object.keys(groups[x].members)}/>);
     return(groupEntries);
   },
 
   render: function(){
     return(
-      <div>
-        <p>GROUP LIST</p>
+      <div id = "group_list">
         {this.getGroups()}
       </div>
     );
@@ -80,7 +86,6 @@ var GroupPage = React.createClass({
       <div className="no-padding">
         <Panel/>
         <Buttons/>
-        {this.renderSelected()}
         <GroupList/>
         <Key/>
       </div>
@@ -104,8 +109,8 @@ var Buttons = React.createClass({
   render: function(){
     return(
       <div id="top-buttons">
-        <button type="button" className="gray-button">+ NEW GROUP</button>
-        <button type="button" className="gray-button">MANAGE CONTACTS</button>
+        <button type="button" className="gray-button" id="new-group">+ NEW GROUP</button>
+        <button type="button" className="gray-button" id="manage-contacts">MANAGE CONTACTS</button>
       </div>
     )
   }
