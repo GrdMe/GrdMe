@@ -1,10 +1,14 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
+var GroupPage = require('./views/groups/group-page.jsx');
+var ContactsPage = require('./views/contacts/contacts-page.jsx');
+var NewGroupPage = require('./views/new_group/new-group-page.jsx');
 
 document.addEventListener('DOMContentLoaded', function () {
     loadPage();
 });
 
+<<<<<<< HEAD
 var GroupEntry = React.createClass({
   propTypes: {
     name: React.PropTypes.string.isRequired,
@@ -135,9 +139,11 @@ var Key = React.createClass({
   }
 });
 
+=======
+>>>>>>> react
 function loadPage() {
   ReactDOM.render(
-    <GroupPage selectedGroup={2}/>,
-    document.getElementById('page'),
+    <NewGroupPage/>,
+    document.getElementById('page')
   );
 }
