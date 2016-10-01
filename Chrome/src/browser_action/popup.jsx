@@ -16,8 +16,8 @@ var GroupEntry = React.createClass({
       <div>
         <div className="groupEntry">
           <div id="select">
-            <input type="radio"/>
-            <label for="radio"></label>
+            <input type="radio" id="radio"/>
+            <label for="radio"><span></span></label>
           </div>
 
           <div id = "group_info">
