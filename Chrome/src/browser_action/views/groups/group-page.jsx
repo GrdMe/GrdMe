@@ -1,7 +1,7 @@
 var React = require('react');
 var GroupEntry = require('./group-entry.jsx');
 var GroupList = require('./group-list.jsx');
-var HeadPanel = require('./head-panel.jsx');
+var HeadPanel = require('../head-panel.jsx');
 var KeyInfo = require('./key-info.jsx');
 
 var Buttons = React.createClass({

@@ -1,5 +1,5 @@
 var React = require('react');
-var HeadPanel = require('./head-panel.jsx');
+var HeadPanel = require('../head-panel.jsx');
 var ContactList = require('./contact-list.jsx');
 
 var ContactsPage = React.createClass({
