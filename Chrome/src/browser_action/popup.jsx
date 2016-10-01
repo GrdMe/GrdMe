@@ -122,7 +122,7 @@ var Key = React.createClass({
 
   render: function(){
     return(
-      <div id="key-button">
+      <div id="key-button"> //todo: add button functionality to copy text
         <button type="button" id="blue-button">COPY MY KEY</button>
         <input
           type="text"
