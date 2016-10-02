@@ -6,7 +6,6 @@ var AddedContacts = React.createClass({
       //Hardwiring contacts for now
       var contacts = ["Steve", "Frank", "Colin", "The guy who hearts Colin but it is afraid to show his feelings so he is waiting for the perfect moment to show and he HOPES that GrdMe will be the perfect opportunity"]
       var contactEntries = contacts.map(x => <ContactEntry name={x}/>);
-      console.log(contactEntries);
       return(contactEntries);
   },
 

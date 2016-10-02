@@ -6,21 +6,36 @@ var KeyInfo = require('./key-info.jsx');
 
 var Buttons = React.createClass({
   render: function(){
+    console.log("Ho");
     return(
       <div id="top-buttons">
-        <button type="button" className="gray-button" id="new-group">+ NEW GROUP</button>
-        <button type="button" className="gray-button" id="manage-contacts">MANAGE CONTACTS</button>
+        <button type="button" className="gray-button" id="new-group" onClick={this.props.navigate()}>+ NEW GROUP</button>
+        <button type="button" className="gray-button" id="manage-contacts" onClick={this.props.navigate()}>MANAGE CONTACTS</button>
       </div>
     )
   }
 });
 
 var GroupPage = React.createClass({
+
+  navigate: function(page){
+    switch (page) {
+      case -1:
+        this.props.newGroup();
+        break;
+      case 1:
+        this.props.contacts();
+        break;
+      default:
+        break;
+    }
+  },
+
   render: function(){
     return(
       <div className="no-padding">
         <HeadPanel>GROUPS</HeadPanel>
-        <Buttons/>
+        <Buttons navigate={this.navigate}/>
         <GroupList/>
         <KeyInfo/>
       </div>

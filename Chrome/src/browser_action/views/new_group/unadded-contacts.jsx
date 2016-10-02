@@ -6,7 +6,6 @@ var UnaddedContacts = React.createClass({
       //Hardwiring contacts for now
       var contacts = ["Monal", "Avi", "Karen", "Svend", "Frank the dog who likes peanut butter but is willing to give it up for lent"]
       var contactEntries = contacts.map(x => <ContactEntry name={x}/>);
-      console.log(contactEntries);
       return(contactEntries);
   },
 
