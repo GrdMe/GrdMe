@@ -1,7 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var GroupPage = require('./views/group-page.jsx');
-var ContactsPage = require('./views/contacts-page.jsx');
+var PageContainer = require('./views/page-container.jsx');
+var NewGroupPage = require('./views/new_group/new-group-page.jsx');
 
 document.addEventListener('DOMContentLoaded', function () {
     loadPage();
@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function loadPage() {
   ReactDOM.render(
-    <GroupPage/>,
+    <PageContainer/>,
     document.getElementById('page')
   );
 }
