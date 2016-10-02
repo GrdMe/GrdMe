@@ -8,7 +8,6 @@ var GroupEntry = React.createClass({
   },
 
   render: function(){
-    console.log(this.props.members);
     return(
       <div>
         <div className="groupEntry">
