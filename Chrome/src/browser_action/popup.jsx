@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function loadPage() {
   ReactDOM.render(
-    <NewGroupPage/>,
+    <GroupPage/>,
     document.getElementById('page')
   );
 }
