@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function () {
     loadPage();
 });
 
-<<<<<<< HEAD
 var GroupEntry = React.createClass({
   propTypes: {
     name: React.PropTypes.string.isRequired,
@@ -139,8 +138,6 @@ var Key = React.createClass({
   }
 });
 
-=======
->>>>>>> react
 function loadPage() {
   ReactDOM.render(
     <NewGroupPage/>,
