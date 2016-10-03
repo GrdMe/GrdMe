@@ -4,15 +4,14 @@ var ContactEntry = require('./contact-entry.jsx');
 var AddedContacts = React.createClass({
   getContacts : function(){
       //Hardwiring contacts for now
-      var contacts = ["Steve", "Frank", "Colin", "The guy who hearts Colin but it is afraid to show his feelings so he is waiting for the perfect moment to show and he HOPES that GrdMe will be the perfect opportunity"]
+      var contacts = ["Steve", "Frank", "Colin", "Katelyn"]
       var contactEntries = contacts.map(x => <ContactEntry name={x}/>);
-      console.log(contactEntries);
       return(contactEntries);
   },
 
   render : function(){
     return(
-      <div>
+      <div id="added-list">
         {this.getContacts()}
       </div>
     );

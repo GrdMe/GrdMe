@@ -6,22 +6,43 @@ var KeyInfo = require('./key-info.jsx');
 var DisplayNameInfo = require('./display-name-info.jsx');
 
 var Buttons = React.createClass({
+  clickGroup: function(){
+    ReactDOM.render(
+      <GroupEntry/>,
+      document.getElementById('page')
+    );
+  },
+
   render: function(){
     return(
       <div id="top-buttons">
-        <button type="button" className="gray-button" id="new-group">+ NEW GROUP</button>
-        <button type="button" className="gray-button" id="manage-contacts">MANAGE CONTACTS</button>
+        <button type="button" className="gray-button" id="new-group" onClick={()=>{this.props.navigate(-1)}}>+ NEW GROUP</button>
+        <button type="button" className="gray-button" id="manage-contacts" onClick={()=>{this.props.navigate(1)}}>MANAGE CONTACTS</button>
       </div>
     )
   }
 });
 
 var GroupPage = React.createClass({
+  
+  navigate: function(page){
+    switch (page) {
+      case -1:
+        this.props.newGroup();
+        break;
+      case 1:
+        this.props.contacts();
+        break;
+      default:
+        break;
+    }
+  },
+
   render: function(){
     return(
       <div className="no-padding">
         <HeadPanel>GROUPS</HeadPanel>
-        <Buttons/>
+        <Buttons navigate={this.navigate}/>
         <GroupList/>
         <KeyInfo/>
         <DisplayNameInfo/>
