@@ -13,18 +13,17 @@ var Buttons = React.createClass({
   },
 
   render: function(){
-    console.log("Ho");
     return(
       <div id="top-buttons">
-        <button type="button" className="gray-button" id="new-group" onClick={this.props.navigate()}>+ NEW GROUP</button>
-        <button type="button" className="gray-button" id="manage-contacts" onClick={this.props.navigate()}>MANAGE CONTACTS</button>
+        <button type="button" className="gray-button" id="new-group" onClick={()=>{this.props.navigate(-1)}}>+ NEW GROUP</button>
+        <button type="button" className="gray-button" id="manage-contacts" onClick={()=>{this.props.navigate(1)}}>MANAGE CONTACTS</button>
       </div>
     )
   }
 });
 
 var GroupPage = React.createClass({
-
+  
   navigate: function(page){
     switch (page) {
       case -1:
