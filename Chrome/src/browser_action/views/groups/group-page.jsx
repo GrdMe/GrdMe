@@ -24,7 +24,7 @@ var Buttons = React.createClass({
 });
 
 var GroupPage = React.createClass({
-  
+
   navigate: function(page){
     switch (page) {
       case -1:
@@ -42,10 +42,12 @@ var GroupPage = React.createClass({
     return(
       <div className="no-padding">
         <HeadPanel>GROUPS</HeadPanel>
-        <Buttons navigate={this.navigate}/>
-        <GroupList/>
-        <KeyInfo/>
-        <DisplayNameInfo/>
+        <div className="content-wrapper">
+          <Buttons navigate={this.navigate}/>
+          <GroupList/>
+          <KeyInfo/>
+          <DisplayNameInfo/>
+        </div>
       </div>
     );
   }

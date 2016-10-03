@@ -13,4 +13,4 @@ var DisplayNameInfo = React.createClass({
 
 module.exports = DisplayNameInfo;
 
- // TODO: sync display name with backend @8
+// TODO: sync display name with backend @8

@@ -5,6 +5,11 @@ body {
 	margin: 0px;
 	font: Helvetica;
 	font-weight: 400;
+	color: #7D8890;
+}
+
+.content-wrapper {
+	/*padding: 12px;*/
 }
 
 .group-entry {
@@ -85,7 +90,7 @@ h2{
 h5{
 	margin: 0;
 	text-align: left;
-	font-style: italic;
+	font-weight: 400;
 }
 
 .no-padding {
@@ -108,27 +113,34 @@ h5{
 }
 
 #blue-button{
-    background-color: #1F8DD6;
-    border-bottom: 5px;
-    color: white;
-    padding: 10px;
-	margin-left: 1px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 20px;
+  background-color: #1F8DD6;
+  color: white;
+  padding: 10px;
+	/*margin-left: 1px;*/
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
 	width: 38%;
 	border: 0;
 	outline: none;
 }
 
+#key-info {
+	margin-left: 10px;
+	margin-right: 10px;
+	padding: 0;
+}
+
 #key-text {
-	width: auto;
+	width: 59%;
 	padding: 12px;
-	margin: 8px;
+	margin-left: 8px;
+	margin-right: 0px;
 	box-sizing: border-box;
 	font-size: 20px;
 	color: #7D8890;
+	height: 50px;
 }
 
 #top-buttons button {
@@ -253,4 +265,28 @@ h5{
 	width: 183px;
 	margin-top: 5px;
 	margin-left: 5px;
+}
+
+#display-name-info {
+	margin: 8px;
+}
+
+#display-name-label {
+	display: inline-block;
+	font-size: 20px;
+	margin-right: 8px;
+}
+
+#display-name {
+	display: inline-block;
+	color: #7D8890;
+	font-size: 20px;
+	align-self: right;
+	padding: 8px;
+	width: 46%;
+}
+
+#display-name:focus{
+	box-shadow: none;
+	outline: none;
 }
