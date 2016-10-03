@@ -1,6 +1,6 @@
 body {
 	height: 400px;
-	width: 500px;
+	width: 410px;
 	padding: 0px;
 	margin: 0px;
 	font: Helvetica;
@@ -85,7 +85,7 @@ h5{
 	font-size: 28px;
 }
 
-#blue-button {
+#blue-button{
     background-color: #1F8DD6;
     border-bottom: 5px;
     color: white;
@@ -129,4 +129,106 @@ h5{
 
 #top-buttons #manage-contacts{
 	width: 57%;
+}
+
+#group-input{
+	margin: 10px;
+	display: flex;
+  align-items: center;
+}
+
+#group-name, #members, #filter, #added, #cancel{
+	font-size: 20px;
+	color: #7D8890;
+}
+
+#group-text{
+	font-size: 20px;
+	color: #7D8890;
+	outline: none;
+	border: 2px solid #7D8890;
+	float: right;
+	width: 230px;
+	padding: 3px;
+	margin-left: 15px;
+}
+
+#cancel{
+	background:none;
+	border:none;
+	display: block;
+  margin-left: auto;
+  margin-right: auto;
+	margin-top: 10px;
+}
+
+#members{
+	text-align: center;
+	margin-top: 5px;
+	margin-bottom: -20px;
+}
+
+.table, .bottom-buttons{
+	-webkit-column-count: 2;
+	-moz-column-count: 2;
+	column-count: 2;
+}
+
+.table .left-col, .table .right-col{
+	column-span: 1;
+}
+
+.left-col{
+	padding-left: 10px;
+}
+
+.right-col{
+	padding-left: 5px;
+}
+
+#filter, #added{
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+#contact-search, #contact-info{
+	font-size: 20px;
+	color: #7D8890;
+	outline: none;
+}
+
+#contact-search{
+	border: 2px solid #7D8890;
+	width: 175px;
+	padding: 3px;
+}
+
+#contact-info{
+	width: 180px;
+	border-bottom: 2px solid #7D8890;
+	padding: 3px;
+}
+
+#added-list, #unadded-list{
+	padding: 0;
+	overflow-y: scroll;
+	width: 180px;
+}
+
+#unadded-list{
+	margin-top: 10px;
+	height: 142px;
+	border: 2px solid #7D8890;
+}
+
+#added-list{
+	margin-top: 5px;
+	height: 180px;
+	border: 2px solid #7D8890;
+}
+
+#right-col #blue-button{
+	width: 183px;
+	margin-top: 5px;
+	margin-left: 5px;
 }

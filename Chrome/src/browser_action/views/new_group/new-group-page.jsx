@@ -8,16 +8,23 @@ var NewGroupPage = React.createClass({
     return(
       <div>
         <HeadPanel>NEW GROUP</HeadPanel>
-        <div>
-          GROUP NAME
+        <div id="group-input">
+          <span id="group-name">GROUP NAME</span>
           <input
             type="text"
-            value="THIS IS A GREAT GROUP. THE BEST GROUP"  //hard coded right now, will add in front-end functionality to support backend
+            id="group-text"
+            value="Sample Group"  //hard coded right now, will add in front-end functionality to support backend
           />
         </div>
         <ContactSelection/>
-        <button className="blue-button">Create Group</button>
-        <button className="blue-button">Cancel</button>
+        <div className="bottom-buttons">
+          <div id="left-col">
+            <button id="cancel">Cancel</button>
+          </div>
+          <div id="right-col">
+            <button id="blue-button">CREATE GROUP</button>
+          </div>
+        </div>
       </div>
     );
   }
