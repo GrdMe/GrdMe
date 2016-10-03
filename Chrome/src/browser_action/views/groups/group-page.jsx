@@ -3,6 +3,7 @@ var GroupEntry = require('./group-entry.jsx');
 var GroupList = require('./group-list.jsx');
 var HeadPanel = require('../head-panel.jsx');
 var KeyInfo = require('./key-info.jsx');
+var DisplayNameInfo = require('./display-name-info.jsx');
 
 var Buttons = React.createClass({
   render: function(){
@@ -23,6 +24,7 @@ var GroupPage = React.createClass({
         <Buttons/>
         <GroupList/>
         <KeyInfo/>
+        <DisplayNameInfo/>
       </div>
     );
   }
