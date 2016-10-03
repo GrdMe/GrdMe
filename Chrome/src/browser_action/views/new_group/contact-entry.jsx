@@ -4,7 +4,7 @@ var ContactEntry = React.createClass({
 
   render : function(){
     return(
-      <div>
+      <div id="contact-info">
         {this.props.name}
       </div>
     );
