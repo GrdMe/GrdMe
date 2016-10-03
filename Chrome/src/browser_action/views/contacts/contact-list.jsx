@@ -11,7 +11,7 @@ var ContactList = React.createClass({
 
   render: function(){
     return(
-      <div>
+      <div id = "contact_list">
         {this.getContacts()}
       </div>
     );

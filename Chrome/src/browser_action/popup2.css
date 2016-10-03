@@ -7,16 +7,15 @@ body {
 	font-weight: 400;
 }
 
-.groupEntry {
+.groupEntry, .contactEntry{
 	margin: 0;
 	color: #7D8890;
   background: #white;
-	border: 1px solid #7D8890;
+	border-bottom: 1px solid #7D8890;
   height: 50px;
-  text-align: left;
 }
 
-#group_list{
+#group_list, #contact_list{
 	margin: 8px;
 	height: 250px;
 	border: 1px solid #7D8890;
@@ -52,12 +51,26 @@ input[type=radio]:checked ~ label span{
 	display: inline-block;
 	margin-left: 10px;
 	margin-top: 5px;
-	vertical-align: text-bottom;;
+	vertical-align: text-bottom;
+}
+
+#contact_info{
+	display: inline-block;
+	margin-left: 10px;
+	margin-top: 12px;
+	vertical-align: text-center;
+}
+
+#contact_footer{
+	text-align: center;
+	margin-left: 10px;
+	margin-right: 10px;
 }
 
 h2{
 	margin: 0;
 	text-align: left;
+	color: #7D8890;
 }
 
 h5{
@@ -80,7 +93,7 @@ h5{
   justify-content: center;
 }
 
-#blue-panel p{
+#blue-panel {
 	color: white;
 	font-size: 28px;
 }
@@ -108,6 +121,25 @@ h5{
 	font-size: 20px;
 	color: #7D8890;
 }
+
+.back-button{
+
+}
+
+.edit_button button{
+	background-color: #7D8890;
+	border-bottom: 5px;
+	color: white;
+	text-decoration: none;
+	display: inline-block;
+	border: 0;
+	outline: none;
+}
+
+.edit_button #edit_contact{
+
+}
+
 
 #top-buttons button {
 	background-color: #7D8890;

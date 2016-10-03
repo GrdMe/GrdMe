@@ -4,7 +4,7 @@ var HeadPanel = React.createClass({
   render: function(){
     return(
       <div id="blue-panel">
-        <p>{this.props.children}</p>
+        {this.props.children}
       </div>
     )
   }
