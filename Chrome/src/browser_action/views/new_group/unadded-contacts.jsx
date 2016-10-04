@@ -5,7 +5,8 @@ var UnaddedContacts = React.createClass({
   getContacts : function(){
       //Hardwiring contacts for now
       var contacts = ["Monal", "Avi", "Karen", "Svend", "Frank", "Taylor", "Spencer"]
-      var contactEntries = contacts.map(x => <ContactEntry name={x}/>);
+      //TODO: fix key to be unique
+      var contactEntries = contacts.map(x => <ContactEntry key={x} name={x}/>);
       return(contactEntries);
   },
 
