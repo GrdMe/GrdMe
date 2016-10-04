@@ -1,4 +1,5 @@
 var React = require('react');
+var CopyToClipboard = require('react-copy-to-clipboard');
 
 var KeyInfo = React.createClass({
 
@@ -6,7 +7,9 @@ var KeyInfo = React.createClass({
   render: function(){
     return(
       <div id="key-info">
+        <CopyToClipboard text="MYKEY1234567890A">
         <button type="button" id="blue-button">COPY MY KEY</button>
+        </CopyToClipboard>
         <input
           type="text"
           id="key-text"
