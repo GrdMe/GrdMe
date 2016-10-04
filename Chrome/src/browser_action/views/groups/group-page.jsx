@@ -25,6 +25,12 @@ var Buttons = React.createClass({
 
 var GroupPage = React.createClass({
 
+  propTypes : {
+    storageManager : React.PropTypes.object.isRequired,
+    contacts : React.PropTypes.func.isRequired,
+    newGroup : React.PropTypes.func.isRequired
+  },
+
   navigate: function(page){
     switch (page) {
       case -1:
@@ -44,7 +50,7 @@ var GroupPage = React.createClass({
         <HeadPanel>GROUPS</HeadPanel>
         <div className="content-wrapper">
           <Buttons navigate={this.navigate}/>
-          <GroupList/>
+          <GroupList {...this.props}/>
           <KeyInfo/>
           <DisplayNameInfo/>
         </div>
