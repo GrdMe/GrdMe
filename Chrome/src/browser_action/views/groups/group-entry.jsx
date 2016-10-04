@@ -1,4 +1,5 @@
 var React = require('react');
+var FontAwesome = require('react-fontawesome');
 
 var GroupEntry = React.createClass({
   propTypes: {
@@ -22,10 +23,10 @@ var GroupEntry = React.createClass({
             </div>
             <div className="group-icons">
               <div className="group-settings">
-                <i className="fa fa-cog" aria-hidden="true"></i>
+                <FontAwesome name="pencil" />
               </div>
               <div className="group-delete">
-                <i className="fa fa-trash" aria-hidden="true"></i>
+                <FontAwesome name="trash" />
               </div>
             </div>
           </div>
