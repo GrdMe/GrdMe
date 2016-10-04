@@ -5,7 +5,7 @@ var DisplayNameInfo = React.createClass({
     return (
       <div id="display-name-info">
         <div id="display-name-label">MY DISPLAY NAME</div>
-        <input type="text" id="display-name" value="John Cena" />
+        <input type="text" id="display-name" defaultValue="John Cena" />
       </div>
     );
   }

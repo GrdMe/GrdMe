@@ -16,8 +16,18 @@ var GroupEntry = React.createClass({
           </div>
 
           <div className="group-info">
+            <div className="group-name-and-members">
               <h2>{this.props.name.toUpperCase()}</h2>
               <h5>{this.props.members}</h5>
+            </div>
+            <div className="group-icons">
+              <div className="group-settings">
+                <i className="fa fa-cog" aria-hidden="true"></i>
+              </div>
+              <div className="group-delete">
+                <i className="fa fa-trash" aria-hidden="true"></i>
+              </div>
+            </div>
           </div>
 
         </div>

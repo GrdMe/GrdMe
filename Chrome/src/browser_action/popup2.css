@@ -13,7 +13,16 @@ body {
 }
 
 
-.groupEntry, .contactEntry{
+.group-entry {
+	margin: 0;
+	color: #7D8890;
+  background: #white;
+	border-bottom: 1px solid #7D8890;
+  height: 50px;
+	text-align: left;
+}
+
+.contactEntry{
 	margin: 0;
 	color: #7D8890;
   background: #white;
@@ -30,14 +39,15 @@ body {
 }
 
 input[type=radio]{
-	visibility: hidden;
+	/*visibility: hidden;*/
+	display: none;
 }
 
 .select .check{
   display: block;
   border: 3px solid #7D8890;
   border-radius: 100%;
-	margin-top: -10px;
+	margin-top: -20px;
 	margin-left: 10px;
   height: 22px;
   width: 22px;
@@ -79,7 +89,7 @@ input[type=radio]:checked ~ .check .inside{
 .group-info {
 	display: inline-block;
 	margin-left: 10px;
-	margin-top: 5px;
+	margin-top: 7px;
 	vertical-align: text-bottom;
 }
 
