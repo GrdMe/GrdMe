@@ -2,9 +2,9 @@ var React = require('react');
 var GroupEntry = require('./group-entry.jsx');
 
 var GroupList = React.createClass({
-  //Logic for getting groups for current user goes here
+  // TODO: implement logic for getting current user's groups
   getGroups: function(){
-    //But for now I am hardwiring the  group
+    // TODO: remove hardcoded example data
     var groups = {
       "Test Group 1": {
         "members": {
@@ -54,7 +54,8 @@ var GroupList = React.createClass({
         }
       }
     };
-    var groupEntries = Object.keys(groups).map(x => <GroupEntry name={x} members={Object.keys(groups[x].members)}/>);
+    //Need to fix key attribute to be unique
+    var groupEntries = Object.keys(groups).map(x => <GroupEntry key={x} name={x} members={Object.keys(groups[x].members).join(", ")}/>);
     return(groupEntries);
   },
 

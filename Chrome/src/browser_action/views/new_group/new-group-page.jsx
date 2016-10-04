@@ -19,7 +19,7 @@ var NewGroupPage = React.createClass({
         <ContactSelection/>
         <div className="bottom-buttons">
           <div id="left-col">
-            <button id="cancel">Cancel</button>
+            <button id="cancel" onClick={this.props.back}>Cancel</button>
           </div>
           <div id="right-col">
             <button id="blue-button">CREATE CIRCLE</button>

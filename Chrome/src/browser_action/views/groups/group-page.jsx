@@ -3,6 +3,7 @@ var GroupEntry = require('./group-entry.jsx');
 var GroupList = require('./group-list.jsx');
 var HeadPanel = require('../head-panel.jsx');
 var KeyInfo = require('./key-info.jsx');
+var DisplayNameInfo = require('./display-name-info.jsx');
 
 var Buttons = React.createClass({
   clickGroup: function(){
@@ -41,9 +42,12 @@ var GroupPage = React.createClass({
     return(
       <div className="no-padding">
         <HeadPanel>CIRCLES</HeadPanel>
-        <Buttons navigate={this.navigate}/>
-        <GroupList/>
-        <KeyInfo/>
+        <div className="content-wrapper">
+          <Buttons navigate={this.navigate}/>
+          <GroupList/>
+          <KeyInfo/>
+          <DisplayNameInfo/>
+        </div>
       </div>
     );
   }

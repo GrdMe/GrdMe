@@ -5,18 +5,24 @@ body {
 	margin: 0px;
 	font: Helvetica;
 	font-weight: 400;
+	color: #7D8890;
 }
 
-.groupEntry {
+.content-wrapper {
+	/*padding: 12px;*/
+}
+
+
+.groupEntry, .contactEntry{
 	margin: 0;
 	color: #7D8890;
   background: white;
-	border: 1px solid #7D8890;
+	border-bottom: 1px solid #7D8890;
   height: 50px;
-  text-align: left;
+	text-align: center;
 }
 
-#group_list{
+#group_list, #contact_list{
 	margin: 8px;
 	height: 250px;
 	border: 1px solid #7D8890;
@@ -24,46 +30,83 @@ body {
 }
 
 input[type=radio]{
-	display: none;
+	visibility: hidden;
 }
 
-input[type=radio] + label span{
-	display:inline-block;
-	border-radius: 100%;
-	border: 4px solid #7D8890;
-	cursor: pointer;
-	background-color: white;
-	width: 15px;
-	height: 15px;
-	margin-left: 5px;
+.select .check{
+  display: block;
+  border: 3px solid #7D8890;
+  border-radius: 100%;
+	margin-top: -10px;
+	margin-left: 10px;
+  height: 22px;
+  width: 22px;
+	transition: border .25s linear;
+	-webkit-transition: border .25s linear;
 }
 
-input[type=radio]:checked ~ label span{
-		background-color: white;
-		border: 4px solid white;
+.select:hover .check {
+  /*border: 5px solid #FFFFFF;*/
 }
 
-#select{
+.select .check .inside {
+  visibility: hidden;
+	content: '';
+  border-radius: 100%;
+  height: 14px;
+  width: 14px;
+  margin-top: 4px;
+	margin-left: 4px;
+	transition: background 0.25s linear;
+	-webkit-transition: background 0.25s linear;
+	background: #7D8890;
+}
+
+input[type=radio]:checked ~ .check {
+  border: 5px solid #FFFFFF;
+}
+
+input[type=radio]:checked ~ .check .inside{
+	visibility: visible;
+  background: #FFFFFF;
+}
+
+.select {
 	display: inline-block;
-	vertical-align: bottom;
+	vertical-align: middle;
 }
 
-#group_info{
+.group-info {
 	display: inline-block;
 	margin-left: 10px;
 	margin-top: 5px;
-	vertical-align: text-bottom;;
+	vertical-align: text-bottom;
+}
+
+#contact_info{
+	display: inline-block;
+	margin-left: 10px;
+	margin-top: 12px;
+	vertical-align: text-center;
+}
+
+#contact_footer{
+	text-align: center;
+	margin-left: 10px;
+	margin-right: 10px;
+	vertical-align: middle;
 }
 
 h2{
 	margin: 0;
 	text-align: left;
+	color: #7D8890;
 }
 
 h5{
 	margin: 0;
 	text-align: left;
-	font-style: italic;
+	font-weight: 400;
 }
 
 .no-padding {
@@ -76,38 +119,64 @@ h5{
 	height: 50px;
 	width: 100%;
 	display: flex;
-  align-items: center;
-  justify-content: center;
+	align-items: center;
+	justify-content: center;
 }
 
-#blue-panel p{
+#blue-panel {
 	color: white;
 	font-size: 28px;
 }
 
 #blue-button{
-    background-color: #1F8DD6;
-    border-bottom: 5px;
-    color: white;
-    padding: 10px;
-		margin-left: 1px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 20px;
-		width: 38%;
-		border: 0;
-		outline: none;
+  background-color: #1F8DD6;
+  color: white;
+  padding: 10px;
+	/*margin-left: 1px;*/
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+	width: 38%;
+	border: 0;
+	outline: none;
+}
+
+#key-info {
+	margin-left: 10px;
+	margin-right: 10px;
+	padding: 0;
 }
 
 #key-text {
-  width: auto;
-  padding: 12px;
-  margin: 8px;
-  box-sizing: border-box;
+	width: 59%;
+	padding: 12px;
+	margin-left: 8px;
+	margin-right: 0px;
+	box-sizing: border-box;
 	font-size: 20px;
 	color: #7D8890;
+	height: 50px;
 }
+
+.back-button{
+
+}
+
+.edit_button button{
+	background-color: #7D8890;
+	border-bottom: 5px;
+	color: white;
+	text-decoration: none;
+	display: inline-block;
+	border: 0;
+	outline: none;
+}
+
+.edit_button #edit_contact{
+
+}
+
 
 #top-buttons button {
 	background-color: #7D8890;
@@ -231,4 +300,28 @@ h5{
 	width: 183px;
 	margin-top: 5px;
 	margin-left: 5px;
+}
+
+#display-name-info {
+	margin: 8px;
+}
+
+#display-name-label {
+	display: inline-block;
+	font-size: 20px;
+	margin-right: 8px;
+}
+
+#display-name {
+	display: inline-block;
+	color: #7D8890;
+	font-size: 20px;
+	align-self: right;
+	padding: 8px;
+	width: 46%;
+}
+
+#display-name:focus{
+	box-shadow: none;
+	outline: none;
 }
