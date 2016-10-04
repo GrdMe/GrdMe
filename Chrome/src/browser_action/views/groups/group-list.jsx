@@ -54,7 +54,8 @@ var GroupList = React.createClass({
         }
       }
     };
-    var groupEntries = Object.keys(groups).map(x => <GroupEntry name={x} members={Object.keys(groups[x].members).join(", ")}/>);
+    //Need to fix key attribute to be unique
+    var groupEntries = Object.keys(groups).map(x => <GroupEntry key={x} name={x} members={Object.keys(groups[x].members).join(", ")}/>);
     return(groupEntries);
   },
 
