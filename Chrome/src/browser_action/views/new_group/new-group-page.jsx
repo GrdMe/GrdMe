@@ -7,9 +7,9 @@ var NewGroupPage = React.createClass({
   render : function(){
     return(
       <div>
-        <HeadPanel>NEW GROUP</HeadPanel>
+        <HeadPanel>NEW CIRCLE</HeadPanel>
         <div id="group-input">
-          <span id="group-name">GROUP NAME</span>
+          <span id="group-name">CIRCLE NAME</span>
           <input
             type="text"
             id="group-text"
@@ -22,7 +22,7 @@ var NewGroupPage = React.createClass({
             <button id="cancel">Cancel</button>
           </div>
           <div id="right-col">
-            <button id="blue-button">CREATE GROUP</button>
+            <button id="blue-button">CREATE CIRCLE</button>
           </div>
         </div>
       </div>

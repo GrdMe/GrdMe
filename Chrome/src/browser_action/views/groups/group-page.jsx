@@ -15,7 +15,7 @@ var Buttons = React.createClass({
   render: function(){
     return(
       <div id="top-buttons">
-        <button type="button" className="gray-button" id="new-group" onClick={()=>{this.props.navigate(-1)}}>+ NEW GROUP</button>
+        <button type="button" className="gray-button" id="new-group" onClick={()=>{this.props.navigate(-1)}}>+ NEW CIRCLE</button>
         <button type="button" className="gray-button" id="manage-contacts" onClick={()=>{this.props.navigate(1)}}>MANAGE CONTACTS</button>
       </div>
     )
@@ -23,7 +23,7 @@ var Buttons = React.createClass({
 });
 
 var GroupPage = React.createClass({
-  
+
   navigate: function(page){
     switch (page) {
       case -1:
@@ -40,7 +40,7 @@ var GroupPage = React.createClass({
   render: function(){
     return(
       <div className="no-padding">
-        <HeadPanel>GROUPS</HeadPanel>
+        <HeadPanel>CIRCLES</HeadPanel>
         <Buttons navigate={this.navigate}/>
         <GroupList/>
         <KeyInfo/>
