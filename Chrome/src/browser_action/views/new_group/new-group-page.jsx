@@ -13,7 +13,7 @@ var NewGroupPage = React.createClass({
           <input
             type="text"
             id="group-text"
-            value="Sample Group"  //hard coded right now, will add in front-end functionality to support backend
+            defaultValue="Sample Circle"  //hard coded right now, will add in front-end functionality to support backend
           />
         </div>
         <ContactSelection/>
