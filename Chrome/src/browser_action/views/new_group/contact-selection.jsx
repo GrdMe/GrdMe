@@ -13,7 +13,7 @@ var ContactSelection = React.createClass({
               <input
                 type="text"
                 id="contact-search"
-                value="Name"  //hard coded right now, will add in front-end functionality to support backend
+                defaultValue="Name"  //hard coded right now, will add in front-end functionality to support backend
               />
               <UnaddedContacts/>
             </div>

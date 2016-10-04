@@ -4,6 +4,11 @@ var NewGroupPage = require('./new_group/new-group-page.jsx');
 var ContactsPage = require('./contacts/contacts-page.jsx');
 
 var PageContainer = React.createClass({
+
+  propTypes: {
+    storageManager : React.PropTypes.object.isRequired
+  },
+
   getInitialState : function() {
     return({
       step : 0
@@ -21,13 +26,13 @@ var PageContainer = React.createClass({
   render : function(){
     switch (this.state.step) {
       case -1:
-        return(<ContactsPage back={this.incrementStep}/>);
+        return(<ContactsPage {...this.props} back={this.incrementStep}/>);
       case 0:
-        return(<GroupPage contacts={this.decrementStep} newGroup={this.incrementStep}/>);
+        return(<GroupPage {...this.props} contacts={this.decrementStep} newGroup={this.incrementStep}/>);
       case 1:
-        return(<NewGroupPage back={this.decrementStep}/>);
+        return(<NewGroupPage {...this.props} back={this.decrementStep}/>);
       default:
-        return(<GroupPage contacts={this.decrementStep} newGroup={this.incrementStep}/>);
+        return(<GroupPage {...this.props} contacts={this.decrementStep} newGroup={this.incrementStep}/>);
     }
   }
 });

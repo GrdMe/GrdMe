@@ -4,7 +4,7 @@ var GroupEntry = React.createClass({
   propTypes: {
     name: React.PropTypes.string.isRequired,
     // TODO: specific proptype check
-    members: React.PropTypes.object.isRequired
+    members: React.PropTypes.string.isRequired
   },
 
   render: function(){

@@ -16,7 +16,7 @@ var Buttons = React.createClass({
   render: function(){
     return(
       <div id="top-buttons">
-        <button type="button" className="gray-button" id="new-group" onClick={()=>{this.props.navigate(-1)}}>+ NEW GROUP</button>
+        <button type="button" className="gray-button" id="new-group" onClick={()=>{this.props.navigate(-1)}}>+ NEW CIRCLE</button>
         <button type="button" className="gray-button" id="manage-contacts" onClick={()=>{this.props.navigate(1)}}>MANAGE CONTACTS</button>
       </div>
     )
@@ -24,6 +24,12 @@ var Buttons = React.createClass({
 });
 
 var GroupPage = React.createClass({
+
+  propTypes : {
+    storageManager : React.PropTypes.object.isRequired,
+    contacts : React.PropTypes.func.isRequired,
+    newGroup : React.PropTypes.func.isRequired
+  },
 
   navigate: function(page){
     switch (page) {
@@ -41,10 +47,10 @@ var GroupPage = React.createClass({
   render: function(){
     return(
       <div className="no-padding">
-        <HeadPanel>GROUPS</HeadPanel>
+        <HeadPanel>CIRCLES</HeadPanel>
         <div className="content-wrapper">
           <Buttons navigate={this.navigate}/>
-          <GroupList/>
+          <GroupList {...this.props}/>
           <KeyInfo/>
           <DisplayNameInfo/>
         </div>
