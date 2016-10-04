@@ -7,13 +7,13 @@ var NewGroupPage = React.createClass({
   render : function(){
     return(
       <div>
-        <HeadPanel>NEW GROUP</HeadPanel>
+        <HeadPanel>NEW CIRCLE</HeadPanel>
         <div id="group-input">
-          <span id="group-name">GROUP NAME</span>
+          <span id="group-name">CIRCLE NAME</span>
           <input
             type="text"
             id="group-text"
-            value="Sample Group"  //hard coded right now, will add in front-end functionality to support backend
+            defaultValue="Sample Circle"  //hard coded right now, will add in front-end functionality to support backend
           />
         </div>
         <ContactSelection/>
@@ -22,7 +22,7 @@ var NewGroupPage = React.createClass({
             <button id="cancel" onClick={this.props.back}>Cancel</button>
           </div>
           <div id="right-col">
-            <button id="blue-button">CREATE GROUP</button>
+            <button id="blue-button">CREATE CIRCLE</button>
           </div>
         </div>
       </div>

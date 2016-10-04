@@ -16,7 +16,7 @@ body {
 .groupEntry, .contactEntry{
 	margin: 0;
 	color: #7D8890;
-  background: #white;
+  background: white;
 	border-bottom: 1px solid #7D8890;
   height: 50px;
 	text-align: center;
