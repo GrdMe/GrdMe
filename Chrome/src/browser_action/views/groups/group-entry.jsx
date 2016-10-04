@@ -1,5 +1,5 @@
 var React = require('react');
-var FontAwesome = require('react-fontawesome');
+// var FontAwesome = require('react-fontawesome');
 
 var GroupEntry = React.createClass({
   propTypes: {
@@ -8,10 +8,14 @@ var GroupEntry = React.createClass({
     members: React.PropTypes.string.isRequired
   },
 
+  isSelected : function(){
+    this.props.updateGroup(this.props.name);
+  },
+
   render: function(){
     return(
-        <div className="group-entry">
-          <div className="select">
+        <div className={this.props.selectedGroup==this.props.name ? "group-entry-selected" : "group-entry-unselected"}>
+          <div className="select" onClick={this.isSelected}>
             <input type="radio"/>
             <div className="check"><div className="inside"></div></div>
           </div>
@@ -23,10 +27,10 @@ var GroupEntry = React.createClass({
             </div>
             <div className="group-icons">
               <div className="group-settings">
-                <FontAwesome name="pencil" />
+                {/* <FontAwesome name="pencil" /> */}
               </div>
               <div className="group-delete">
-                <FontAwesome name="trash" />
+                {/* <FontAwesome name="trash" /> */}
               </div>
             </div>
           </div>

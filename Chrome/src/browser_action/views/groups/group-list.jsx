@@ -2,6 +2,17 @@ var React = require('react');
 var GroupEntry = require('./group-entry.jsx');
 
 var GroupList = React.createClass({
+
+  getInitialState : function() {
+    return({
+      selectedGroup : ""
+    });
+  },
+
+  setSelectedGroup : function(name){
+    this.setState({selectedGroup : name});
+  },
+
   // TODO: implement logic for getting current user's groups
   getGroups: function(){
     // TODO: remove hardcoded example data
@@ -55,7 +66,7 @@ var GroupList = React.createClass({
       }
     };
     //Need to fix key attribute to be unique
-    var groupEntries = Object.keys(groups).map(x => <GroupEntry key={x} name={x} members={Object.keys(groups[x].members).join(", ")}/>);
+    var groupEntries = Object.keys(groups).map(x => <GroupEntry key={x} selectedGroup={this.state.selectedGroup} updateGroup={this.setSelectedGroup} name={x} members={Object.keys(groups[x].members).join(", ")}/>);
     return(groupEntries);
   },
 
