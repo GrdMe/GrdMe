@@ -6,9 +6,12 @@ var ContactEntry = React.createClass({
   },
 
   handleChange: function(event) {
-    this.props.onUserInput(this.refs.searchStringInput.value);
-    this.setState({name: event.refs.name.value});
-    console.log(this.props.name);
+    this.props.onUserInput(this.refs.name.value);
+    this.setState({name: event.target.value});
+
+    //var val = this.refs.name.getDOMNode().value;
+
+    //console.log(val);
   },
 
   getInitialState : function(){
@@ -29,7 +32,7 @@ var ContactEntry = React.createClass({
         <div className= "contactEntry">
           <div id = "contact_info">
             <form>
-              <input type="text" ref = "name" onChange={this.handleChange} value={this.props.name} ></input>
+              <input type="text" ref = "name" onChange={this.handleChange} defaultValue={this.props.name}></input>
             </form>
           </div>
 
@@ -40,7 +43,7 @@ var ContactEntry = React.createClass({
       );
     }else{
       return(
-        <div className= "contactEntry">
+        <div className="contactEntry">
           <div id = "contact_info">
             <h2>{this.props.name}</h2>
           </div>
