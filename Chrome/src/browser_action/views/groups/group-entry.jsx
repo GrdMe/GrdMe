@@ -14,8 +14,8 @@ var GroupEntry = React.createClass({
 
   render: function(){
     return(
-        <div className={this.props.selectedGroup==this.props.name ? "group-entry-selected" : "group-entry-unselected"}>
-          <div className="select" onClick={this.isSelected}>
+        <div className={this.props.selectedGroup==this.props.name ? "group-entry-selected" : "group-entry-unselected"} onClick={this.isSelected}>
+          <div className="select" >
             <input type="radio"/>
             <div className="check"><div className="inside"></div></div>
           </div>
