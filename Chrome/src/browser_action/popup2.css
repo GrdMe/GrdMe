@@ -44,7 +44,6 @@ body {
   background: white;
 	border-bottom: 1px solid #7D8890;
   height: 50px;
-	text-align: center;
 }
 
 #group_list, #contact_list{
@@ -87,8 +86,8 @@ input[type=radio]{
   /*border: 5px solid #FFFFFF;*/
 }
 
-.group-entry-unselected > .select .check .inside {
-  visibility: hidden;
+
+div[class="group-entry-unselected"]:hover > .select .check .inside{
 	content: '';
   border-radius: 100%;
   height: 14px;
@@ -101,7 +100,6 @@ input[type=radio]{
 }
 
 .group-entry-selected > .select .check .inside {
-  visibility: hidden;
 	content: '';
   border-radius: 100%;
   height: 14px;
@@ -213,18 +211,19 @@ h5{
 
 }
 
-.edit_button button{
+#edit_button, #done_button{
+	display: inline-block;
+	vertical-align: bottom;
 	background-color: #7D8890;
 	border-bottom: 5px;
 	color: white;
 	text-decoration: none;
-	display: inline-block;
 	border: 0;
 	outline: none;
 }
 
-.edit_button #edit_contact{
-
+#edit_button > #edit_contact{
+	text-align: right;
 }
 
 
