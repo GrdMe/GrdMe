@@ -2,7 +2,7 @@ var React = require('react');
 var GroupEntry = require('./group-entry.jsx');
 
 var GroupList = React.createClass({
-
+  //TODO:Need a unique identifier for selected group
   getInitialState : function() {
     return({
       selectedGroup : ""
@@ -13,7 +13,6 @@ var GroupList = React.createClass({
     this.setState({selectedGroup : name});
   },
 
-  // TODO: implement logic for getting current user's groups
   getGroups: function(){
     // TODO: remove hardcoded example data
     var groups = {
