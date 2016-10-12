@@ -1,22 +1,22 @@
 var React = require('react');
-var HeadPanel = require('../head-panel.jsx');
+var HeadPanel = require('./head-panel.jsx');
 var ContactList = require('./contact-list.jsx');
+var KeyInfo = require('./key-info.jsx');
+var DisplayNameInfo = require('./display-name-info.jsx');
 
 var ContactsPage = React.createClass({
 
   render: function(){
     return(
       <div>
-        <HeadPanel>
-        <div className="back-button"><button type="button" id="blue-button" onClick={this.props.back}>&lt;</button></div>
-            CONTACTS
-        </HeadPanel>
+        <HeadPanel>CONTACTS</HeadPanel>
         <ContactList/>
 
         <div id = "contact_footer">
           <h2>To add a new contact, have someone send you their GrdMe ID</h2>
         </div>
-
+        <KeyInfo/>
+        <DisplayNameInfo/>
       </div>
     );
   }
