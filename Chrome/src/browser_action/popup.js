@@ -142,7 +142,7 @@ function clickInstall() {
     var key = bg.base64.encode(bg.axolotl_crypto.randomBytes(32));
     //store longterm key in storage, also make a contact which is user for
     //ability to see own's key
-    chrome.storage.local.set({ 'longtermkey': key });
+    chrome.storage.local.set({ 'longtermkey': key }); 
     storageManager.addContact('MY_LONG_TERM_KEY', key, [], doNothing, []);
     //on success
     chrome.storage.local.set({ 'installed': true }, function() {

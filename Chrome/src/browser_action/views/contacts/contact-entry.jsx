@@ -6,16 +6,16 @@ var ContactEntry = React.createClass({
   },
 
   handleChange: function(event) {
-    this.props.onUserInput(this.refs.name.value);
+    //this.props.onUserInput(this.refs.name.value);
     this.setState({name: event.target.value});
 
     //var val = this.refs.name.getDOMNode().value;
 
-    //console.log(val);
+    console.log("hello");
   },
 
   getInitialState : function(){
-    return {editable : false};
+    return {editable : false, name : this.props.name};
   },
 
   onClickEdit : function(){
@@ -32,7 +32,7 @@ var ContactEntry = React.createClass({
         <div className= "contactEntry">
           <div id = "contact_info">
             <form>
-              <input type="text" ref = "name" onChange={this.handleChange} defaultValue={this.props.name}></input>
+              <input type="text" ref = "name" onChange={this.handleChange} defaultValue={this.state.name}></input>
             </form>
           </div>
 
@@ -45,7 +45,7 @@ var ContactEntry = React.createClass({
       return(
         <div className="contactEntry">
           <div id = "contact_info">
-            <h2>{this.props.name}</h2>
+            <h2>{this.state.name}</h2>
           </div>
 
           <div id ="edit_button">
