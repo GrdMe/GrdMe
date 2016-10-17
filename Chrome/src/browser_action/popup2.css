@@ -12,136 +12,42 @@ body {
 	/*padding: 12px;*/
 }
 
-.group-entry-unselected{
-	margin: 0;
-	color: #7D8890;
-  background: #white;
-	border-bottom: 1px solid #7D8890;
-  height: 50px;
-	text-align: left;
-	transition: background color .25s linear;
-	-webkit-transition: background color .25s linear;
-}
-
-.group-entry-selected {
-	margin: 0;
-	color: #fff;
-  background: #1F8DD6;
-	border-bottom: 1px solid #7D8890;
-  height: 50px;
-	text-align: left;
-}
-
-.group-entry i.fa {
-	color: #7D8890;
-}
-
 .contactEntry{
+	display: flex;
+	flex-direction: row;
+	flex-wrap:wrap;
+	justify-content:space-between;
 	margin: 0;
 	color: #7D8890;
   background: white;
 	border-bottom: 1px solid #7D8890;
-  height: 50px;
+  height: 35px;
 }
 
-#group_list, #contact_list{
+#contact_list{
 	margin: 8px;
 	height: 250px;
 	border: 1px solid #7D8890;
 	overflow-y: scroll;
 }
 
-input[type=radio]{
-	/*visibility: hidden;*/
-	display: none;
-}
-
-.group-entry-unselected > .select .check{
-  display: block;
-  border: 3px solid #7D8890;
-  border-radius: 100%;
-	margin-top: -20px;
-	margin-left: 10px;
-  height: 22px;
-  width: 22px;
-	transition: border .25s linear;
-	-webkit-transition: border .25s linear;
-}
-
-.group-entry-selected > .select .check{
-  display: block;
-  border: 3px solid #fff;
-  border-radius: 100%;
-	margin-top: -20px;
-	margin-left: 10px;
-  height: 22px;
-  width: 22px;
-	transition: border .25s linear;
-	-webkit-transition: border .25s linear;
-}
-
-.select:hover .check {
-  /*border: 5px solid #FFFFFF;*/
-}
-
-
-div[class="group-entry-unselected"]:hover > .select .check .inside{
-	content: '';
-  border-radius: 100%;
-  height: 14px;
-  width: 14px;
-  margin-top: 4px;
-	margin-left: 4px;
-	transition: background 0.25s linear;
-	-webkit-transition: background 0.25s linear;
-	background: #7D8890;
-}
-
-.group-entry-selected > .select .check .inside {
-	content: '';
-  border-radius: 100%;
-  height: 14px;
-  width: 14px;
-  margin-top: 4px;
-	margin-left: 4px;
-	transition: background 0.25s linear;
-	-webkit-transition: background 0.25s linear;
-	background: #fff;
-}
-
-input[type=radio]:checked ~ .check {
-  border: 5px solid #FFFFFF;
-}
-
-input[type=radio]:checked ~ .check .inside{
-	visibility: visible;
-  background: #FFFFFF;
-}
-
-.select {
-	display: inline-block;
-	vertical-align: middle;
-}
-
-.group-info {
-	display: inline-block;
-	margin-left: 10px;
-	margin-top: 7px;
-	vertical-align: text-bottom;
-}
-
 #contact_info{
 	display: inline-block;
 	margin-left: 10px;
-	margin-top: 12px;
-	vertical-align: text-center;
+	margin-top: 7px;
+	vertical-align: center;
 }
 
 #contact_footer{
 	text-align: center;
-	margin-left: 10px;
-	margin-right: 10px;
+	margin-left: 5px;
+	margin-right: 5px;
 	vertical-align: middle;
+}
+
+#contact_footer > p{
+	font-weight: bold;
+	font-size: 13.2px;
 }
 
 h2{
@@ -205,23 +111,28 @@ h5{
 	height: 50px;
 }
 
-.back-button{
-
+.contactButtons{
+	display: flex;
+	flex-direction: row;
+	flex-wrap:wrap;
+	justify-content:space-between;
 }
 
-#edit_button, #done_button{
+#edit_contact{
 	display: inline-block;
 	vertical-align: bottom;
+}
+
+#edit_button, #delete_button{
+	margin-right: 5px;
+	margin-top: 7.5px;
 	background-color: #7D8890;
 	border-bottom: 5px;
 	color: white;
 	text-decoration: none;
 	border: 0;
 	outline: none;
-}
-
-#edit_button > #edit_contact{
-	text-align: right;
+	height: 20px;
 }
 
 
@@ -239,7 +150,7 @@ h5{
 	outline: none;
 }
 
-#top-buttons #new-group{
+#top-buttons{
 	width: 38%;
 }
 
@@ -247,26 +158,9 @@ h5{
 	width: 57%;
 }
 
-#group-input{
-	margin: 10px;
-	display: flex;
-  align-items: center;
-}
-
-#group-name, #members, #filter, #added, #cancel{
+#members, #filter, #added, #cancel{
 	font-size: 20px;
 	color: #7D8890;
-}
-
-#group-text{
-	font-size: 20px;
-	color: #7D8890;
-	outline: none;
-	border: 2px solid #7D8890;
-	float: right;
-	width: 230px;
-	padding: 3px;
-	margin-left: 15px;
 }
 
 #cancel{
