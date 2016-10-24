@@ -6,7 +6,8 @@ var ContactEntry = React.createClass({
     },
 
     handleChange: function(event) {
-      this.setState({name: event.target.value});
+      this.name = event.target.value;
+      // this.setState({name: event.target.value});
     },
 
     getInitialState : function(){
@@ -18,11 +19,23 @@ var ContactEntry = React.createClass({
     },
 
     onClickDone : function(){
-      this.setState({editable : false});
+      var self = this;
+      chrome.storage.local.get({contact: {}}, function(result){
+        result.contact[self.name] = result.contact[self.state.name];
+        delete result.contact[self.state.name];
+        chrome.storage.local.set({contact: result.contact}, function(){});
+        self.setState({ name : self.name, editable : false});
+      });
+
     },
 
     onClickDelete : function(){
-      this.props.delete(this.state.name);
+      var self = this;
+      chrome.storage.local.get({contact: {}}, function(result){
+        delete result.contact[self.state.name];
+        chrome.storage.local.set({contact: result.contact}, function(){});
+        self.props.refresh();
+      });
     },
 
     render : function(){
