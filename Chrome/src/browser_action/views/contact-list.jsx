@@ -1,6 +1,5 @@
 var React = require('react');
 var ContactEntry = require('./contact-entry.jsx');
-var StorageManager = require('./storage_manager.js');
 
 var ContactList = React.createClass({
 
