@@ -3,7 +3,6 @@ var HeadPanel = require('./head-panel.jsx');
 var ContactList = require('./contact-list.jsx');
 var KeyInfo = require('./key-info.jsx');
 var DisplayNameInfo = require('./display-name-info.jsx');
-var StorageManager = require('./storage_manager.js');
 
 var ContactsPage = React.createClass({
 
@@ -14,7 +13,7 @@ var ContactsPage = React.createClass({
         <ContactList/>
 
         <div id = "contact_footer">
-          <p>To add a new contact, have someone send you their GrdMe ID</p>
+          <p>To add a contact, have someone send you their Contact Code.</p>
         </div>
         <KeyInfo/>
         <DisplayNameInfo/>

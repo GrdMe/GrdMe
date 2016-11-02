@@ -89,7 +89,7 @@ h5{
   text-decoration: none;
   display: inline-block;
   font-size: 20px;
-	width: 38%;
+	width: 100%;
 	border: 0;
 	outline: none;
 }
@@ -100,16 +100,16 @@ h5{
 	padding: 0;
 }
 
-#key-text {
-	width: 59%;
+/*#key-text {
+	width: 37%;
 	padding: 12px;
 	margin-left: 8px;
 	margin-right: 0px;
 	box-sizing: border-box;
 	font-size: 20px;
 	color: #7D8890;
-	height: 50px;
-}
+	height: 48px;
+}*/
 
 .contactButtons{
 	display: flex;

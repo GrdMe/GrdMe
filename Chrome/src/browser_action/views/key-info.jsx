@@ -23,17 +23,19 @@ var KeyInfo = React.createClass({
       return(
         <div id="key-info">
           <CopyToClipboard text={this.state.longtermkey}>
-          <button type="button" id="blue-button">COPY MY KEY</button>
+          <button type="button" id="blue-button" onClick={this.toastMessage}>COPY MY CONTACT CODE</button>
           </CopyToClipboard>
-          <input
-            type="text"
-            id="key-text"
-            value={this.state.longtermkey}
-            readOnly
-          />
         </div>
       );
     }
+
+    // <input
+    //   type="text"
+    //   id="key-text"
+    //   value="*******************"
+    //   readOnly
+    // />
+
     else{
       return(
         <div id = "key-info">
@@ -41,6 +43,10 @@ var KeyInfo = React.createClass({
         </div>
       );
     }
+  },
+
+  toastMessage : function(){
+      //idk
   },
 
   generateKey : function(){
@@ -51,7 +57,6 @@ var KeyInfo = React.createClass({
     this.forceUpdate();
   },
 
-  // TODO: change hardcoded value to pull from backend
   render: function(){
     return(
       <div>
