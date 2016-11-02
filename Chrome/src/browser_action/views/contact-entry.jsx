@@ -6,6 +6,9 @@ var ContactEntry = React.createClass({
     },
 
     handleChange: function(event) {
+      if(event.keyCode == 13){
+        this.onClickDone();
+      }
       this.name = event.target.value;
       // this.setState({name: event.target.value});
     },
@@ -18,13 +21,22 @@ var ContactEntry = React.createClass({
       this.setState({editable : true});
     },
 
-    onClickDone : function(){
+    onClickDone : function(e){
+      e.preventDefault();
       var self = this;
       chrome.storage.local.get({contact: {}}, function(result){
         result.contact[self.name] = result.contact[self.state.name];
-        delete result.contact[self.state.name];
-        chrome.storage.local.set({contact: result.contact}, function(){});
-        self.setState({ name : self.name, editable : false});
+        console.log(self.name);
+        console.log(self.state.name);
+        if(self.name != self.state.name && self.name != undefined){
+          console.log("don't wanna be here!");
+          delete result.contact[self.state.name];
+          chrome.storage.local.set({contact: result.contact}, function(){});
+          self.setState({ name : self.name, editable : false});
+        }else{
+          //chrome.storage.local.set({contact: result.contact}, function(){});
+          self.setState({ name : self.state.name, editable : false});
+        }
       });
 
     },
@@ -38,19 +50,23 @@ var ContactEntry = React.createClass({
       });
     },
 
+    doNothing : function(){
+      return;
+    },
+
     render : function(){
       if(this.state.editable){
         return(
           <div className= "contactEntry">
             <div id = "contact_info">
-              <form>
+              <form onSubmit={this.onClickDone}>
                 <input type="text" ref = "name" onChange={this.handleChange} defaultValue={this.state.name}></input>
               </form>
             </div>
 
           <div className="contactButtons">
             <div id ="edit_contact">
-              <button type="button" id="edit_button" onClick={this.onClickDone}>DONE</button>
+              <button type="button" id="edit_button" onClick={this.onClickDone} onKeyDown={this.doNothing}>DONE</button>
             </div>
 
             <div id = "delete_contact">
@@ -69,7 +85,7 @@ var ContactEntry = React.createClass({
 
           <div className="contactButtons">
             <div id ="edit_contact">
-              <button type="button" id="edit_button" onClick={this.onClickEdit}>EDIT</button>
+              <button type="button" id="edit_button" onClick={this.onClickEdit} onKeyDown={this.doNothing}>EDIT</button>
             </div>
 
             <div id = "delete_contact">
