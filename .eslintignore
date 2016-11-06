@@ -1,3 +1,2 @@
-Firefox/src/lib/*
-Firefox/src/data/lib/*
-Chrome/src/assets/inject/lib/*
+node_modules/
+Chrome/dist/
