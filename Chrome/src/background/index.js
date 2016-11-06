@@ -1,7 +1,5 @@
 import base64 from 'base64-arraybuffer';
 import ioClient from 'socket.io-client';
-import axolotl from 'axolotl';
-import axolotlCrypto from 'axolotl-crypto';
 import { ab2str, keypairDecode, keypairEncode, str2ab } from './base64-helper';
 
 // TODO: Remove this once we go to production
@@ -14,6 +12,11 @@ process.stderr = {
     console.error(t);
   },
 };
+
+// NOTE: these need to be required rather than imported in order to let them read the process
+// global defined above
+const axolotl = require('axolotl');
+const axolotlCrypto = require('axolotl-crypto');
 
 // variables
 const numPreKeys = 10;
