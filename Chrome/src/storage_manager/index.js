@@ -3,7 +3,7 @@
  * messages.
  */
 
-const StorageManager = () => {
+const StorageManager = {
   /**
    * Add (or update) a contact to local storage
    * @param {string} localName: the unique user given name
@@ -12,7 +12,7 @@ const StorageManager = () => {
    * @param {function} callback: callback function after contact stored
    * @param {array} callbackArgs: array of args for callback function
    */
-  this.addContact = (localName, publicName, deviceIDs, callback, callbackArgs) => {
+  addContact: (localName, publicName, deviceIDs, callback, callbackArgs) => {
     chrome.storage.local.get({ contact: {} }, (result) => {
       const update = result.contact;
       update[localName] = {
@@ -24,26 +24,28 @@ const StorageManager = () => {
         callback(...callbackArgs);
       });
     });
-  };
+  },
+
   /**
    * Gets contacts out of local storage and runs callback function with
    * results.
    * @param {function} callback: callback function after contacts retrieved
    * @param {array} callbackArgs: array of args for callback function
    */
-  this.getContacts = (callback, callbackArgs) => {
+  getContacts: (callback, callbackArgs) => {
     chrome.storage.local.get({ contact: {} }, (result) => {
       callbackArgs.unshift(result.contact);
       callback(...callbackArgs);
     });
-  };
+  },
+
   /**
    * Delete contact from local storage
    * @param {string} localName: the local name of the contact to be deleted
    * @param {function} callback: callback function after contact deleted
    * @param {array} callbackArgs: array of args for callback function
    */
-  this.deleteContact = (localName, callback, callbackArgs) => {
+  deleteContact: (localName, callback, callbackArgs) => {
     chrome.storage.local.get({ contact: {} }, (result) => {
       const update = result.contact;
       delete update[localName];
@@ -52,7 +54,8 @@ const StorageManager = () => {
         callback(...callbackArgs);
       });
     });
-  };
+  },
+
   /**
    * Add a group to local storage
    * @param {string} name: group name
@@ -62,7 +65,8 @@ const StorageManager = () => {
    * @param {function} callback: callback function after group added
    * @param {array} callbackArgs: array of args for callback function
    */
-  this.addGroup = (name, id, members, callback, callbackArgs) => {
+
+  addGroup: (name, id, members, callback, callbackArgs) => {
     chrome.storage.local.get({ group: {} }, (result) => {
       const update = result.group;
       update[name] = {
@@ -74,18 +78,20 @@ const StorageManager = () => {
         callback(...callbackArgs);
       });
     });
-  };
+  },
+
   /**
    * Gets groups out of local storage and runs callback function with results
    * @param {function} callback: callback function after groups retrieved
    * @param {array} callbackArgs: array of args for callback function
    */
-  this.getGroups = (callback, callbackArgs) => {
+  getGroups: (callback, callbackArgs) => {
     chrome.storage.local.get({ group: {} }, (result) => {
       callbackArgs.unshift(result.group);
       callback(...callbackArgs);
     });
-  };
+  },
+
   /**
   * WIP: not working, can just overwrite addgroup
   * Add member to group
@@ -94,7 +100,7 @@ const StorageManager = () => {
   * @param {function} callback: callback function after member added
   * @param {array} callbackArgs: array of args for callback function
   */
-  this.addGroupMember = (groupName, member, callback, callbackArgs) => {
+  addGroupMember: (groupName, member, callback, callbackArgs) => {
     chrome.storage.local.get({ group: {} }, (result) => {
       const update = result.group;
       update[groupName].members.push(member);
@@ -103,7 +109,8 @@ const StorageManager = () => {
         callback(...callbackArgs);
       });
     });
-  };
+  },
+
   /**
   * WIP: not working, can just overwrite addgroup
   * Deletes member from group in local storage
@@ -112,7 +119,7 @@ const StorageManager = () => {
   * @param {function} callback: callback function after member deleted
   * @param {array} callbackArgs: array of args for callback function
   */
-  this.deleteGroupMember = (groupName, member, callback, callbackArgs) => {
+  deleteGroupMember: (groupName, member, callback, callbackArgs) => {
     chrome.storage.local.get({ group: {} }, (result) => {
       const update = result.group;
       delete update[groupName].members[member];
@@ -121,14 +128,15 @@ const StorageManager = () => {
         callback(...callbackArgs);
       });
     });
-  };
+  },
+
   /**
   * Deletes group from local storage
   * @param {string} groupName: name of group to be deleted
   * @param {function} callback: callback function after group deleted
   * @param {array} callbackArgs: array of args for callback function
   */
-  this.deleteGroup = (groupName, callback, callbackArgs) => {
+  deleteGroup: (groupName, callback, callbackArgs) => {
     chrome.storage.local.get({ group: {} }, (result) => {
       const update = result.group;
       delete update[groupName];
@@ -137,7 +145,8 @@ const StorageManager = () => {
         callback(...callbackArgs);
       });
     });
-  };
+  },
+
   /**
   * Add message to local storage
   * @param {string} id: id of message
@@ -150,8 +159,7 @@ const StorageManager = () => {
   * @param {function} callback: callback function after message addded
   * @param {array} callbackArgs: array of args for callback function
   */
-  this.addMessage = (id, ciphertext,
-    plaintext, contact, group, timestamp, callback, callbackArgs) => {
+  addMessage: (id, ciphertext, plaintext, contact, group, timestamp, callback, callbackArgs) => {
     chrome.storage.local.get({ message: {} }, (result) => {
       const update = result.message;
       update[id] = {
@@ -166,26 +174,28 @@ const StorageManager = () => {
         callback(...callbackArgs);
       });
     });
-  };
+  },
+
   /**
    * Gets messages out of local storage and runs callback function with
    * results, puts messages object as first argument in callbackArgs
    * @param {function} callback: callback function after groups retrieved
    * @param {array} callbackArgs: array of args for callback function
    */
-  this.getMessages = (callback, callbackArgs) => {
+  getMessages: (callback, callbackArgs) => {
     chrome.storage.local.get({ message: {} }, (result) => {
       callbackArgs.unshift(result.message);
       callback(...callbackArgs);
     });
-  };
+  },
+
   /**
   * Delete message from local storage
   * @param {string} id: message id
   * @param {function} callback: callback function after message deleted
   * @param {array} callbackArgs: array of args for callback function
   */
-  this.deleteMessage = (id, callback, callbackArgs) => {
+  deleteMessage: (id, callback, callbackArgs) => {
     chrome.storage.local.get({ message: {} }, (result) => {
       const update = result.message;
       delete update[id];
@@ -194,7 +204,7 @@ const StorageManager = () => {
         callback(...callbackArgs);
       });
     });
-  };
+  },
 };
 
 export default StorageManager;

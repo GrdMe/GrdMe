@@ -4,7 +4,7 @@ import ContactsPage from './views/contacts-page';
 import StorageManager from '../storage_manager';
 
 const element = (
-  <ContactsPage storageManager={ new StorageManager() } />
+  <ContactsPage storageManager={ StorageManager } />
 );
 
 function loadPage() {

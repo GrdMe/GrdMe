@@ -1,8 +1,6 @@
 import $ from 'jquery';
 import StorageManager from '../storage_manager';
 
-const storageManager = new StorageManager();
-
 function replaceKeyInDOM(storage, key, original) {
   for (const contact in storage) {
     if (storage.hasOwnProperty(contact)) {
@@ -96,7 +94,7 @@ chrome.storage.local.get('longtermkey', (result) => {
         const text = '~~This is your key!~~';
         document.body.innerHTML = document.body.innerHTML.replace(original, text);
       } else {
-        storageManager.getContacts(replaceKeyInDOM, callbackArgs);
+        StorageManager.getContacts(replaceKeyInDOM, callbackArgs);
       }
     } else if (msg.charAt(1) === '1') { // message
       // var split = msg.split('#'); // delimeter between nonce, key (not used)
@@ -104,7 +102,7 @@ chrome.storage.local.get('longtermkey', (result) => {
       // var key = split[1];
       const original = tags[i];
       const callbackArgs = [nonce, original];
-      storageManager.getMessages(replaceMessageInDOM, callbackArgs);
+      StorageManager.getMessages(replaceMessageInDOM, callbackArgs);
     } else {
       // invalid
       document.body.innerHTML = document.body.innerHTML.replace(tags[i], '~~INVALID KEY FORMAT~~');
