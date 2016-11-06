@@ -1,20 +1,29 @@
+import base64 from 'base64-arraybuffer';
+import ioClient from 'socket.io-client';
+import axolotl from 'axolotl';
+import axolotlCrypto from 'axolotl-crypto';
+import { ab2str, keypairDecode, keypairEncode, str2ab } from './base64-helper';
+
+// TODO: Remove this once we go to production
+/* eslint-disable no-console */
+
 // libaxolotl set dressing for webpack
 process.platform = 'Grd Me';
 process.stderr = {
   write: (t) => {
-    console.log(t);
-  }
-}
+    console.error(t);
+  },
+};
 
-//variables
+// variables
 const numPreKeys = 10;
 const keyServerUrl = 'https://twofish.cs.unc.edu';
-const keyServerAPIUrl = keyServerUrl + '/api/v1/';
-//const keyServerAPIUrl = 'http://localhost:8080/api/v1/';
+const keyServerAPIUrl = `${ keyServerUrl }/api/v1/`;
+// const keyServerAPIUrl = 'http://localhost:8080/api/v1/';
 
-//edward's popup magic
+// edward's popup magic
 chrome.commands.onCommand.addListener((command) => {
-  if(command === 'textSecurePopup') {
+  if (command === 'textSecurePopup') {
     const w = 300;
     const h = 235;
     const left = Math.floor((screen.width / 2) - (w / 2));
@@ -25,183 +34,168 @@ chrome.commands.onCommand.addListener((command) => {
       type: 'popup',
       width: w,
       height: h,
-      top: top,
-      left: left,
+      top,
+      left,
     });
   }
 });
 
-chrome.runtime.onMessage.addListener(
-  //this should probably change
-  (request, sender, sendResponse) => {
-    console.log(sender.tab ?
-                'from a content script:' + sender.tab.url :
-                'from the extension');
-    if (request.greeting === 'hello') {
-      sendResponse({farewell: 'goodbye'});
-    }
-    if(request.greeting === 'encryptMe'){
-      const encrypt = base64.encode(crypto.randomBytes(32));
-      sendResponse({farewell: encrypt});
-    }
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log(sender.tab ?
+              `from a content script:${ sender.tab.url }` :
+              'from the extension');
+  if (request.greeting === 'hello') {
+    sendResponse({ farewell: 'goodbye' });
+  }
+  if (request.greeting === 'encryptMe') {
+    const encrypt = base64.encode(crypto.randomBytes(32));
+    sendResponse({ farewell: encrypt });
+  }
 });
 
-//main shit
-base64 = require('base64-arraybuffer');
-base64_helper = require('./base64-helper.js');
-storage_manager = require('./storage_manager.js');
-ioClient = require('socket.io-client');
-axolotl = require('axolotl');
-axolotl_crypto = require('axolotl-crypto');
-
-store = {
+const store = {
   base64_data: {},
-  getLocalIdentityKeyPair: () => {
-    return store.identityKeyPair;
-  },
-  getLocalRegistrationId: () => {
-    return store.base64_data.registrationId;
-  },
-  getLocalPreKeyPair: (preKeyId) => {
-    return base64_helper.keypair_decode(store.base64_data.preKeys[preKeyId].keyPair);
-  },
-  getLocalSignedPreKeyPair: (signedPreKeyId) => {
-    return base64_helper.keypair_decode(store.base64_data.preKeys[signedPreKeyId].keyPair);
-  },
-  getLocalSignedPreKeySignature: (signedPreKeyId) => {
-    return base64.decode(store.base64_data.preKeys[signedPreKeyId].signature);
-  },
-  getLocalLastResortPreKeyId: (lastResortPreKeyId) => {
-    return store.base64_data.lastResortPreKeyId;
-  },
+  getLocalIdentityKeyPair: () => store.identityKeyPair,
+  getLocalRegistrationId: () => store.base64_data.registrationId,
+  getLocalPreKeyPair: preKeyId =>
+    keypairDecode(store.base64_data.preKeys[preKeyId].keyPair),
+  getLocalSignedPreKeyPair: signedPreKeyId =>
+    keypairDecode(store.base64_data.preKeys[signedPreKeyId].keyPair),
+  getLocalSignedPreKeySignature: signedPreKeyId =>
+    base64.decode(store.base64_data.preKeys[signedPreKeyId].signature),
+  getLocalLastResortPreKeyId: () => store.base64_data.lastResortPreKeyId,
 };
-const basic_auth = (server_time) => {
-  const username = store.base64_data.identityKeyPair.public + '|' + store.getLocalRegistrationId();
-  const time = (typeof server_time !== "undefined") ? server_time : Date.now();
-  const password = time + '|' + base64.encode(axolotl_crypto.sign(store.getLocalIdentityKeyPair().private,base64_helper.str2ab(String(time))));
-  return { username: username, password:password };
+const basicAuth = (serverTime) => {
+  const username = `${ store.base64_data.identityKeyPair.pub }|${ store.getLocalRegistrationId() }`;
+  const time = (typeof serverTime !== 'undefined') ? serverTime : Date.now();
+  const password = `${ time }|${ base64.encode(axolotlCrypto.sign(store.getLocalIdentityKeyPair().priv, str2ab(String(time)))) }`;
+  return { username, password };
 };
 
-const wrapped_api_call = (type,reasource,json_body) => new Promise((resolve) => {
+const wrappedApiCall = (type, resource, jsonBody) => new Promise((resolve) => {
   const xhr = new XMLHttpRequest();
-  const auth = basic_auth();
-  xhr.open(type, keyServerAPIUrl+reasource, true);
-  xhr.setRequestHeader('Authorization', 'Basic ' + btoa(auth.username + ':' + auth.password));
+  const auth = basicAuth();
+  xhr.open(type, keyServerAPIUrl + resource, true);
+  xhr.setRequestHeader('Authorization', `Basic ${ btoa(`${ auth.username }:${ auth.password }`) }`);
   xhr.onreadystatechange = () => {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (reasource === 'key/initial') {
-          console.log({url:xhr.responseURL,body:xhr.response});
-          resolve();
-        } else {
-          console.log({url:xhr.responseURL,body:JSON.parse(xhr.response)});
-          resolve(JSON.parse(xhr.responseText));
-        }
+    if (xhr.readyState === XMLHttpRequest.DONE) {
+      if (resource === 'key/initial') {
+        console.log({ url: xhr.responseURL, body: xhr.response });
+        resolve();
+      } else {
+        console.log({ url: xhr.responseURL, body: JSON.parse(xhr.response) });
+        resolve(JSON.parse(xhr.responseText));
       }
-  }
+    }
+  };
   if (type !== 'GET') {
     xhr.setRequestHeader('Content-type', 'application/json');
-    xhr.send(JSON.stringify(json_body));
+    xhr.send(JSON.stringify(jsonBody));
   } else {
     xhr.send();
   }
 });
 const axol = axolotl(store);
 
-//initial install registration stuff
-const install_keygen = () => new Promise((resolve) => {
+// initial install registration stuff
+const installKeygen = () => new Promise((resolve) => {
   axol.generateRegistrationId().then((value) => {
     store.base64_data.registrationId = value;
     axol.generateIdentityKeyPair().then((value) => {
       store.identityKeyPair = value;
-      store.base64_data.identityKeyPair = base64_helper.keypair_encode(value);
+      store.base64_data.identityKeyPair = keypairEncode(value);
       store.base64_data.preKeys = {};
       const storeToChromeLocal = (storeBase64) => {
-        chrome.storage.local.set({store:storeBase64});
-        console.log({store:storeBase64});
+        chrome.storage.local.set({ store: storeBase64 });
+        console.log({ store: storeBase64 });
         const body = {
           lastResortKey: {
             id: store.base64_data.preKeys[store.getLocalLastResortPreKeyId()].id,
-            preKey: store.base64_data.preKeys[store.getLocalLastResortPreKeyId()].public,
+            preKey: store.base64_data.preKeys[store.getLocalLastResortPreKeyId()].pub,
           },
-          prekeys : Object.keys(store.base64_data.preKeys).filter((key) => {
-            return (store.base64_data.preKeys[key].id !== store.getLocalLastResortPreKeyId());
-          }).map((key) => {
+          prekeys: Object.keys(store.base64_data.preKeys).filter(key =>
+              store.base64_data.preKeys[key].id !== store.getLocalLastResortPreKeyId()
+            ).map((key) => {
               const current = store.base64_data.preKeys[key];
               return {
                 id: current.id,
                 signature: current.signature,
-                preKey: current.keyPair.public,
+                preKey: current.keyPair.pub,
               };
-          }),
+            }),
         };
-        wrapped_api_call('POST', 'key/initial', body).then((response) => {
+        wrappedApiCall('POST', 'key/initial', body).then(() => {
           resolve();
         });
       };
       const complete = numPreKeys + 1;
-      var progress = 0;
-      for (var index = 0; index < numPreKeys; index++) {
-        axol.generateSignedPreKey(store.getLocalIdentityKeyPair(),index).then((value) => {
-          value.keyPair = base64_helper.keypair_encode(value.keyPair);
-          value.signature = base64.encode(value.signature);
-          store.base64_data.preKeys[value.id] = value;
-          if (++progress === complete) {
-            storeToChromeLocal(store.base64_data);
-          };
-        });
+      let progress = 0;
+      const callback = (value) => {
+        value.keyPair = keypairEncode(value.keyPair);
+        value.signature = base64.encode(value.signature);
+        store.base64_data.preKeys[value.id] = value;
+        if (++progress === complete) {
+          storeToChromeLocal(store.base64_data);
+        }
+      };
+      for (let index = 0; index < numPreKeys; index++) {
+        axol.generateSignedPreKey(store.getLocalIdentityKeyPair(), index).then(callback);
       }
       axol.generateLastResortPreKey().then((value) => {
-        value.keyPair = base64_helper.keypair_encode(value.keyPair);
+        value.keyPair = keypairEncode(value.keyPair);
         store.base64_data.lastResortPreKeyId = value.id;
         store.base64_data.preKeys[value.id] = value;
         if (++progress === complete) {
           storeToChromeLocal(store.base64_data);
-        };
+        }
       });
     });
   });
 });
 
 // restore store.base64_data from chrome.storage [remove 'false && ' for normal behaviour]
-const initialize_storage = () => new Promise((resolve) => {
+const initializeStorage = () => new Promise((resolve) => {
   chrome.storage.local.get('store', (results) => {
     if (Object.keys(results).length !== 0) {
       store.base64_data = results.store;
-      store.identityKeyPair = base64_helper.keypair_decode(store.base64_data.identityKeyPair);
+      store.identityKeyPair = keypairDecode(store.base64_data.identityKeyPair);
       resolve();
     } else {
-      install_keygen().then(() => { resolve() });
+      installKeygen().then(() => { resolve(); });
     }
   });
 });
 
-const identityPubKey_search = (identityPubKey) => new Promise((resolve) => {
-  wrapped_api_call('GET', 'key/' + encodeURIComponent(identityPubKey), null).then((response) => {
-    for (element in Object.keys(response)) {
-      const device = response[Object.keys(response)[element]];
-      const preKeyBundle = {
-        identityKey: base64.decode(identityPubKey),
-        preKeyId: device.id,
-        preKey: base64.decode(device.preKey),
-        signedPreKeyId: device.id,
-        signedPreKey: base64.decode(device.preKey),
-        signedPreKeySignature: base64.decode(device.signature),
-      };
-      axol.createSessionFromPreKeyBundle(preKeyBundle).then((session) => {
-        resolve(session);
-      });
+const identityPubKeySearch = identityPubKey => new Promise((resolve) => {
+  wrappedApiCall('GET', `key/${ encodeURIComponent(identityPubKey) }`, null).then((response) => {
+    const responseKeys = Object.keys(response);
+    for (const element in responseKeys) {
+      if (responseKeys.hasOwnProperty(element)) {
+        const device = response[Object.keys(response)[element]];
+        const preKeyBundle = {
+          identityKey: base64.decode(identityPubKey),
+          preKeyId: device.id,
+          preKey: base64.decode(device.preKey),
+          signedPreKeyId: device.id,
+          signedPreKey: base64.decode(device.preKey),
+          signedPreKeySignature: base64.decode(device.signature),
+        };
+        axol.createSessionFromPreKeyBundle(preKeyBundle).then((session) => {
+          resolve(session);
+        });
+      }
     }
   });
 });
 
-initialize_storage().then(() => {
-  identityPubKey_search(store.base64_data.identityKeyPair.public).then((session) => {
-    const message = base64_helper.str2ab('Hello Diane, Happy Tuesday!');
+initializeStorage().then(() => {
+  identityPubKeySearch(store.base64_data.identityKeyPair.pub).then((session) => {
+    const message = str2ab('Hello Diane, Happy Tuesday!');
     console.log('pre-encrypt: Hello Diane, Happy Tuesday!');
     axol.encryptMessage(session, message).then((response) => {
-      console.log('post-encrypt: '+base64_helper.ab2str(response.body));
-      axol.decryptPreKeyWhisperMessage(null, response.body).then((response) =>{
-        console.log('post-decrypt: '+base64_helper.ab2str(response.message));
+      console.log('post-encrypt:', ab2str(response.body));
+      axol.decryptPreKeyWhisperMessage(null, response.body).then((response) => {
+        console.log('post-decrypt:', ab2str(response.message));
       });
     });
   });
@@ -215,52 +209,56 @@ const socket = ioClient.connect(keyServerUrl);
 console.log(socket);
 
 // executed on successful connection to server
-socket.on('connect', function (data) {
-
-    // push auth credentials to server
-    console.log({auth: basic_auth()});
-    socket.emit('authentication', basic_auth());
+socket.on('connect', () => {
+  // push auth credentials to server
+  console.log({ auth: basicAuth() });
+  socket.emit('authentication', basicAuth());
 });
 
 // executed on 'not authorized' message from server
 socket.on('not authorized', (data) => {
-    console.log('not authorized message recieved');
-    switch(data.message){
-        case 'badly formed credentials': //indicates that authCredentials were
-            //deal with it
-            break;
-        case 'revoked': //indicates that submitted identityKey has been revoked
-            //deal with it
-            break;
-        case 'signature': //indicates that signature in password could not be verified
-            //deal with it
-            break;
-        case 'not registered': //indicates that idKey/did combo has not been registered with srerver
-            //deal with it
-            break;
-        case 'time': //indicates submitted time was out of sync w/ server
-            // this has NOT been tested
-            // emit auth credentials
-            socket.emit('authentication', basic_auth(data.serverTime));
-            break;
-    }
+  console.log('not authorized message recieved');
+  switch (data.message) {
+  case 'badly formed credentials': // indicates that authCredentials were bad
+    // deal with it
+    break;
+  case 'revoked': // indicates that submitted identityKey has been revoked
+    // deal with it
+    break;
+  case 'signature': // indicates that signature in password could not be verified
+    // deal with it
+    break;
+  case 'not registered': // indicates that idKey/did combo has not been registered with srerver
+    // deal with it
+    break;
+  case 'time': // indicates submitted time was out of sync w/ server
+    // this has NOT been tested
+    // emit auth credentials
+    socket.emit('authentication', basicAuth(data.serverTime));
+    break;
+  default:
+    console.error('unrecognized "not authorized" message', data.message);
+  }
 });
 
 // executed on 'authorized' message from server
-socket.on('authorized', (data) => {
-    //lets you know that socket.emit('authentication'... was successful
-    console.log('authorized');
+socket.on('authorized', () => {
+  // lets you know that socket.emit('authentication'... was successful
+  console.log('authorized');
 });
 
 // executed on 'message' message from server
-socket.on('message', function(messageData) {
-    //confirm reception of message to server
-    socket.emit('recieved', {messageId: messageData.id});
+socket.on('message', (messageData) => {
+  // confirm reception of message to server
+  socket.emit('recieved', { messageId: messageData.id });
 
-    console.log(messageData);
+  console.log(messageData);
 
-    var messageHeader = messageData.header; //same header that was sent to server
-    var messageBody = messageData.body;     //same body that was sent to server
+  // const messageHeader = messageData.header; // same header that was sent to server
+  // const messageBody = messageData.body;     // same body that was sent to server
 
     // do something with messageData here
 });
+
+// TODO: Remove this once we go to production
+/* eslint-enable no-console */

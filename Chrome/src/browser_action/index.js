@@ -1,2 +1,2 @@
-require("./popup2.css");
-require("./popup.jsx");
+import './popup2.css';
+import './popup';

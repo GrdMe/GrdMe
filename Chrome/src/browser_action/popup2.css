@@ -24,28 +24,28 @@ body {
   height: 35px;
 }
 
-#contact_list{
+#contact-list{
 	margin: 8px;
 	height: 250px;
 	border: 1px solid #7D8890;
 	overflow-y: scroll;
 }
 
-#contact_info{
+#contact-info{
 	display: inline-block;
 	margin-left: 10px;
 	margin-top: 7px;
 	vertical-align: center;
 }
 
-#contact_footer{
+#contact-footer{
 	text-align: center;
 	margin-left: 5px;
 	margin-right: 5px;
 	vertical-align: middle;
 }
 
-#contact_footer > p{
+#contact-footer > p{
 	font-weight: bold;
 	font-size: 13.2px;
 }
@@ -118,12 +118,12 @@ h5{
 	justify-content:space-between;
 }
 
-#edit_contact{
+#edit-contact{
 	display: inline-block;
 	vertical-align: bottom;
 }
 
-#edit_button, #delete_button{
+#edit-button, #delete-button{
 	margin-right: 5px;
 	margin-top: 7.5px;
 	background-color: #7D8890;

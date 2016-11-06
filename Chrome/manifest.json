@@ -45,13 +45,13 @@
       "all_frames": true,
       "run_at": "document_end",
       "js": [
-        "dist/content_scripts.js"
+        "dist/content-scripts.js"
       ]
     }
   ],
-  "options_page": "dist/options_page.html",
+  "options_page": "dist/options-page.html",
   "options_ui": {
-    "page": "dist/options_page.html",
+    "page": "dist/options-page.html",
     "chrome_style": true
   },
   "commands": {
