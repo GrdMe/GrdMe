@@ -16,7 +16,7 @@ For more details about Grd Me features and protocols, visit https://grd.me/docs.
 
 Compatibility
 ==============
-Right now this browser plugin is supported in Firefox (≥ 26) and Chrome (≥ 11).
+Right now this browser plugin is supported in Chrome (≥ 11).
 
 Dev Setup
 ==============
@@ -40,4 +40,3 @@ See <http://www.wassenaar.org/> for more information.
 
 The U.S. Government Department of Commerce, Bureau of Industry and Security (BIS), has classified this software as Export Commodity Control Number (ECCN) 5D002.C.1, which includes information security software using or performing cryptographic functions with asymmetric algorithms.
 The form and manner of this distribution makes it eligible for export under the License Exception ENC Technology Software Unrestricted (TSU) exception (see the BIS Export Administration Regulations, Section 740.13) for both object code and source code.
-
