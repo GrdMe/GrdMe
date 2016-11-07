@@ -26,7 +26,7 @@ npm install
 ```
 ### 2. Build
 ```bash
-webpack -w
+webpack
 ```
 This will watch for file changes and compile.
 ### 4. Package
