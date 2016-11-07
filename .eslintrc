@@ -131,6 +131,7 @@
     "radix": 2,                      // http://eslint.org/docs/rules/radix
     "react/forbid-prop-types": ["error", { forbid: [] }], // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/forbid-prop-types.md
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }], // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-filename-extension.md
+    "react/no-danger": 2, // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-danger.md
     "vars-on-top": 2,                // http://eslint.org/docs/rules/vars-on-top
     "wrap-iife": [2, "any"],         // http://eslint.org/docs/rules/wrap-iife
     "yoda": 2,                       // http://eslint.org/docs/rules/yoda
