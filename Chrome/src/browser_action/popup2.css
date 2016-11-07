@@ -24,28 +24,28 @@ body {
   height: 35px;
 }
 
-#contact_list{
+#contact-list{
 	margin: 8px;
 	height: 250px;
 	border: 1px solid #7D8890;
 	overflow-y: scroll;
 }
 
-#contact_info{
+.contact-info{
 	display: inline-block;
 	margin-left: 10px;
 	margin-top: 7px;
 	vertical-align: center;
 }
 
-#contact_footer{
+#contact-footer{
 	text-align: center;
 	margin-left: 5px;
 	margin-right: 5px;
 	vertical-align: middle;
 }
 
-#contact_footer > p{
+#contact-footer > p{
 	font-weight: bold;
 	font-size: 13.2px;
 }
@@ -80,7 +80,7 @@ h5{
 	font-size: 28px;
 }
 
-#blue-button{
+.blue-button{
   background-color: #1F8DD6;
   color: white;
   padding: 10px;
@@ -118,12 +118,12 @@ h5{
 	justify-content:space-between;
 }
 
-#edit_contact{
+.edit-contact{
 	display: inline-block;
 	vertical-align: bottom;
 }
 
-#edit_button, #delete_button{
+.edit-button, .delete-button{
 	margin-right: 5px;
 	margin-top: 7.5px;
 	background-color: #7D8890;
@@ -136,7 +136,7 @@ h5{
 }
 
 
-#top-buttons button {
+.top-buttons button {
 	background-color: #7D8890;
 	border-bottom: 5px;
 	color: white;
@@ -150,11 +150,11 @@ h5{
 	outline: none;
 }
 
-#top-buttons{
+.top-buttons{
 	width: 38%;
 }
 
-#top-buttons #manage-contacts{
+.top-buttons #manage-contacts{
 	width: 57%;
 }
 
@@ -201,7 +201,7 @@ h5{
 	margin-bottom: 5px;
 }
 
-#contact-search, #contact-info{
+#contact-search, .contact-info{
 	font-size: 20px;
 	color: #7D8890;
 	outline: none;
@@ -213,7 +213,7 @@ h5{
 	padding: 3px;
 }
 
-#contact-info{
+.contact-info{
 	width: 180px;
 	border-bottom: 2px solid #7D8890;
 	padding: 3px;
@@ -237,7 +237,7 @@ h5{
 	border: 2px solid #7D8890;
 }
 
-#right-col #blue-button{
+.right-col .blue-button{
 	width: 183px;
 	margin-top: 5px;
 	margin-left: 5px;

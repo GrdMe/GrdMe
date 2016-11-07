@@ -23,15 +23,19 @@ module.exports = {
       crypto: __dirname + "/node_modules/crypto-browserify/index.js"
     }
   },
+  eslint: {
+    configFile: './.eslintrc'
+  },
   module: {
     loaders: [
       { test: /\.css$/,      loader: "style-loader!css-loader" },
       { test: /\.gif$/,      loader: "url-loader?limit=100000&minetype=image/gif" },
       { test: /\.png$/,      loader: "url-loader?limit=100000&minetype=image/png" },
       { test: /\.json$/,     loader: "json-loader" },
-      { test: /\.babel.js$/, loader: "babel-loader" },
-      { test: /\.jsx$/, loader: "babel-loader",
-        query:{presets:['react']}
+      {
+        test: /\.jsx?$/,
+        exclude: /(node_modules)/,
+        loaders: ['babel-loader?presets[]=react&presets[]=es2015', 'eslint-loader']
       }
     ],
     noParse: [
@@ -50,4 +54,5 @@ module.exports = {
       inject: false,
     }),
   ],
+  watch: true
 };
