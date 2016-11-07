@@ -31,7 +31,7 @@ class KeyInfo extends Component {
       return (
         <div id='key-info'>
           <CopyToClipboard text={ this.state.longtermkey }>
-            <button type='button' id='blue-button' onClick={ this.toastMessage }>
+            <button type='button' className='blue-button' onClick={ this.toastMessage }>
               COPY MY CONTACT CODE
             </button>
           </CopyToClipboard>
@@ -48,7 +48,7 @@ class KeyInfo extends Component {
 
     return (
       <div id='key-info'>
-        <button type='button' id='blue-button' onClick={ this.generateKey }>
+        <button type='button' className='blue-button' onClick={ this.generateKey }>
           GENERATE KEY
         </button>
       </div>

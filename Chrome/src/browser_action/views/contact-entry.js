@@ -58,20 +58,20 @@ class ContactEntry extends Component {
     if (editable) {
       return (
         <div className='contactEntry'>
-          <div id='contact-info'>
+          <div className='contact-info'>
             <form onSubmit={ this.onClickDone }>
               <input type='text' onChange={ this.handleChange } value={ newName } />
             </form>
           </div>
           <div className='contactButtons'>
-            <div id='edit-contact'>
-              <button type='button' id='edit-button' onClick={ this.onClickDone }>
+            <div className='edit-contact'>
+              <button type='button' className='edit-button' onClick={ this.onClickDone }>
                 DONE
               </button>
             </div>
 
-            <div id='delete-contact'>
-              <button type='button' id='delete-button' onClick={ this.onClickDelete }>
+            <div className='delete-contact'>
+              <button type='button' className='delete-button' onClick={ this.onClickDelete }>
                 DELETE
               </button>
             </div>
@@ -81,20 +81,20 @@ class ContactEntry extends Component {
     }
     return (
       <div className='contactEntry'>
-        <div id='contact-info'>
+        <div className='contact-info'>
           <h2>
             { name }
           </h2>
         </div>
         <div className='contactButtons'>
-          <div id='edit-contact'>
-            <button type='button' id='edit-button' onClick={ this.onClickEdit }>
+          <div className='edit-contact'>
+            <button type='button' className='edit-button' onClick={ this.onClickEdit }>
               EDIT
             </button>
           </div>
 
-          <div id='delete-contact'>
-            <button type='button' id='delete-button' onClick={ this.onClickDelete }>
+          <div className='delete-contact'>
+            <button type='button' className='delete-button' onClick={ this.onClickDelete }>
               DELETE
             </button>
           </div>
