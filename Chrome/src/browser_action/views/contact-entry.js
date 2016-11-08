@@ -9,6 +9,9 @@ class ContactEntry extends Component {
       newName: props.name,
     };
     this.handleChange = this.handleChange.bind(this);
+    this.onClickEdit = this.onClickEdit.bind(this);
+    this.onClickDone = this.onClickDone.bind(this);
+    this.onClickDelete = this.onClickDelete.bind(this);
   }
 
   onClickEdit() {
@@ -24,7 +27,6 @@ class ContactEntry extends Component {
       result.contact[newName] = result.contact[name];
       if (newName !== name) {
         delete result.contact[name];
-        // FIXME: this looks like we're deleting the contact, but not adding a new one. Bug?
         chrome.storage.local.set({ contact: result.contact }, () => {});
         this.setState({
           name: newName,
@@ -82,9 +84,9 @@ class ContactEntry extends Component {
     return (
       <div className='contactEntry'>
         <div className='contact-info'>
-          <h2>
+          <h5>
             { name }
-          </h2>
+          </h5>
         </div>
         <div className='contactButtons'>
           <div className='edit-contact'>
@@ -102,7 +104,7 @@ class ContactEntry extends Component {
       </div>
     );
   }
-}
+  }
 
 ContactEntry.propTypes = {
   name: PropTypes.string.isRequired,

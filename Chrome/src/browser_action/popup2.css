@@ -33,9 +33,10 @@ body {
 
 .contact-info{
 	display: inline-block;
+  width: 180px;
 	margin-left: 10px;
 	margin-top: 7px;
-	vertical-align: center;
+	vertical-align: middle;
 }
 
 #contact-footer{
@@ -58,7 +59,7 @@ h2{
 h5{
 	margin: 0;
 	text-align: left;
-	font-weight: 400;
+	font-weight: 600;
 }
 
 .no-padding {
@@ -213,12 +214,6 @@ h5{
 	padding: 3px;
 }
 
-.contact-info{
-	width: 180px;
-	border-bottom: 2px solid #7D8890;
-	padding: 3px;
-}
-
 #added-list, #unadded-list{
 	padding: 0;
 	overflow-y: scroll;
@@ -250,7 +245,7 @@ h5{
 #display-name-label {
 	display: inline-block;
 	font-size: 20px;
-	margin-right: 8px;
+	margin-right: 10px;
 }
 
 #display-name {
@@ -259,7 +254,7 @@ h5{
 	font-size: 20px;
 	align-self: right;
 	padding: 8px;
-	width: 46%;
+	width: 43%;
 }
 
 #display-name:focus{
