@@ -233,7 +233,7 @@ h5{
 }
 
 .right-col .blue-button{
-	width: 183px;
+	width: 45%;
 	margin-top: 5px;
 	margin-left: 5px;
 }
@@ -254,7 +254,7 @@ h5{
 	font-size: 20px;
 	align-self: right;
 	padding: 8px;
-	width: 43%;
+	width: 45%;
 }
 
 #display-name:focus{
