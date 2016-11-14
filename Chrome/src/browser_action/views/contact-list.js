@@ -14,7 +14,7 @@ class ContactList extends Component {
 
   getContacts() {
     // StorageManager.getContacts(x => { this.setState({ contacts: x }) }, []);
-    chrome.storage.local.get({ contact: {} }, (result) => {
+    chrome.storage.sync.get({ contact: {} }, (result) => {
       // console.log("this is the result: " + result.contact);
       this.setState({ contacts: Object.keys(result.contact) });
     });

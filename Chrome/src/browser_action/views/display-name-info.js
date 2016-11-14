@@ -14,7 +14,7 @@ class DisplayNameInfo extends Component {
   }
 
   componentDidMount() {
-    chrome.storage.local.get({ displayName: {} }, (result) => {
+    chrome.storage.sync.get({ displayName: {} }, (result) => {
       if (Object.keys(result.displayName).length !== 0) {
         this.setState({ displayName: result.displayName, editable: false });
       }
@@ -22,35 +22,41 @@ class DisplayNameInfo extends Component {
   }
 
   setDisplayName() {
-    chrome.storage.local.get({ displayName: {} }, (result) => {
+    chrome.storage.sync.get({ displayName: {} }, (result) => {
       if (result.displayName === '') {
+        this.setState({
+          editable: true,
+        });
         chrome.notifications.create('123', { type: 'basic',
           title: 'Uh Oh!',
           message: 'Please set your display name.',
           iconUrl: '../../../icons/icon48.png' },
           () => {});
+      } else {
+        this.setState({ displayName: result.displayName });
+        this.setState({
+          editable: false,
+        });
       }
-      this.setState({ displayName: result.displayName });
     });
 
-    if (this.state.displayName === null) {
-      this.setState({ displayName: 'Set Me' });
-    } else {
-      this.setState({
-        editable: false,
-      });
-    }
+    // if (this.state.displayName === null) {
+    //   this.setState({ displayName: 'Set Me' });
+    // } else {
+    //   this.setState({
+    //     editable: false,
+    //   });
+    // }
     // return this.state.displayName;
   }
 
   handleChange(event) {
-    console.log(event.target.value);
     this.setState({
       displayName: event.target.value,
       editable: true,
     });
 
-    chrome.storage.local.set({ displayName: event.target.value }, () => {});
+    chrome.storage.sync.set({ displayName: event.target.value }, () => {});
   }
 
   render() {

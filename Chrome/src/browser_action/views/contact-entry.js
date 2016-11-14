@@ -22,18 +22,18 @@ class ContactEntry extends Component {
 
   onClickDone(e) {
     e.preventDefault();
-    chrome.storage.local.get({ contact: {} }, (result) => {
+    chrome.storage.sync.get({ contact: {} }, (result) => {
       const { name, newName } = this.state;
       result.contact[newName] = result.contact[name];
       if (newName !== name) {
         delete result.contact[name];
-        chrome.storage.local.set({ contact: result.contact }, () => {});
+        chrome.storage.sync.set({ contact: result.contact }, () => {});
         this.setState({
           name: newName,
           editable: false,
         });
       } else {
-        // chrome.storage.local.set({contact: result.contact}, function(){});
+        // chrome.storage.sync.set({contact: result.contact}, function(){});
         this.setState({
           editable: false,
         });
@@ -42,10 +42,11 @@ class ContactEntry extends Component {
   }
 
   onClickDelete() {
-    chrome.storage.local.get({ contact: {} }, (result) => {
+    chrome.storage.sync.get({ contact: {} }, (result) => {
       delete result.contact[this.state.name];
-      chrome.storage.local.set({ contact: result.contact }, () => {});
+      chrome.storage.sync.set({ contact: result.contact }, () => {});
       this.props.refresh();
+      this.forceUpdate();
     });
   }
 
