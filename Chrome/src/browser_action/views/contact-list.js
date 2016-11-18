@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ContactEntry from './contact-entry';
 // import StorageManager from '../../storage_manager';
 
-// const noContacts = '';
+let noContacts = '';
 
 class ContactList extends Component {
   constructor(props) {
@@ -10,30 +10,35 @@ class ContactList extends Component {
     this.state = {
       contacts: [],
     };
+    this.refreshContact = this.refreshContact.bind(this);
   }
 
   getContacts() {
     // StorageManager.getContacts(x => { this.setState({ contacts: x }) }, []);
     chrome.storage.sync.get({ contact: {} }, (result) => {
-      // console.log("this is the result: " + result.contact);
       this.setState({ contacts: Object.keys(result.contact) });
     });
   }
 
   refreshContact() {
     // noContacts = "You don't have any contacts yet!";
+    // console.log(this.state.contacts);
     this.setState({
       contacts: [],
     });
+    this.forceUpdate();
   }
 
   renderContacts() {
+    this.getContacts();
     if (!this.state.contacts.length) {
-      // noContacts = "You don't have any contacts yet!";
-      this.getContacts();
+      // console.log('dont have any contacts anymore');
+      noContacts = "You don't have any contacts yet!";
+      // this.getContacts();
       return null;
     }
-    // noContacts = '';
+    // console.log('i do have contacts now!');
+    noContacts = '';
     const contactEntries = this.state.contacts.map(x => (
       <ContactEntry name={ x } refresh={ this.refreshContact } />
     ));
@@ -48,7 +53,9 @@ class ContactList extends Component {
     return (
       <div id='contact-list'>
         { this.renderContacts() }
-        { /* <p>{noContacts}</p> */ }
+        <div id='no-contacts'>
+          { noContacts }
+        </div>
       </div>
     );
   }

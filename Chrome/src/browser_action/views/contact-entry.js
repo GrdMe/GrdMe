@@ -42,12 +42,14 @@ class ContactEntry extends Component {
   }
 
   onClickDelete() {
+    console.log('here');
     chrome.storage.sync.get({ contact: {} }, (result) => {
       delete result.contact[this.state.name];
       chrome.storage.sync.set({ contact: result.contact }, () => {});
-      this.props.refresh();
-      this.forceUpdate();
     });
+    console.log('there');
+    this.props.refresh();
+    this.forceUpdate();
   }
 
   handleChange(event) {
