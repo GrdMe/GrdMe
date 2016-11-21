@@ -1,6 +1,15 @@
 import React, { Component } from 'react';
+import base64 from 'base64-arraybuffer';
 import CopyToClipboard from 'react-copy-to-clipboard';
-// import base64 from 'base64-arraybuffer';
+
+process.platform = 'Grd Me';
+process.stderr = {
+  write: (t) => {
+    console.error(t);
+  },
+};
+
+const axolotlCrypto = require('axolotl-crypto');
 
 // var bg = chrome.extension.getBackgroundPage();
 // var key = bg.base64.encode(bg.axolotl_crypto.randomBytes(32));
@@ -23,9 +32,18 @@ class KeyInfo extends Component {
       longtermkey: null,
     };
     this.generateKey = this.generateKey.bind(this);
+    this.setKey = this.setKey.bind(this);
   }
 
-  showKey() {
+  componentDidMount() {
+    this.setKey();
+  }
+
+  componentDidUpdate() {
+    this.setKey();
+  }
+
+  setKey() {
     chrome.storage.local.get('longtermkey', (result) => {
       if (result.longtermkey !== this.state.longtermkey) {
         this.setState({
@@ -33,13 +51,26 @@ class KeyInfo extends Component {
         });
       }
     });
+  }
 
+  generateKey() {
+    const longtermkey = base64.encode(axolotlCrypto.randomBytes(32));
+    chrome.storage.local.set({ longtermkey });
+
+    // logic here to store in Chrome
+    this.setState({
+      longtermkey,
+    });
+  }
+
+  showKey() {
+    const { longtermkey } = this.state;
     // if key is in storage
-    if (this.state.longtermkey !== null) {
+    if (longtermkey) {
       return (
         <div id='key-info'>
           <CopyToClipboard text={ start + this.state.longtermkey + end }>
-            <button type='button' className='blue-button' onClick={ KeyInfo.toastMessage }>
+            <button type='button' className='blue-button' onClick={ this.toastMessage }>
               COPY MY CONTACT CODE
             </button>
           </CopyToClipboard>
@@ -54,14 +85,6 @@ class KeyInfo extends Component {
         </button>
       </div>
     );
-  }
-
-  generateKey() {
-    const bg = chrome.extension.getBackgroundPage();
-    const key = bg.base64.encode(bg.axolotl_crypto.randomBytes(32));
-    chrome.storage.local.set({ longtermkey: key });
-    // logic here to store in Chrome
-    this.forceUpdate();
   }
 
   render() {
