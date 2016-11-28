@@ -6,9 +6,14 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 // var key = bg.base64.encode(bg.axolotl_crypto.randomBytes(32));
 
 class KeyInfo extends Component {
+
   static toastMessage() {
-    // NOTE: this function is static as it doesn't need the `this` var right now.
-    // Feel free to change
+    console.log('made it mutha fuckaaaaa');
+    chrome.notifications.create('400', { type: 'basic',
+      title: 'Code Copied!',
+      message: 'Your contact code has been copied to your clipboard.',
+      iconUrl: '../../../icons/icon48.png' },
+    );
   }
 
   constructor(props) {
@@ -31,20 +36,13 @@ class KeyInfo extends Component {
       return (
         <div id='key-info'>
           <CopyToClipboard text={ this.state.longtermkey }>
-            <button type='button' className='blue-button' onClick={ this.toastMessage }>
+            <button type='button' className='blue-button' onClick={ KeyInfo.toastMessage }>
               COPY MY CONTACT CODE
             </button>
           </CopyToClipboard>
         </div>
       );
     }
-
-    // <input
-    //   type="text"
-    //   id="key-text"
-    //   value="*******************"
-    //   readOnly
-    // />
 
     return (
       <div id='key-info'>
