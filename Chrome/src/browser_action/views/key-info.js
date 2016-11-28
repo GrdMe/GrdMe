@@ -4,6 +4,8 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 
 // var bg = chrome.extension.getBackgroundPage();
 // var key = bg.base64.encode(bg.axolotl_crypto.randomBytes(32));
+const start = '~~GrdMe!';
+const end = '~~';
 
 class KeyInfo extends Component {
   static toastMessage() {
@@ -21,16 +23,19 @@ class KeyInfo extends Component {
 
   showKey() {
     chrome.storage.local.get('longtermkey', (result) => {
-      this.setState({
-        longtermkey: result.longtermkey,
-      });
+      if (result.longtermkey !== this.state.longtermkey) {
+        this.setState({
+          longtermkey: result.longtermkey,
+        });
+      }
     });
 
+    console.log('test');
     // if key is in storage
     if (this.state.longtermkey !== null) {
       return (
         <div id='key-info'>
-          <CopyToClipboard text={ this.state.longtermkey }>
+          <CopyToClipboard text={ start + this.state.longtermkey + end }>
             <button type='button' className='blue-button' onClick={ this.toastMessage }>
               COPY MY CONTACT CODE
             </button>
