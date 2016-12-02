@@ -1,111 +1,77 @@
 import $ from 'jquery';
-import StorageManager from '../storage_manager';
+import { CryptoManager } from './cryptoManager';
+import { initObserver } from './observer';
 
-function replaceKeyInDOM(storage, key, original) {
-  for (const contact in storage) {
-    if (storage.hasOwnProperty(contact)) {
-      if (storage[contact].name === key) {
-        if (contact === 'MY_LONG_TERM_KEY') {
-          const text = '~~This is your key!~~';
-          document.body.innerHTML = document.body.innerHTML.replace(original, text);
-          return;
-        }
-        // key exists already say its contact's key
-        const text = `~~ ${ contact }'s key~~`;
-        document.body.innerHTML = document.body.innerHTML.replace(original, text);
-        return;
-      }
-    }
-  }
-  const button = document.createElement('button');
-  const text = document.createTextNode('Lookup Key Using Server');
-  button.appendChild(text);
-  button.setAttribute('class', 'grd-me-key-tag');
-  button.setAttribute('id', key);
-  const html = button.outerHTML;
-  document.body.innerHTML = document.body.innerHTML.replace(original, html);
-  // doesnt exist, try to grab from server, give prompt
+/** This file handles controls injected scripts */
+
+const cryptoManager = new CryptoManager();
+// const frameComm = new FrameComm(cryptoManager);
+// cryptoManager.setFrameComm(frameComm);
+
+function endsWith(subject, suffix) {
+  return subject.indexOf(suffix, subject.length - suffix.length) !== -1;
 }
 
-function replaceMessageInDOM(storage, nonce, original) {
-  let msg = '~~unable to decrypt message~~';
-  if (storage[nonce]) {
-    msg = storage[nonce].plaintext ? storage[nonce].plaintext : msg;
+/** Scan for any crypto on the page and decypt if possible */
+function decryptInterval() {
+  if (!cryptoManager.keyList.length) {
+    return;
   }
-  document.body.innerHTML = document.body.innerHTML.replace(original, msg);
+  $(`:contains("${ cryptoManager.START_TAG }"):not([crypto_mark="true"]):not([contenteditable="true"]):not(textarea):not(input):not(script)`).each((i, e) => {
+    const $elem = $(e);
+    if ($elem.find(`:contains("${ cryptoManager.START_TAG }"):not([crypto_mark="true"])').length || $elem.parents('[contenteditable="true"]`).length) {
+// ASSUMPTION: an element not containing a crypto message itself will never contain a crypto message
+      $elem.attr('crypto_mark', true);
+      return;
+    }
+    cryptoManager.decryptElem($elem, (returnObj) => {
+      $elem.parents('[crypto_mark="true"]').attr('crypto_mark', false);
+      if (!returnObj.endTagFound) {
+        returnObj.plaintext = returnObj.plaintext || '';
+        let $parent = $elem.parent().parent().parent();
+        if (endsWith(window.location.hostname, 'facebook.com')) {
+          if ($elem.parents('.UFICommentBody').length) {
+            $parent = $elem.parents('.UFICommentBody');
+          } else if ($elem.parents('.userContent').length) {
+            $parent = $elem.parents('.userContent');
+          }
+        }
+        $parent.on('click', () => {
+          window.requestAnimationFrame(() => {
+            if ($parent.text().indexOf(cryptoManager.END_TAG) > 0) {
+              let text = $parent.text();
+              /* Handle the case of ciphertext in plaintext */
+              while (returnObj.plaintext.indexOf(cryptoManager.START_TAG) + 1
+              && returnObj.plaintext.indexOf(cryptoManager.END_TAG) + 1) {
+                const pre = returnObj.plaintext.substring(0,
+                returnObj.plaintext.indexOf(cryptoManager.START_TAG));
+                const ciphertext = returnObj.plaintext.substring(
+                returnObj.plaintext.indexOf(cryptoManager.START_TAG)
+                + cryptoManager.START_TAG.length,
+                returnObj.plaintext.indexOf(cryptoManager.END_TAG));
+                const post = returnObj.plaintext.substring(
+                returnObj.plaintext.indexOf(cryptoManager.END_TAG) + cryptoManager.END_TAG.length);
+                returnObj.plaintext = pre + cryptoManager.decryptText(ciphertext) + post;
+              }
+              if (returnObj.plaintext.length) {
+                text = text.trimLeft();
+                returnObj.plaintext = returnObj.plaintext.trimLeft();
+                const index = Math.max(text.indexOf(returnObj.plaintext), 0);
+                $parent.text(text.substring(0, index) +
+                  cryptoManager.START_TAG +
+                  returnObj.ciphertext.trim() +
+                  text.substring(index + returnObj.plaintext.length).trimLeft()
+                 );
+              } else {
+                $parent.text(text.replace(`${ cryptoManager.UNABLE_TO_DECRYPT } ${ cryptoManager.UNABLE_START_TAG }`, cryptoManager.START_TAG));
+              }
+              cryptoManager.decryptElem($parent);
+            }
+          });
+        });
+      }
+    });
+  });
 }
 
-$('body').on('click', '.grd-me-key-tag', function getTag() {
-  alert(this.id);
-});
-chrome.storage.local.get('longtermkey', (result) => {
-  const longtermkey = result.longtermkey;
-  const tags = [];
-  const elements = document.querySelectorAll('body *');
-  for (let i = 0; i < elements.length; i++) {
-    if (elements[i].innerHTML) {
-      let html = elements[i].innerHTML;
-      let startIndex = 1;
-      let endIndex;
-      while (startIndex > 0) {
-        startIndex = html.search('~~GrdMe!');
-        if (startIndex === -1) {
-          break;
-        }
-        html = html.slice(startIndex);
-        endIndex = html.search(/.~~/);
-        const tag = html.slice(0, endIndex + 3);
-        html = html.slice(endIndex);
-        if (tag.length > 0) {
-          tags.push(tag);
-        }
-      }
-    }
-    if (elements[i].value) {
-      let html = elements[i].value;
-      let startIndex = 1;
-      let endIndex;
-      while (startIndex > 0) {
-        startIndex = html.search('~~GrdMe!');
-        if (startIndex === -1) {
-          break;
-        }
-        html = html.slice(startIndex);
-        endIndex = html.search(/.~~/);
-        const tag = html.slice(0, endIndex + 3);
-        html = html.slice(endIndex);
-        if (tag.length > 0) {
-          tags.push(tag);
-        }
-      }
-    }
-  }
-  for (let i = 0; i < tags.length; i++) {
-    //  each message needs to be checked here
-    const msg = tags[i].slice(8, -2); // check stuff
-    // make sure first char is 0 for version 0
-    if (msg.charAt(0) !== '0') {
-      document.body.innerHTML = document.body.innerHTML.replace(tags[i], '~~INVALID KEY FORMAT~~');
-    } else if (msg.charAt(1) === '0') { // key
-      const key = msg.slice(2);
-      const original = tags[i];
-      const callbackArgs = [key, original];
-      if (key === longtermkey) {
-        const text = '~~This is your key!~~';
-        document.body.innerHTML = document.body.innerHTML.replace(original, text);
-      } else {
-        StorageManager.getContacts(replaceKeyInDOM, callbackArgs);
-      }
-    } else if (msg.charAt(1) === '1') { // message
-      // var split = msg.split('#'); // delimeter between nonce, key (not used)
-      const nonce = msg.slice(2); // split[0];
-      // var key = split[1];
-      const original = tags[i];
-      const callbackArgs = [nonce, original];
-      StorageManager.getMessages(replaceMessageInDOM, callbackArgs);
-    } else {
-      // invalid
-      document.body.innerHTML = document.body.innerHTML.replace(tags[i], '~~INVALID KEY FORMAT~~');
-    }
-  }
-});
+initObserver(decryptInterval);
