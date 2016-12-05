@@ -3,7 +3,6 @@ import { CryptoManager } from './cryptoManager';
 import { initObserver } from './observer';
 
 /** This file handles controls injected scripts */
-
 const cryptoManager = new CryptoManager();
 // const frameComm = new FrameComm(cryptoManager);
 // cryptoManager.setFrameComm(frameComm);
@@ -14,16 +13,18 @@ function endsWith(subject, suffix) {
 
 /** Scan for any crypto on the page and decypt if possible */
 function decryptInterval() {
-  if (!cryptoManager.keyList.length) {
-    return;
-  }
+  // if (!cryptoManager.keyList.length) {
+  //   console.log('WE DONE FUCKED UP');
+  //   return;
+  // }
   $(`:contains("${ cryptoManager.START_TAG }"):not([crypto_mark="true"]):not([contenteditable="true"]):not(textarea):not(input):not(script)`).each((i, e) => {
     const $elem = $(e);
-    if ($elem.find(`:contains("${ cryptoManager.START_TAG }"):not([crypto_mark="true"])').length || $elem.parents('[contenteditable="true"]`).length) {
+    if ($elem.find(`:contains("${ cryptoManager.START_TAG }"):not([crypto_mark="true"])`).length || $elem.parents('[contenteditable="true"]').length) {
 // ASSUMPTION: an element not containing a crypto message itself will never contain a crypto message
       $elem.attr('crypto_mark', true);
       return;
     }
+    console.log($elem, 'RIGHT HERE');
     cryptoManager.decryptElem($elem, (returnObj) => {
       $elem.parents('[crypto_mark="true"]').attr('crypto_mark', false);
       if (!returnObj.endTagFound) {

@@ -56,16 +56,16 @@ chrome.windows.onRemoved.addListener((windowID) => {
   }
 });
 
-/*
-TODO: uncomment this when it's ready for production
-chrome.windows.onFocusChanged.addListener((windowID) => {
-  if (popupWindow && windowID !== popupWindow.id) {
-    chrome.windows.remove(popupWindow.id, () => {
-      popupWindow = null;
-    });
-  }
-});
-*/
+
+// TODO: uncomment this when it's ready for production
+// chrome.windows.onFocusChanged.addListener((windowID) => {
+//   if (popupWindow && windowID !== popupWindow.id) {
+//     chrome.windows.remove(popupWindow.id, () => {
+//       popupWindow = null;
+//     });
+//   }
+// });
+
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log(sender.tab ?

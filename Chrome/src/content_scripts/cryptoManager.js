@@ -1,16 +1,18 @@
 import $ from 'jquery';
+import { StorageManager } from '../storage_manager/index';
 
 /** This file handles the page encryption and decryption */
+/*eslint-disable*/
 
 class CryptoManager {
   constructor() {
-    this.START_TAG = '~~grdme~~';
-    this.END_TAG = '~~!grdme~~';
+    this.START_TAG = '~~GrdMe!';
+    this.END_TAG = '~~';
     this.UNABLE_TO_DECRYPT = '[Unable to decrypt message]';
     this.UNABLE_START_TAG = '[start tag]';
     this.UNABLE_END_TAG = '[end tag]';
     this.NONCE_CHAR = '!';
-    this.DECRYPTED_MARK = this._getDecryptedMark();
+    // this.DECRYPTED_MARK = this._getDecryptedMark();
     this.preferences = {
       decryptIndicator: true,
       emojis: true,
@@ -20,7 +22,7 @@ class CryptoManager {
     this.activeKeys = [];
     this.keyList = [];
     this.frameComm = {};
-    this._getPreferences();
+    // this._getPreferences();
 
     $('body').on('mouseenter', 'grdme', function mouseEnterGrdMeHandler() {
       $(this).next('grdme_decrypt').css('font-weight', $(this).next('grdme_decrypt').css('font-weight') < 700 ? 700 : 400);
@@ -35,6 +37,7 @@ class CryptoManager {
    * @param [cb] Function that takes an object containing a decryption object
   */
   decryptElem(elem, cb) {
+    console.log('Element');
     const callback = cb || (() => {});
     let val = elem;
     let index1;
@@ -60,10 +63,10 @@ class CryptoManager {
       const end = index2 > 0 ? html.substring(html.indexOf(this.END_TAG) + this.END_TAG.length) : '';
       const start = html.substring(0, html.indexOf(this.START_TAG));
       const uid = encodeURIComponent(this.getRandomString(64));
-      let plaintext = originalPlaintext;
+      const plaintext = originalPlaintext;
       elem.attr('grdMeUID', uid);
       // TODO: put decryptmark back in
-      val = start + this.decryptMark(this.setupPlaintext(plaintext)) + end; // 60 61 65 & 98
+      val = start + this.decryptMark(plaintext) + end; // 60 61 65 & 98
 
       // skip this if statement
       // make sure we have setupplaintext function
@@ -209,6 +212,7 @@ class CryptoManager {
     //   });
     // } else {
     plaintext = this.decryptText(ciphertext);
+    console.log("value of plaintext: " + plaintext);
     if (plaintext) {
       finish(plaintext, ciphertext);
     } else {
@@ -226,6 +230,20 @@ class CryptoManager {
     // original cypher text is the nonce in this case
     // everything else underneath here can be blown away
 
+    const nonce = originalCiphertext;
+    let plaintext = 'Unable to Decrypt Message :(';
+
+    let messages = StorageManager.getMessages(function(result) {
+      messages = result;
+    }, []);
+
+    for(message in messages){
+      if(message.ciphertext === nonce){
+        plaintext = message.plaintext;
+      }
+    }
+
+    return plaintext;
 
     // let ciphertext = originalCiphertext.replace(/\)/g, '+').replace(/\(/g, '/');
     // ciphertext = ciphertext.split('|');
@@ -266,6 +284,50 @@ class CryptoManager {
     return subject.indexOf(suffix, subject.length - suffix.length) !== -1;
   }
 
+  /** Generate a random string
+  	 * @param length Length of the random string
+  	*/
+  getRandomString(length) {
+		const randArray = new Uint32Array(length);
+		let rand = '';
+		window.crypto.getRandomValues(randArray);
+		for (let i = 0; i < randArray.length; i++) {
+			rand += String.fromCharCode((randArray[i] % 94) + 33);
+		}
+		return rand;
+	}
+
+  /** emojify, linkify and fix line breaks in plaintext
+	 * @param plaintext The plaintext to modify
+	*/
+	setupPlaintext(plaintext) {
+		let formattedStr = linkify(this._sanitize(plaintext).replace(/\n/g, '<br>'));
+		if (this.preferences.emojis) {
+			formattedStr = emojify(formattedStr);
+		}
+		return formattedStr;
+	}
+
+  /** Mark a piece of text as decrypted - only works if the decryptIndicator is true
+	 * @param originalPlaintext Text to be marked
+	 * NOTE: originalPlaintext should already sanitzed when this is called
+	*/
+	decryptMark(originalPlaintext) {
+		let plaintext = originalPlaintext;
+		if (this.preferences.decryptIndicator) {
+			const wrapper = $('<i>').append($('<grdme_decrypt>').html(plaintext));
+			plaintext = this.DECRYPTED_MARK + ' ' + wrapper.html();
+		}
+		return plaintext;
+	}
+
+  /** Sanitize a string
+	 * @param str String to sanitize
+	*/
+	_sanitize(str) {
+		return $('<i>', {text: str}).html();
+	}
+
 }
 
-export default CryptoManager;
+export {CryptoManager};

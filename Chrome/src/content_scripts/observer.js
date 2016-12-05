@@ -3,6 +3,7 @@
 /** Begins running the observer
  * callback: the function to call when a change is observed and when the observer is set up
 */
+/*eslint-disable*/
 const initObserver = (() => {
   const config = {
     subtree: true,
@@ -24,10 +25,11 @@ const initObserver = (() => {
     observer.observe(document.body, config);
     callback();
   };
-});
+})();
 
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = initObserver;
-} else {
-  window.initObserver = initObserver;
-}
+// if (typeof module !== 'undefined' && module.exports) {
+//   module.exports = initObserver;
+// } else {
+//   window.initObserver = initObserver;
+// }
+export { initObserver };

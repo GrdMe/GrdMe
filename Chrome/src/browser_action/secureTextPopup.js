@@ -76,6 +76,7 @@ function submitMessage() {
     console.log(plaintext);
     var date = new Date();
     var timestamp = date.getTime();
+    console.log(contacts);
     for(var contact in contacts) {
         console.log("made it!");
         var ciphertext = base64.encode(bg.axolotlCrypto.randomBytes(32));
@@ -126,7 +127,7 @@ var StorageManager = function StorageManager() {
      * @param {array} callbackArgs: array of args for callback function
      */
     this.getContacts = function (callback, callbackArgs) {
-        chrome.storage.local.get({ contact: {} }, function (result) {
+        chrome.storage.sync.get({ contact: {} }, function (result) {
             callbackArgs.unshift(result.contact);
             callback.apply(null, callbackArgs);
         });

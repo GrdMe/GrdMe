@@ -2,7 +2,7 @@
  * Class for using chrome local storage for storing contacts, groups, and
  * messages.
  */
-
+/* eslint-disable */
 const StorageManager = {
   /**
    * Add (or update) a contact to local storage
@@ -207,4 +207,4 @@ const StorageManager = {
   },
 };
 
-export default StorageManager;
+export { StorageManager };
