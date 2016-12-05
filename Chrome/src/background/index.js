@@ -18,8 +18,9 @@ process.stderr = {
 const axolotl = require('axolotl');
 const axolotlCrypto = require('axolotl-crypto');
 
-// NOTE: this allows us to export the axolotl crypto lib
+// NOTE: this allows us to export stuff to other bits of the codebase
 window.axolotlCrypto = axolotlCrypto;
+window.base64 = base64;
 
 // variables
 const numPreKeys = 10;
@@ -35,7 +36,7 @@ chrome.commands.onCommand.addListener((command) => {
     const left = Math.floor((screen.width / 2) - (w / 2));
     const top = Math.floor((screen.height / 2) - (h / 2));
     chrome.windows.create({
-      url: chrome.extension.getURL('src/browser_action/secureTextPopup.html'),
+      url: chrome.extension.getURL('dist/secureTextPopup.html'),
       focused: true,
       type: 'popup',
       width: w,

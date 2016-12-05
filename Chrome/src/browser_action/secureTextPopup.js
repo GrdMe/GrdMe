@@ -1,3 +1,5 @@
+import base64 from 'base64-arraybuffer';
+
 /* eslint-disable */
 /**
 * JavaScript file for secureTextPopup.html. Used for populating group select
