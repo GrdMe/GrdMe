@@ -10,7 +10,7 @@ module.exports = {
     browser_action: path.join(src_dir,'browser_action','index.js'),
     content_scripts: path.join(src_dir,'content_scripts','index.js'),
     options_page: path.join(src_dir,'options_page','index.js'),
-    secureTextPopuop: path.join(src_dir,'browser_action', 'secureTextPopup.js')
+    secureTextPopup: path.join(src_dir,'browser_action', 'secureTextPopup.js')
   },
   output: {
     path: dist_dir,
