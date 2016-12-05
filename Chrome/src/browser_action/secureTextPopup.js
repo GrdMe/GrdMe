@@ -1,14 +1,24 @@
+/* eslint-disable */
 /**
 * JavaScript file for secureTextPopup.html. Used for populating group select
 * with groups in the database, encrypting and sending messages
 */
 
 //Global variables
+const process = {};
+process.platform = 'Grd Me';
+process.stderr = {
+  write: (t) => {
+    console.error(t);
+  },
+};
 
+var axolotl_crypto = require('axolotl-crypto');
+var base64 = require('base64-arraybuffer');
 var groups;
 var contacts;
 var storageManager;
-var bg = chrome.extension.getBackgroundPage();
+// var bg = chrome.extension.getBackgroundPage();
 
 //onload, load all groups & contacts to make it easier because callback
 //functions make code harder to write/read. Create select group option
@@ -35,19 +45,20 @@ function makeContactsLocal(result) {
 * @param {object} result: object of groups storage
 */
 function populateSelect(result){
-    groups = result;
-    var dropDown = document.createElement('select');
-    dropDown.id = 'groupSelect';
-    for(var prop in groups){
-        var option = document.createElement('option');
-        option.text = prop;
-        option.value = prop;
-        dropDown.appendChild(option);
-    }
-    document.getElementById('options').appendChild(dropDown);
+    // groups = result;
+    // var dropDown = document.createElement('select');
+    // dropDown.id = 'groupSelect';
+    // for(var prop in groups){
+    //     var option = document.createElement('option');
+    //     option.text = prop;
+    //     option.value = prop;
+    //     dropDown.appendChild(option);
+    // }
+    // document.getElementById('options').appendChild(dropDown);
     var encryptButton = document.createElement('button');
     var txt = document.createTextNode('Encrypt and Submit');
     encryptButton.onclick = function() {
+        console.log("button has been clicked!!");
         submitMessage();
         document.getElementById('message').value = '';
         document.getElementById('message').placeholder = 'Message encrypted' +
@@ -69,15 +80,18 @@ function populateSelect(result){
 *       5. copy encrypted message to clipboard
 */
 function submitMessage() {
-    var groupName = document.getElementById('groupSelect').value;
+    // var groupName = document.getElementById('groupSelect').value;
     var plaintext = document.getElementById('message').value;
+    console.log(plaintext);
     var date = new Date();
     var timestamp = date.getTime();
-    for(var contact in groups[groupName].members){
-        var ciphertext = bg.base64.encode(bg.axolotl_crypto.randomBytes(32));
-        var id = bg.base64.encode(bg.axolotl_crypto.randomBytes(32));
-        storageManager.addMessage(id, ciphertext, plaintext, contact,
-            groupName, timestamp);
+    for(var contact in contacts) {
+        console.log("made it!");
+        var ciphertext = base64.encode(axolotl_crypto.randomBytes(32));
+        var id = base64.encode(axolotl_crypto.randomBytes(32));
+        console.log("this is the id: " + id);
+        //don't need groupName in add message parameters anymore, nonce is the id
+      storageManager.addMessage(id, ciphertext, plaintext, contact, timestamp);
     }
     var textArea = document.createElement('textarea');
     textArea.value = '~~GrdMe!01' + id + '~~';
@@ -240,14 +254,14 @@ var StorageManager = function StorageManager() {
     * @param {function} callback: callback function after message addded
     * @param {array} callbackArgs: array of args for callback function
     */
-    this.addMessage = function (id, ciphertext, plaintext, contact, group, timestamp, callback, callbackArgs) {
+    this.addMessage = function (id, ciphertext, plaintext, contact, timestamp, callback, callbackArgs) {
         chrome.storage.local.get({ message: {} }, function (result) {
             var update = result.message;
             update[id] = {
                 ciphertext: ciphertext,
                 plaintext: plaintext,
                 contact: contact,
-                group: group,
+                // group: group,
                 timestamp: timestamp
             };
             chrome.storage.local.set({ message: update }, function () {

@@ -62,41 +62,44 @@ class CryptoManager {
       const uid = encodeURIComponent(this.getRandomString(64));
       let plaintext = originalPlaintext;
       elem.attr('grdMeUID', uid);
-      val = start + this.decryptMark(this.setupPlaintext(plaintext)) + end;
+      // TODO: put decryptmark back in
+      val = start + this.decryptMark(this.setupPlaintext(plaintext)) + end; // 60 61 65 & 98
 
-      if (this.preferences.sandboxDecrypt) {
-        plaintext = '[Decrypting Message...]';
-        elem.html(start + this.decryptMark(plaintext) + end);
-        elem.append($('<a>', { grdMeAnchor: '' }).hide());
-        elem.contents().filter(function filterForTextNodes() {
-          return this.nodeType === 3;
-        }).remove();
-        if (!this.frameComm.FRAME_SECRET) {
-          console.error('A valid frameComm must be set in the CryptoManager');
-        }
-        this.intercept.add({
-          location: {
-            full: window.location.href,
-            host: window.location.host,
-            origin: window.location.origin,
-          },
-          message: {
-            childrenCSS: this._setupChildren(elem.get(0)),
-            css: this._getCSS(elem.get(0)),
-            text: val,
-          },
-          secret: this.frameComm.FRAME_SECRET,
-          uid,
-        });
-        if (elem.css('display') === 'inline') {
-          elem.css('display', 'inline-block');
-          if (elem.css('vertical-align') === 'baseline') {
-            elem.css('vertical-align', '-moz-middle-with-baseline');
-          }
-        }
-      } else {
-        elem.html(val);
-      }
+      // skip this if statement
+      // make sure we have setupplaintext function
+      // if (this.preferences.sandboxDecrypt) {
+      //   plaintext = '[Decrypting Message...]';
+      //   elem.html(start + this.decryptMark(plaintext) + end);
+      //   elem.append($('<a>', { grdMeAnchor: '' }).hide());
+      //   elem.contents().filter(function filterForTextNodes() {
+      //     return this.nodeType === 3;
+      //   }).remove();
+      //   if (!this.frameComm.FRAME_SECRET) {
+      //     console.error('A valid frameComm must be set in the CryptoManager');
+      //   }
+      //   this.intercept.add({
+      //     location: {
+      //       full: window.location.href,
+      //       host: window.location.host,
+      //       origin: window.location.origin,
+      //     },
+      //     message: {
+      //       childrenCSS: this._setupChildren(elem.get(0)),
+      //       css: this._getCSS(elem.get(0)),
+      //       text: val,
+      //     },
+      //     secret: this.frameComm.FRAME_SECRET,
+      //     uid,
+      //   });
+      //   if (elem.css('display') === 'inline') {
+      //     elem.css('display', 'inline-block');
+      //     if (elem.css('vertical-align') === 'baseline') {
+      //       elem.css('vertical-align', '-moz-middle-with-baseline');
+      //     }
+      //   }
+      // } else {
+      elem.html(val);
+      // }
 
       callback({
         endTagFound: index2 > 0,
@@ -105,17 +108,19 @@ class CryptoManager {
       });
     };
 
-    if (elem.attr('crypto_mark') === 'inFlight') {
-      return;
-    }
+    // if (elem.attr('crypto_mark') === 'inFlight') {
+    //   return;
+    // }
 
     val = elem.text();
-    if (val.toLowerCase().indexOf(this.END_TAG) > 0 && this._endsWith(window.location.hostname, 'facebook.com')) {
-      elem.parent().find('.text_exposed_hide').remove();
-      elem.parent().find('.text_exposed_show').show();
-      elem.parents('.text_exposed_root').addClass('text_exposed');
-      val = elem.text();
-    }
+    // can ignore the facebook case, don't have to worry about this first if statement
+    // if (val.toLowerCase().indexOf(this.END_TAG) > 0 && this._endsWith(window.location.hostname,
+    // 'facebook.com')) {
+    //   elem.parent().find('.text_exposed_hide').remove();
+    //   elem.parent().find('.text_exposed_show').show();
+    //   elem.parents('.text_exposed_root').addClass('text_exposed');
+    //   val = elem.text();
+    // }
     html = elem.html();
     index1 = val.toLowerCase().indexOf(this.START_TAG);
     index2 = val.toLowerCase().indexOf(this.END_TAG);
@@ -125,6 +130,7 @@ class CryptoManager {
       return;
     }
 
+    // TODO: check if we need strip function back in
     /* This checks the case of the start tag being broken by html elements */
     if (index1 > 0 && html.indexOf(this.START_TAG) < 0 &&
     this._strip(html).indexOf(this.START_TAG) > 0) {
@@ -168,80 +174,88 @@ class CryptoManager {
     }
     ciphertext = index2 > 0 ? val.substring(index1 + this.START_TAG.length, index2) :
     val.substring(index1 + this.START_TAG.length);
-    if (ciphertext.charAt(0) === this.NONCE_CHAR) {
-      const hash = ciphertext.slice(1);
-      elem.attr('crypto_mark', 'inFlight');
-      $.ajax({
-        url: 'https://grd.me/message/get',
-        type: 'GET',
-        data: {
-          hash,
-        },
-        success: (data) => {
-          elem.removeAttr('crypto_mark');
-          if (data && data.status && data.status[0] && !data.status[0].code) {
-            plaintext = false;
-            for (let i = 0; i < data.messages.length; i++) {
-              plaintext = this.decryptText(data.messages[i].message);
-              if ((new CryptoJS.SHA256(data.messages[i].message + data.messages[i].rand))
-              .toString().slice(0, 60) === hash && plaintext) {
-                finish(plaintext, ciphertext);
-                return;
-              }
-            }
-            error();
-          } else {
-            error();
-          }
-        },
-        error: () => {
-          elem.removeAttr('crypto_mark');
-          error();
-        },
-      });
+
+    // remove this stuff down to 209
+    // if (ciphertext.charAt(0) === this.NONCE_CHAR) {
+    //   const hash = ciphertext.slice(1);
+    //   elem.attr('crypto_mark', 'inFlight');
+    //   $.ajax({
+    //     url: 'https://grd.me/message/get',
+    //     type: 'GET',
+    //     data: {
+    //       hash,
+    //     },
+    //     success: (data) => {
+    //       elem.removeAttr('crypto_mark');
+    //       if (data && data.status && data.status[0] && !data.status[0].code) {
+    //         plaintext = false;
+    //         for (let i = 0; i < data.messages.length; i++) {
+    //           plaintext = this.decryptText(data.messages[i].message);
+    //           if ((new CryptoJS.SHA256(data.messages[i].message + data.messages[i].rand))
+    //           .toString().slice(0, 60) === hash && plaintext) {
+    //             finish(plaintext, ciphertext);
+    //             return;
+    //           }
+    //         }
+    //         error();
+    //       } else {
+    //         error();
+    //       }
+    //     },
+    //     error: () => {
+    //       elem.removeAttr('crypto_mark');
+    //       error();
+    //     },
+    //   });
+    // } else {
+    plaintext = this.decryptText(ciphertext);
+    if (plaintext) {
+      finish(plaintext, ciphertext);
     } else {
-      plaintext = this.decryptText(ciphertext);
-      if (plaintext) {
-        finish(plaintext, ciphertext);
-      } else {
-        error();
-      }
+      error();
     }
+    // }
   }
 
   /** Decrypt ciphertext with all available keys. Returns false if no decryption possible
    * @param originalCiphertext The text excluding the crypto tags to decrypt
   */
   decryptText(originalCiphertext) {
-    let ciphertext = originalCiphertext.replace(/\)/g, '+').replace(/\(/g, '/');
-    ciphertext = ciphertext.split('|');
-    let validDecryption = false;
-    let plaintext = '';
-    for (let i = 0; i < ciphertext.length; i++) {
-      for (let j = 0; j < this.keyList.length; j++) {
-        try {
-          if (typeof this.keyList[j].key === 'object' && this.keyList[j].key.priv) {
-            // plaintext = ecc.decrypt(this.keyList[j].key.priv, ciphertext[i]);
-          } else if (typeof this.keyList[j].key !== 'object') {
-            plaintext = CryptoJS.AES.decrypt(ciphertext[i], this.keyList[j].key);
-            plaintext = plaintext.toString(CryptoJS.enc.Utf8);
-          } else {
-            continue;
-          }
-          if (!plaintext.trim()) {
-            throw Error();
-          }
-          validDecryption = true;
-          break;
-        } catch (e) {
-          validDecryption = false;
-        }
-      }
-      if (validDecryption) {
-        break;
-      }
-    }
-    return validDecryption ? plaintext : false;
+    // this is where we compare nonces
+    // from storage manager or chrome messages, compare the nonce like a hashmap
+    // original cypher text is the nonce in this case
+    // everything else underneath here can be blown away
+
+
+    // let ciphertext = originalCiphertext.replace(/\)/g, '+').replace(/\(/g, '/');
+    // ciphertext = ciphertext.split('|');
+    // let validDecryption = false;
+    // let plaintext = '';
+    // for (let i = 0; i < ciphertext.length; i++) {
+    //   for (let j = 0; j < this.keyList.length; j++) {
+    //     try {
+    //       if (typeof this.keyList[j].key === 'object' && this.keyList[j].key.priv) {
+    //         // plaintext = ecc.decrypt(this.keyList[j].key.priv, ciphertext[i]);
+    //       } else if (typeof this.keyList[j].key !== 'object') {
+    //         plaintext = CryptoJS.AES.decrypt(ciphertext[i], this.keyList[j].key);
+    //         plaintext = plaintext.toString(CryptoJS.enc.Utf8);
+    //       } else {
+    //         continue;
+    //       }
+    //       if (!plaintext.trim()) {
+    //         throw Error();
+    //       }
+    //       validDecryption = true;
+    //       break;
+    //     } catch (e) {
+    //       validDecryption = false;
+    //     }
+    //   }
+    //   if (validDecryption) {
+    //     break;
+    //   }
+    // }
+    // return validDecryption ? plaintext : false;
   }
 
 /** Check that a string ends with another substring

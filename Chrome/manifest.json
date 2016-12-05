@@ -37,7 +37,8 @@
     "http://localhost:8080/",
     "nativeMessaging",
     "tabs",
-    "activeTab"
+    "activeTab",
+    "processes" 
   ],
   "content_scripts": [
     {
