@@ -4,21 +4,10 @@
 * with groups in the database, encrypting and sending messages
 */
 
-//Global variables
-const process = {};
-process.platform = 'Grd Me';
-process.stderr = {
-  write: (t) => {
-    console.error(t);
-  },
-};
-
-var axolotl_crypto = require('axolotl-crypto');
-var base64 = require('base64-arraybuffer');
 var groups;
 var contacts;
 var storageManager;
-// var bg = chrome.extension.getBackgroundPage();
+const bg = chrome.extension.getBackgroundPage();
 
 //onload, load all groups & contacts to make it easier because callback
 //functions make code harder to write/read. Create select group option
@@ -87,8 +76,8 @@ function submitMessage() {
     var timestamp = date.getTime();
     for(var contact in contacts) {
         console.log("made it!");
-        var ciphertext = base64.encode(axolotl_crypto.randomBytes(32));
-        var id = base64.encode(axolotl_crypto.randomBytes(32));
+        var ciphertext = base64.encode(bg.axolotlCrypto.randomBytes(32));
+        var id = base64.encode(bg.axolotlCrypto.randomBytes(32));
         console.log("this is the id: " + id);
         //don't need groupName in add message parameters anymore, nonce is the id
       storageManager.addMessage(id, ciphertext, plaintext, contact, timestamp);

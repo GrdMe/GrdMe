@@ -2,14 +2,7 @@ import React, { Component } from 'react';
 import base64 from 'base64-arraybuffer';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
-process.platform = 'Grd Me';
-process.stderr = {
-  write: (t) => {
-    console.error(t);
-  },
-};
-
-const axolotlCrypto = require('axolotl-crypto');
+const bg = chrome.extension.getBackgroundPage();
 
 // var bg = chrome.extension.getBackgroundPage();
 // var key = bg.base64.encode(bg.axolotl_crypto.randomBytes(32));
@@ -54,7 +47,7 @@ class KeyInfo extends Component {
   }
 
   generateKey() {
-    const longtermkey = base64.encode(axolotlCrypto.randomBytes(32));
+    const longtermkey = base64.encode(bg.axolotlCrypto.randomBytes(32));
     chrome.storage.local.set({ longtermkey });
 
     // logic here to store in Chrome
