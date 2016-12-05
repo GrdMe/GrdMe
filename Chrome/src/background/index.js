@@ -18,6 +18,9 @@ process.stderr = {
 const axolotl = require('axolotl');
 const axolotlCrypto = require('axolotl-crypto');
 
+// NOTE: this allows us to export the axolotl crypto lib
+window.axolotlCrypto = axolotlCrypto;
+
 // variables
 const numPreKeys = 10;
 const keyServerUrl = 'https://twofish.cs.unc.edu';
