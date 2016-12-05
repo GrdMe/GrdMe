@@ -26,11 +26,12 @@ window.base64 = base64;
 const numPreKeys = 10;
 const keyServerUrl = 'https://twofish.cs.unc.edu';
 const keyServerAPIUrl = `${ keyServerUrl }/api/v1/`;
+let popupWindow = null;
 // const keyServerAPIUrl = 'http://localhost:8080/api/v1/';
 
 // edward's popup magic
 chrome.commands.onCommand.addListener((command) => {
-  if (command === 'textSecurePopup') {
+  if (command === 'textSecurePopup' && !popupWindow) {
     const width = 300;
     const height = 235;
     const left = Math.floor((screen.width / 2) - (width / 2));
@@ -43,9 +44,28 @@ chrome.commands.onCommand.addListener((command) => {
       height,
       top,
       left,
+    }, (win) => {
+      popupWindow = win;
     });
   }
 });
+
+chrome.windows.onRemoved.addListener((windowID) => {
+  if (popupWindow && windowID === popupWindow.id) {
+    popupWindow = null;
+  }
+});
+
+/*
+TODO: uncomment this when it's ready for production
+chrome.windows.onFocusChanged.addListener((windowID) => {
+  if (popupWindow && windowID !== popupWindow.id) {
+    chrome.windows.remove(popupWindow.id, () => {
+      popupWindow = null;
+    });
+  }
+});
+*/
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log(sender.tab ?
