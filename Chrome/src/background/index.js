@@ -31,16 +31,16 @@ const keyServerAPIUrl = `${ keyServerUrl }/api/v1/`;
 // edward's popup magic
 chrome.commands.onCommand.addListener((command) => {
   if (command === 'textSecurePopup') {
-    const w = 300;
-    const h = 235;
-    const left = Math.floor((screen.width / 2) - (w / 2));
-    const top = Math.floor((screen.height / 2) - (h / 2));
+    const width = 300;
+    const height = 235;
+    const left = Math.floor((screen.width / 2) - (width / 2));
+    const top = Math.floor((screen.height / 2) - (height / 2));
     chrome.windows.create({
       url: chrome.extension.getURL('dist/secureTextPopup.html'),
       focused: true,
       type: 'popup',
-      width: w,
-      height: h,
+      width,
+      height,
       top,
       left,
     });
