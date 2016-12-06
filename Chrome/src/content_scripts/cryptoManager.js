@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { StorageManager } from '../storage_manager/index';
+// import { StorageManager } from '../storage_manager/index';
 
 /** This file handles the page encryption and decryption */
 /*eslint-disable*/
@@ -37,7 +37,6 @@ class CryptoManager {
    * @param [cb] Function that takes an object containing a decryption object
   */
   decryptElem(elem, cb) {
-    console.log('Element');
     const callback = cb || (() => {});
     let val = elem;
     let index1;
@@ -212,7 +211,7 @@ class CryptoManager {
     //   });
     // } else {
     plaintext = this.decryptText(ciphertext);
-    console.log("value of plaintext: " + plaintext);
+    // console.log("value of plaintext: " + plaintext);
     if (plaintext) {
       finish(plaintext, ciphertext);
     } else {
@@ -232,12 +231,19 @@ class CryptoManager {
 
     const nonce = originalCiphertext;
     let plaintext = 'Unable to Decrypt Message :(';
+    let messages;
 
-    let messages = StorageManager.getMessages(function(result) {
-      messages = result;
-    }, []);
+    chrome.runtime.sendMessage({greeting: "get messages"}, function(response) {
+        console.log('this is the farewell response ' + response);
+        messages = response.farewell;
+    });
+
+    // let messages = chrome.storage.local.get({message: {}}, function(result){messages = result;});
+
+    //console.log("this is the messages from storagemanager: " + messages);
 
     for(message in messages){
+      // console.log("in this loop");
       if(message.ciphertext === nonce){
         plaintext = message.plaintext;
       }

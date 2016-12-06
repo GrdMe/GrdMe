@@ -228,6 +228,26 @@ initializeStorage().then(() => {
   });
 });
 
+// receive message from content_script requesting messages
+// from local storage, make JSON object and send it back
+
+chrome.runtime.onMessage.addListener(
+  (request, sender, sendResponse) => {
+    // console.log(sender.tab ?
+    //             'from a content script:' + sender.tab.url :
+    //             'from the extension');
+    console.log('received message from content script!');
+    if (request.greeting === 'get messages') {
+      chrome.storage.local.get({ message: {} }, (result) => {
+        console.log('messages from background');
+        console.log(result);
+        console.log(request);
+        console.log(sender);
+        console.log(sendResponse);
+        sendResponse(result);
+      });
+    }
+  });
 
 // sockets =====================================================================
 

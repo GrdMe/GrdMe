@@ -24,7 +24,7 @@ function decryptInterval() {
       $elem.attr('crypto_mark', true);
       return;
     }
-    console.log($elem, 'RIGHT HERE');
+    // console.log($elem, 'RIGHT HERE');
     cryptoManager.decryptElem($elem, (returnObj) => {
       $elem.parents('[crypto_mark="true"]').attr('crypto_mark', false);
       if (!returnObj.endTagFound) {
