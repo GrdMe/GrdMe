@@ -80,11 +80,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
   if (request.greeting === 'get messages') {
     chrome.storage.local.get({ message: {} }, (result) => {
-      console.log('messages from background');
-      console.log('Result', result);
-      console.log('Request', request);
-      console.log('Sender', sender);
-      console.log('SendResponse', sendResponse);
       sendResponse({ farewell: result });
     });
     // sendResponse({ farewell: 'boo' });
