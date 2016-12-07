@@ -78,6 +78,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const encrypt = base64.encode(crypto.randomBytes(32));
     sendResponse({ farewell: encrypt });
   }
+  if (request.greeting === 'get messages') {
+    chrome.storage.local.get({ message: {} }, (result) => {
+      console.log('messages from background');
+      console.log('Result', result);
+      console.log('Request', request);
+      console.log('Sender', sender);
+      console.log('SendResponse', sendResponse);
+      sendResponse({ farewell: result });
+    });
+    // sendResponse({ farewell: 'boo' });
+  }
+  return true;
 });
 
 const store = {
@@ -227,27 +239,6 @@ initializeStorage().then(() => {
     });
   });
 });
-
-// receive message from content_script requesting messages
-// from local storage, make JSON object and send it back
-
-chrome.runtime.onMessage.addListener(
-  (request, sender, sendResponse) => {
-    // console.log(sender.tab ?
-    //             'from a content script:' + sender.tab.url :
-    //             'from the extension');
-    console.log('received message from content script!');
-    if (request.greeting === 'get messages') {
-      chrome.storage.local.get({ message: {} }, (result) => {
-        console.log('messages from background');
-        console.log(result);
-        console.log(request);
-        console.log(sender);
-        console.log(sendResponse);
-        sendResponse(result);
-      });
-    }
-  });
 
 // sockets =====================================================================
 

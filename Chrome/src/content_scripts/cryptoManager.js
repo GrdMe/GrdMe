@@ -6,8 +6,9 @@ import $ from 'jquery';
 
 class CryptoManager {
   constructor() {
-    this.START_TAG = '~~GrdMe!';
-    this.END_TAG = '~~';
+    //The the 01 is for messages
+    this.START_TAG = '~~GrdMe!01';
+    this.END_TAG = '=~~';
     this.UNABLE_TO_DECRYPT = '[Unable to decrypt message]';
     this.UNABLE_START_TAG = '[start tag]';
     this.UNABLE_END_TAG = '[end tag]';
@@ -59,6 +60,7 @@ class CryptoManager {
      * @param ciphertext The encrypted text/nonce text
     */
     const finish = (originalPlaintext, ciphertext) => {
+      console.log(originalPlaintext, ciphertext);
       const end = index2 > 0 ? html.substring(html.indexOf(this.END_TAG) + this.END_TAG.length) : '';
       const start = html.substring(0, html.indexOf(this.START_TAG));
       const uid = encodeURIComponent(this.getRandomString(64));
@@ -66,43 +68,8 @@ class CryptoManager {
       elem.attr('grdMeUID', uid);
       // TODO: put decryptmark back in
       val = start + this.decryptMark(plaintext) + end; // 60 61 65 & 98
-
-      // skip this if statement
-      // make sure we have setupplaintext function
-      // if (this.preferences.sandboxDecrypt) {
-      //   plaintext = '[Decrypting Message...]';
-      //   elem.html(start + this.decryptMark(plaintext) + end);
-      //   elem.append($('<a>', { grdMeAnchor: '' }).hide());
-      //   elem.contents().filter(function filterForTextNodes() {
-      //     return this.nodeType === 3;
-      //   }).remove();
-      //   if (!this.frameComm.FRAME_SECRET) {
-      //     console.error('A valid frameComm must be set in the CryptoManager');
-      //   }
-      //   this.intercept.add({
-      //     location: {
-      //       full: window.location.href,
-      //       host: window.location.host,
-      //       origin: window.location.origin,
-      //     },
-      //     message: {
-      //       childrenCSS: this._setupChildren(elem.get(0)),
-      //       css: this._getCSS(elem.get(0)),
-      //       text: val,
-      //     },
-      //     secret: this.frameComm.FRAME_SECRET,
-      //     uid,
-      //   });
-      //   if (elem.css('display') === 'inline') {
-      //     elem.css('display', 'inline-block');
-      //     if (elem.css('vertical-align') === 'baseline') {
-      //       elem.css('vertical-align', '-moz-middle-with-baseline');
-      //     }
-      //   }
-      // } else {
       elem.html(val);
-      // }
-
+      console.log(index2, this._sanitize(plaintext), ciphertext);
       callback({
         endTagFound: index2 > 0,
         plaintext: this._sanitize(plaintext),
@@ -110,22 +77,10 @@ class CryptoManager {
       });
     };
 
-    // if (elem.attr('crypto_mark') === 'inFlight') {
-    //   return;
-    // }
-
     val = elem.text();
-    // can ignore the facebook case, don't have to worry about this first if statement
-    // if (val.toLowerCase().indexOf(this.END_TAG) > 0 && this._endsWith(window.location.hostname,
-    // 'facebook.com')) {
-    //   elem.parent().find('.text_exposed_hide').remove();
-    //   elem.parent().find('.text_exposed_show').show();
-    //   elem.parents('.text_exposed_root').addClass('text_exposed');
-    //   val = elem.text();
-    // }
     html = elem.html();
-    index1 = val.toLowerCase().indexOf(this.START_TAG);
-    index2 = val.toLowerCase().indexOf(this.END_TAG);
+    index1 = val.indexOf(this.START_TAG);
+    index2 = val.indexOf(this.END_TAG) + 1;
 
     if (index2 < 0 && callback && elem.parent(`:contains("${ this.END_TAG }"):not([contenteditable="true"])`).length) {
       this.decryptElem(elem.parent().attr('crypto_mark', false));
@@ -176,48 +131,19 @@ class CryptoManager {
     }
     ciphertext = index2 > 0 ? val.substring(index1 + this.START_TAG.length, index2) :
     val.substring(index1 + this.START_TAG.length);
-
-    // remove this stuff down to 209
-    // if (ciphertext.charAt(0) === this.NONCE_CHAR) {
-    //   const hash = ciphertext.slice(1);
-    //   elem.attr('crypto_mark', 'inFlight');
-    //   $.ajax({
-    //     url: 'https://grd.me/message/get',
-    //     type: 'GET',
-    //     data: {
-    //       hash,
-    //     },
-    //     success: (data) => {
-    //       elem.removeAttr('crypto_mark');
-    //       if (data && data.status && data.status[0] && !data.status[0].code) {
-    //         plaintext = false;
-    //         for (let i = 0; i < data.messages.length; i++) {
-    //           plaintext = this.decryptText(data.messages[i].message);
-    //           if ((new CryptoJS.SHA256(data.messages[i].message + data.messages[i].rand))
-    //           .toString().slice(0, 60) === hash && plaintext) {
-    //             finish(plaintext, ciphertext);
-    //             return;
-    //           }
-    //         }
-    //         error();
-    //       } else {
-    //         error();
-    //       }
-    //     },
-    //     error: () => {
-    //       elem.removeAttr('crypto_mark');
-    //       error();
-    //     },
-    //   });
-    // } else {
-    plaintext = this.decryptText(ciphertext);
-    // console.log("value of plaintext: " + plaintext);
-    if (plaintext) {
-      finish(plaintext, ciphertext);
-    } else {
-      error();
-    }
-    // }
+    // plaintext = this.decryptText(ciphertext);
+    let messages;
+    chrome.runtime.sendMessage({greeting: "get messages"}, function(response) {
+        messages = response.farewell.message;
+        let ciphertextObj = messages[ciphertext] || {};
+        plaintext = ciphertextObj.plaintext
+        console.log(plaintext);
+        if (plaintext) {
+          finish(plaintext, ciphertext);
+        } else {
+          error();
+        }
+    });
   }
 
   /** Decrypt ciphertext with all available keys. Returns false if no decryption possible
@@ -232,54 +158,13 @@ class CryptoManager {
     const nonce = originalCiphertext;
     let plaintext = 'Unable to Decrypt Message :(';
     let messages;
-
+    console.log('nonce: ', originalCiphertext);
     chrome.runtime.sendMessage({greeting: "get messages"}, function(response) {
-        console.log('this is the farewell response ' + response);
-        messages = response.farewell;
+        messages = response.farewell.message;
+        let ciphertextObj = messages[originalCiphertext] || {};
+        plaintext = ciphertextObj.plaintext || 'no message here, buddy'
+        return plaintext;
     });
-
-    // let messages = chrome.storage.local.get({message: {}}, function(result){messages = result;});
-
-    //console.log("this is the messages from storagemanager: " + messages);
-
-    for(message in messages){
-      // console.log("in this loop");
-      if(message.ciphertext === nonce){
-        plaintext = message.plaintext;
-      }
-    }
-
-    return plaintext;
-
-    // let ciphertext = originalCiphertext.replace(/\)/g, '+').replace(/\(/g, '/');
-    // ciphertext = ciphertext.split('|');
-    // let validDecryption = false;
-    // let plaintext = '';
-    // for (let i = 0; i < ciphertext.length; i++) {
-    //   for (let j = 0; j < this.keyList.length; j++) {
-    //     try {
-    //       if (typeof this.keyList[j].key === 'object' && this.keyList[j].key.priv) {
-    //         // plaintext = ecc.decrypt(this.keyList[j].key.priv, ciphertext[i]);
-    //       } else if (typeof this.keyList[j].key !== 'object') {
-    //         plaintext = CryptoJS.AES.decrypt(ciphertext[i], this.keyList[j].key);
-    //         plaintext = plaintext.toString(CryptoJS.enc.Utf8);
-    //       } else {
-    //         continue;
-    //       }
-    //       if (!plaintext.trim()) {
-    //         throw Error();
-    //       }
-    //       validDecryption = true;
-    //       break;
-    //     } catch (e) {
-    //       validDecryption = false;
-    //     }
-    //   }
-    //   if (validDecryption) {
-    //     break;
-    //   }
-    // }
-    // return validDecryption ? plaintext : false;
   }
 
 /** Check that a string ends with another substring
