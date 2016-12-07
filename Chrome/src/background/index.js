@@ -79,7 +79,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({ farewell: encrypt });
   }
   if (request.greeting === 'get messages') {
-    chrome.storage.local.get({ message: {} }, (result) => {
+    chrome.storage.sync.get({ message: {} }, (result) => {
       console.log('messages from background');
       console.log('Result', result);
       console.log('Request', request);
@@ -290,7 +290,7 @@ socket.on('message', (messageData) => {
   // confirm reception of message to server
   socket.emit('recieved', { messageId: messageData.id });
 
-  console.log(messageData);
+  console.log('this is the DATA: ', messageData);
 
   // const messageHeader = messageData.header; // same header that was sent to server
   // const messageBody = messageData.body;     // same body that was sent to server
