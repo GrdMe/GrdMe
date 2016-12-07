@@ -46,7 +46,8 @@ function populateSelect(result){
     //     dropDown.appendChild(option);
     // }
     // document.getElementById('options').appendChild(dropDown);
-    var encryptButton = document.createElement('button');
+    var encryptButton = document.createElement('div');
+    encryptButton.className = 'blue-button';
     var txt = document.createTextNode('Encrypt and Submit');
     encryptButton.onclick = function() {
         console.log("button has been clicked!!");
