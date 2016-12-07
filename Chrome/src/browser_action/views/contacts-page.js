@@ -7,7 +7,9 @@ import DisplayNameInfo from './display-name-info';
 const ContactsPage = () => (
   <div>
     <HeadPanel>
-      CONTACTS
+      <div id='center'>
+        CONTACTS
+      </div>
     </HeadPanel>
     <ContactList />
     <div id='contact-footer'>

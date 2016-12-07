@@ -207,7 +207,7 @@ class CryptoManager {
 		let plaintext = originalPlaintext;
 		if (this.preferences.decryptIndicator) {
 			const wrapper = $('<i>').append($('<grdme_decrypt>').html(plaintext));
-			plaintext = this.DECRYPTED_MARK + ' ' + wrapper.html();
+			plaintext = wrapper.html();
 		}
 		return plaintext;
 	}

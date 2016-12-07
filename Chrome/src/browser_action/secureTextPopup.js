@@ -248,7 +248,7 @@ var StorageManager = function StorageManager() {
     * @param {array} callbackArgs: array of args for callback function
     */
     this.addMessage = function (id, ciphertext, plaintext, contact, timestamp, callback, callbackArgs) {
-        chrome.storage.local.get({ message: {} }, function (result) {
+        chrome.storage.sync.get({ message: {} }, function (result) {
             var update = result.message;
             update[id] = {
                 ciphertext: ciphertext,
@@ -257,7 +257,7 @@ var StorageManager = function StorageManager() {
                 // group: group,
                 timestamp: timestamp
             };
-            chrome.storage.local.set({ message: update }, function () {
+            chrome.storage.sync.set({ message: update }, function () {
                 callbackArgs.unshift(update);
                 callback.apply(null, callbackArgs);
             });
@@ -270,7 +270,7 @@ var StorageManager = function StorageManager() {
      * @param {array} callbackArgs: array of args for callback function
      */
     this.getMessages = function (callback, callbackArgs) {
-        chrome.storage.local.get({ message: {} }, function (result) {
+        chrome.storage.sync.get({ message: {} }, function (result) {
             callbackArgs.unshift(result.message);
             callback.apply(null, callbackArgs);
         });

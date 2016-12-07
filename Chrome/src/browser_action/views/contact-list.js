@@ -5,6 +5,21 @@ import ContactEntry from './contact-entry';
 let noContacts = '';
 
 class ContactList extends Component {
+
+  static addContact() {
+    const publicName = 'New Contact';
+    const localName = publicName;
+    const deviceIDs = '1001';
+    chrome.storage.sync.get({ contact: {} }, (result) => {
+      const update = result.contact;
+      update[localName] = {
+        name: publicName,
+        devices: deviceIDs,
+      };
+      chrome.storage.sync.set({ contact: update }, () => {});
+    });
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -55,6 +70,9 @@ class ContactList extends Component {
         { this.renderContacts() }
         <div id='no-contacts'>
           { noContacts }
+        </div>
+        <div className='add'>
+          <button type='button' id='add-button' onClick={ ContactList.addContact }>+ Add Contact</button>
         </div>
       </div>
     );

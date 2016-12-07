@@ -63,7 +63,7 @@ class KeyInfo extends Component {
       return (
         <div id='key-info'>
           <CopyToClipboard text={ start + this.state.longtermkey + end }>
-            <button type='button' className='blue-button' onClick={ this.toastMessage }>
+            <button type='button' className='blue-button' onClick={ KeyInfo.toastMessage }>
               COPY MY CONTACT CODE
             </button>
           </CopyToClipboard>

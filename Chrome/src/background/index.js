@@ -285,7 +285,7 @@ socket.on('message', (messageData) => {
   // confirm reception of message to server
   socket.emit('recieved', { messageId: messageData.id });
 
-  console.log(messageData);
+  console.log('this is the DATA: ', messageData);
 
   // const messageHeader = messageData.header; // same header that was sent to server
   // const messageBody = messageData.body;     // same body that was sent to server
