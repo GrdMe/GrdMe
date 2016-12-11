@@ -20,6 +20,14 @@ document.addEventListener("DOMContentLoaded", function() {
         contacts = result;
      }, []);
 });
+
+function copiedToast(){
+  chrome.notifications.create('400', { type: 'basic',
+    title: 'Message copied!',
+    message: 'Your encrypted message has been copied to your clipboard.',
+    iconUrl: '../../../icons/icon48.png' },
+  );
+}
 /**
 * Callback function for storageManager.getContacts() so that contacts can be
 * stored in a global variable
@@ -55,7 +63,11 @@ function populateSelect(result){
         document.getElementById('message').value = '';
         document.getElementById('message').placeholder = 'Message encrypted' +
         ' and submitted!';
+        // copiedToast();
+        window.close();
+
     }
+
     encryptButton.appendChild(txt);
     document.getElementById('options').appendChild(encryptButton);
 }
