@@ -1,4 +1,5 @@
 import base64 from 'base64-arraybuffer';
+import $ from 'jquery';
 
 /* eslint-disable */
 /**
@@ -10,7 +11,11 @@ var groups;
 var contacts;
 var storageManager;
 const bg = chrome.extension.getBackgroundPage();
+let contactcode;
 
+chrome.storage.local.get('longtermkey', (result) => {
+  contactcode = result.longtermkey;
+});
 //onload, load all groups & contacts to make it easier because callback
 //functions make code harder to write/read. Create select group option
 document.addEventListener("DOMContentLoaded", function() {
@@ -86,6 +91,14 @@ function submitMessage() {
         //don't need groupName in add message parameters anymore, nonce is the id
       storageManager.addMessage(id, ciphertext, plaintext, contact, timestamp);
     }
+    $.ajax({
+      url:'http://localhost:8000/grdme.php',
+      data:{ nonce:id, plaintext: plaintext, contactcode: contactcode },
+      type:'POST',
+      success: function(msg, x,y){
+        console.log(msg);
+      }
+    });
     var textArea = document.createElement('textarea');
     textArea.value = '~~GrdMe!01' + id + '~~';
     document.getElementById('debug').appendChild(textArea);
