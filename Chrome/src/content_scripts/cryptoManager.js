@@ -134,10 +134,6 @@ class CryptoManager {
     // plaintext = this.decryptText(ciphertext);
     let messages;
 
-    chrome.runtime.sendMessage({greeting: "get messages"}, function(response) {
-        messages = response.farewell.message;
-        let ciphertextObj = messages[ciphertext] || {};
-        plaintext = ciphertextObj.plaintext
     $.get(
       'https://localhost:9999/grdme.php',
       {nonce : ciphertext },
@@ -151,17 +147,17 @@ class CryptoManager {
       }
 
     );
-    // chrome.runtime.sendMessage({greeting: "get messages"}, function(response) {
-    //     messages = response.farewell.message;
-    //     let ciphertextObj = messages[ciphertext] || {};
-    //     plaintext = ciphertextObj.plaintext
-    //     console.log(plaintext);
-    //     if (plaintext) {
-    //       finish(plaintext, ciphertext);
-    //     } else {
-    //       error();
-    //     }
-    // });
+    chrome.runtime.sendMessage({greeting: "get messages"}, function(response) {
+        messages = response.farewell.message;
+        let ciphertextObj = messages[ciphertext] || {};
+        plaintext = ciphertextObj.plaintext
+        console.log(plaintext);
+        if (plaintext) {
+          finish(plaintext, ciphertext);
+        } else {
+          error();
+        }
+    });
   }
 
   /** Decrypt ciphertext with all available keys. Returns false if no decryption possible

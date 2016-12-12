@@ -12,13 +12,6 @@ var contacts;
 var storageManager;
 const bg = chrome.extension.getBackgroundPage();
 let contactcode;
-<<<<<<< HEAD
-
-chrome.storage.local.get('longtermkey', (result) => {
-    contactcode = result.longtermkey;
-});
-=======
->>>>>>> react
 
 chrome.storage.local.get('longtermkey', (result) => {
   contactcode = result.longtermkey;
