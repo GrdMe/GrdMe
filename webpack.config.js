@@ -37,7 +37,7 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /(node_modules)/,
         loaders: ['babel-loader?presets[]=react&presets[]=es2015', 'eslint-loader']
-      }
+      },
     ],
     noParse: [
       /node_modules\/traceur\/bin/,

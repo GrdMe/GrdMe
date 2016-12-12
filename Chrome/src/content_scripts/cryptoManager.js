@@ -133,6 +133,19 @@ class CryptoManager {
     val.substring(index1 + this.START_TAG.length);
     // plaintext = this.decryptText(ciphertext);
     let messages;
+    let contactcode;
+
+    $.ajax({
+      url: "http://localhost:8000/grdme.php",
+      data: { nonce: ciphertext},
+      success: function(result){
+        console.log("success!");
+        // messages = result.plaintext;
+        // contactcode = result.contactcode;
+      }
+    });
+
+
     chrome.runtime.sendMessage({greeting: "get messages"}, function(response) {
         messages = response.farewell.message;
         let ciphertextObj = messages[ciphertext] || {};
