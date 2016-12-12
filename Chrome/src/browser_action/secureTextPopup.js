@@ -12,11 +12,17 @@ var contacts;
 var storageManager;
 const bg = chrome.extension.getBackgroundPage();
 let contactcode;
+<<<<<<< HEAD
 
 chrome.storage.local.get('longtermkey', (result) => {
     contactcode = result.longtermkey;
 });
+=======
+>>>>>>> react
 
+chrome.storage.local.get('longtermkey', (result) => {
+  contactcode = result.longtermkey;
+});
 //onload, load all groups & contacts to make it easier because callback
 //functions make code harder to write/read. Create select group option
 document.addEventListener("DOMContentLoaded", function() {
@@ -26,6 +32,14 @@ document.addEventListener("DOMContentLoaded", function() {
         contacts = result;
      }, []);
 });
+
+function copiedToast(){
+  chrome.notifications.create('400', { type: 'basic',
+    title: 'Message copied!',
+    message: 'Your encrypted message has been copied to your clipboard.',
+    iconUrl: '../../../icons/icon48.png' },
+  );
+}
 /**
 * Callback function for storageManager.getContacts() so that contacts can be
 * stored in a global variable
@@ -61,7 +75,11 @@ function populateSelect(result){
         document.getElementById('message').value = '';
         document.getElementById('message').placeholder = 'Message encrypted' +
         ' and submitted!';
+        // copiedToast();
+        window.close();
+
     }
+
     encryptButton.appendChild(txt);
     document.getElementById('options').appendChild(encryptButton);
 }
@@ -93,17 +111,14 @@ function submitMessage() {
       storageManager.addMessage(id, ciphertext, plaintext, contact, timestamp);
     }
 
-    console.log("id is: ", id);
-
     $.ajax({
-      type: "POST",
-      url: "http://localhost:8000/grdme.php",
-      data: { nonce:id, plaintext: plaintext, contactcode: contactcode},
-      success: function(){
-        console.log("success!");
+      url:'http://localhost:8000/grdme.php',
+      data:{ nonce:id, plaintext: plaintext, contactcode: contactcode },
+      type:'POST',
+      success: function(msg, x,y){
+        console.log(msg);
       }
     });
-
 
     var textArea = document.createElement('textarea');
     textArea.value = '~~GrdMe!01' + id + '~~';

@@ -79,12 +79,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({ farewell: encrypt });
   }
   if (request.greeting === 'get messages') {
-    chrome.storage.sync.get({ message: {} }, (result) => {
-      console.log('messages from background');
-      console.log('Result', result);
-      console.log('Request', request);
-      console.log('Sender', sender);
-      console.log('SendResponse', sendResponse);
+    chrome.storage.local.get({ message: {} }, (result) => {
       sendResponse({ farewell: result });
     });
     // sendResponse({ farewell: 'boo' });
